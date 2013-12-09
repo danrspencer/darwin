@@ -1,8 +1,8 @@
 
-import Click = require('com/Event/Click');
-import IMouseEvent = require('com/Data/IMouseEvent');
+import Click = require('Event/Click');
+import IMouseEvent = require('Data/IMouseEvent');
 
-class Main {
+class Monitor {
 
   private _data: IMouseEvent[];
 
@@ -33,4 +33,4 @@ class Main {
 
 }
 
-export = Main;
+export = Monitor;

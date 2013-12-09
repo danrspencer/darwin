@@ -1,4 +1,4 @@
-/// <reference path="../bower_components/DefinitelyTyped/jasmine/jasmine.d.ts" />
+/// <reference path="../../bower_components/DefinitelyTyped/jasmine/jasmine.d.ts" />
 
 /**
  * Jasmine TypeScript Spies

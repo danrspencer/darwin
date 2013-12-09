@@ -1,9 +1,9 @@
-/// <reference path="../../jasmine_tss.ts" />
+/// <reference path="../jasmine_tss.ts" />
 
-import Click = require('com/Event/Click');
-import ActionType = require('com/Data/ActionType');
+import Click = require('../../../lib/browser/Event/Click');
+import ActionType = require('../../../lib/browser/Data/ActionType');
 
-import IMouseEvent = require('com/Data/IMouseEvent');
+import IMouseEvent = require('../../../lib/browser/Data/IMouseEvent');
 
 describe('main', () => {
 
