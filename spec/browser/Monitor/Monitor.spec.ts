@@ -1,7 +1,7 @@
 /// <reference path="../jasmine_tss.ts" />
 
-import Main = require('com/Main');
-import Click = require('com/Event/Click')
+import Monitor = require('../../../lib/browser/Monitor/Monitor');
+import Click = require('../../../lib/browser/Event/Click')
 
 describe('main', () => {
 
@@ -11,7 +11,7 @@ describe('main', () => {
 
   var windowListeners: { [type: string]: Function } = {};
 
-  var main: Main;
+  var monitor: Monitor;
 
   beforeEach(() => {
     windowSpy = jasmine.createSpyObj<Window>('windowSpy', ['addEventListener']);
@@ -22,23 +22,23 @@ describe('main', () => {
     consoleSpy = jasmine.createSpyObj<Console>('consoleSpy', ['log']);
     clickSpy = jasmine.createSpyObj<Click>('handlerSpy', ['onMousedown']);
 
-    main = new Main(windowSpy, consoleSpy, clickSpy);
+     monitor = new Monitor(windowSpy, consoleSpy, clickSpy);
   });
 
   it('listens to mousedown events on the window', () => {
-    main.setup();
+    monitor.setup();
 
     expect(windowSpy.addEventListener).toHaveBeenCalledWith('mousedown', jasmine.any(Function));
   });
 
   it('listens to the keypress event on the window', () => {
-    main.setup();
+    monitor.setup();
 
     expect(windowSpy.addEventListener).toHaveBeenCalledWith('keypress', jasmine.any(Function));
   });
 
   it('delegates to Handler to process the mousedown event', () => {
-    main.setup();
+    monitor.setup();
 
     var eventFake = <MouseEvent>{};
 
@@ -48,7 +48,7 @@ describe('main', () => {
   });
 
   it('returns all of the captured data', () => {
-    main.setup();
+    monitor.setup();
 
     var resultsFake = [
       { "fake": "result" },
@@ -65,7 +65,7 @@ describe('main', () => {
     setSpy(clickSpy.onMousedown).toReturn(resultsFake[2]);
     windowListeners['mousedown'](<MouseEvent>{});
 
-    expect(main.getOutput()).toEqual(resultsFake);
+    expect(monitor.getOutput()).toEqual(resultsFake);
   });
 
 });

@@ -1,6 +1,6 @@
 
-import ActionType = require('com/Data/ActionType');
-import IMouseEvent = require('com/Data/IMouseEvent');
+import ActionType = require('Data/ActionType');
+import IMouseEvent = require('Data/IMouseEvent');
 
 class Click {
 
