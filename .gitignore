@@ -1,5 +1,10 @@
 .idea
-
 bower_components
 
 npm-debug.log
+
+*.js
+*.js.map
+!browser/karma.conf.js
+!browser/main.js
+!browser/spec-main.js
