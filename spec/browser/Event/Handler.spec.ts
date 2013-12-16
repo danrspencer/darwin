@@ -1,9 +1,9 @@
-/// <reference path="../jasmine_tss.ts" />
+import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
-import Click = require('../../../lib/browser/Event/Click');
-import ActionType = require('../../../lib/browser/Data/ActionType');
+import Click = require('../../../src/browser/Event/Click');
+import ActionType = require('../../../src/browser/Data/ActionType');
 
-import IMouseEvent = require('../../../lib/browser/Data/IMouseEvent');
+import IMouseEvent = require('../../../src/browser/Data/IMouseEvent');
 
 describe('main', () => {
 
