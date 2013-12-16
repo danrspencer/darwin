@@ -2,7 +2,7 @@
 
 'use strict';
 
-var bootstrap = require('./bootstrap');
+var bootstrap = require('../build/src/cli/bootstrap');
 var version = require('../package.json').version;
 
 bootstrap(version, process.argv);
