@@ -1,0 +1,18 @@
+/// <reference path="../bower_components/DefinitelyTyped/commander/commander.d.ts" />
+/// <reference path="../bower_components/DefinitelyTyped/node/node.d.ts" />
+var commander = require('commander');
+var fs = require('fs');
+var promptly = require('promptly');
+
+var Darwin = require('../lib/cli/Main/Darwin');
+
+function bootstrap(version, argv) {
+    commander.version(version).parse(argv);
+
+    var darwin = new Darwin(fs, promptly);
+
+    darwin.init();
+}
+
+module.exports = bootstrap;
+//# sourceMappingURL=bootstrap.js.map
