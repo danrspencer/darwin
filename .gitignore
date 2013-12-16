@@ -2,12 +2,11 @@
 .idea
 bower_components
 node_modules
+build
 
 npm-debug.log
+watchers.xml
 
 *.js
 *.js.map
 
-!browser/karma.conf.js
-!browser/main.js
-!browser/spec-main.js

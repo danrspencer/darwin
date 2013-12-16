@@ -1,7 +1,7 @@
-/// <reference path="../jasmine_tss.ts" />
+import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
-import Monitor = require('../../../lib/browser/Monitor/Monitor');
-import Click = require('../../../lib/browser/Event/Click')
+import Monitor = require('../../../src/browser/Monitor/Monitor');
+import Click = require('../../../src/browser/Event/Click')
 
 describe('main', () => {
 
