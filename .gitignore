@@ -10,3 +10,5 @@ watchers.xml
 *.js
 *.js.map
 
+!Gruntfile.js
+!karma.conf.js
