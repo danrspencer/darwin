@@ -5,21 +5,27 @@ declare module "selenium-webdriver" {
 
     usingServer(serverUrl: any): Builder;
     withCapabilities(browser: any): Builder;
-    build();
+    build(): Driver;
 
+  }
+
+  export class Driver {
+    manage(): Manage;
+    get(url: string): void;
+    executeScript(script: string): void;
   }
 
   export module Capabilities {
-
     export function chrome(): any;
   }
 
-  export function manage(): manage;
+  export class Manage {
+    window: () => Window;
+  }
 
-  interface manage {
-    window: () => manage;
-    setSize: (x: any,y: any) => manage;
-    then: (done: any) => manage;
+  export class Window {
+    setSize: (x: any,y: any) => Window;
+    then: (done: any) => Window;
   }
 
 }
