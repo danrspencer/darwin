@@ -58,7 +58,6 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-ts');
   grunt.loadNpmTasks('grunt-typescript');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-jasmine-node');
