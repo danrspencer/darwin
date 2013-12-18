@@ -2,7 +2,6 @@
   "name": "darwin",
   "private": true,
   "devDependencies": {
-    "DefinitelyTyped": "latest",
-    "requirejs": "2.1.9"
+    "DefinitelyTyped": "latest"
   }
 }
