@@ -68,7 +68,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('browser', 'Build browser scripts...', function() {
-    grunt.task.run('ts:browser');
+    grunt.task.run('typescript:browser');
     grunt.task.run('browserify:browser');
     grunt.task.run('karma:browser');
   });
