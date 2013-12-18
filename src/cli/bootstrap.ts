@@ -4,6 +4,8 @@ import commander = require('commander');
 import fs = require('fs');
 import promptly = require('promptly');
 
+import webdriver = require('selenium-webdriver');
+
 import Darwin = require('./Main/Darwin');
 
 function bootstrap(version: string, argv: string[]) {
@@ -12,7 +14,15 @@ function bootstrap(version: string, argv: string[]) {
     .version(version)
     .parse(argv);
 
-  var darwin = new Darwin(fs, promptly);
+  var webDriverBuilder = new webdriver.Builder();
+  var darwin = new Darwin(
+    fs,
+    promptly,
+    webDriverBuilder,
+    'build/src/darwin-browser.js',
+    'http://localhost:9515',
+    webdriver.Capabilities.chrome()
+  );
 
   darwin.init();
 }

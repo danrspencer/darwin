@@ -6,6 +6,9 @@ build
 
 npm-debug.log
 watchers.xml
+chromedriver
+selenium-server-standalone-2.38.0.jar
+
 
 *.js
 *.js.map

@@ -70,7 +70,7 @@ describe('Darwin', () => {
   it('delegates to fs to load the browser script', () => {
     darwin.init();
 
-    expect(fsSpy.readFileSync).toHaveBeenCalledWith('browserScript.js', 'utf8');
+    expect(fsSpy.readFileSync).toHaveBeenCalledWith('browserScript.js', { encoding: 'utf8' });
   });
 
   it('delegates to webdriver.builder to create a webdriver', () => {
@@ -91,7 +91,7 @@ describe('Darwin', () => {
   it('delegates to webdriver.driver to launch the browser', () => {
     darwin.init();
 
-    expect(driverSpy.get).toHaveBeenCalledWith('http://www.google.com');
+    expect(driverSpy.get).toHaveBeenCalledWith('http://localhost');
   });
 
   it('delegates to webdriver.driver to inject the browser script', () => {

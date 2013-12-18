@@ -4,7 +4,6 @@ import fs = require('fs');
 import promptly = require('promptly');
 import webdriver = require('selenium-webdriver');
 
-
 class Darwin {
 
   constructor(private _fs: typeof fs,
@@ -17,7 +16,8 @@ class Darwin {
   }
 
   public init() {
-    var browserScript = this._fs.readFileSync(this._browserScriptPath, 'utf8');
+    // Hack: Cast to 'any' then back to 'string' go get TS to recognise as a string
+    var browserScript = <string><any>this._fs.readFileSync(this._browserScriptPath, { encoding: 'utf8' });
 
     var driver = this._webDriverBuilder.usingServer(this._seleniumServerUrl)
       .withCapabilities(this._capabilities)
@@ -29,7 +29,7 @@ class Darwin {
       driver.manage().window()
         .setSize(1280, 768)
         .then(() => {
-          driver.get('http://www.google.com');
+          driver.get('http://localhost');
           driver.executeScript(browserScript);
         });
     });

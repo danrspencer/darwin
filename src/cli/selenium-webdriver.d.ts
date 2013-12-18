@@ -17,6 +17,7 @@ declare module "selenium-webdriver" {
 
   export module Capabilities {
     export function chrome(): any;
+    export function firefox(): any;
   }
 
   export class Manage {

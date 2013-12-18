@@ -3,6 +3,25 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    ts: {
+      browser: {
+        src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
+        outDir: 'build',
+        options: {
+          module: 'commonjs',
+          sourceMap: true
+        }
+      },
+      cli: {
+        src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
+        outDir: 'build',
+        options: {
+          module: 'commonjs',
+          sourceMap: true
+        }
+      }
+    },
+
     typescript: {
       browser: {
         src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
@@ -39,6 +58,7 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-ts');
   grunt.loadNpmTasks('grunt-typescript');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-jasmine-node');
@@ -49,7 +69,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('browser', 'Build browser scripts...', function() {
-    grunt.task.run('typescript:browser');
+    grunt.task.run('ts:browser');
     grunt.task.run('browserify:browser');
     grunt.task.run('karma:browser');
   });
