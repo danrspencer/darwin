@@ -1,0 +1,7 @@
+
+class Capture {
+
+  public start() {
+
+  }
+}
