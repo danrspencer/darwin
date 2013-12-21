@@ -28,10 +28,6 @@ describe('Darwin', () => {
     manageSpy = jasmine.createSpyObj<webdriver.Manage>('manageSpy', ['window']);
     windowSpy = jasmine.createSpyObj<webdriver.Window>('windowSpy', ['setSize', 'then']);
 
-    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
-      callback(null, 'test desc');
-    });
-
     setSpy(builderSpy.usingServer).toReturn(builderSpy);
     setSpy(builderSpy.withCapabilities).toReturn(builderSpy);
     setSpy(builderSpy.build).toReturn(driverSpy);
@@ -61,19 +57,27 @@ describe('Darwin', () => {
     expect(promptlySpy.prompt).toHaveBeenCalledWith('Enter a test description: ', jasmine.any(Function));
   });
 
-  it('delegates to fs to create a directory named after the test', () => {
-    darwin.init();
-
-    expect(fsSpy.mkdirSync).toHaveBeenCalledWith('test desc');
-  });
-
   it('delegates to fs to load the browser script', () => {
     darwin.init();
 
     expect(fsSpy.readFileSync).toHaveBeenCalledWith('browserScript.js', { encoding: 'utf8' });
   });
 
+  it('delegates to fs to create a directory named after the test', () => {
+    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
+      callback(null, 'test desc');
+    });
+
+    darwin.init();
+
+    expect(fsSpy.mkdirSync).toHaveBeenCalledWith('test desc');
+  });
+
   it('delegates to webdriver.builder to create a webdriver', () => {
+    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
+      callback(null, 'test desc');
+    });
+
     darwin.init();
 
     expect(builderSpy.usingServer).toHaveBeenCalledWith('http://serverUrl');
@@ -81,7 +85,17 @@ describe('Darwin', () => {
     expect(builderSpy.build).toHaveBeenCalled();
   });
 
+  it('doesn\'t build a selenium server until the test name has been entered', () => {
+    darwin.init();
+
+    expect(spyOf(builderSpy.usingServer).callCount).toEqual(0);
+  });
+
   it('delegates to webdriver.window to setup the browser', () => {
+    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
+      callback(null, 'test desc');
+    });
+
     darwin.init();
 
     expect(windowSpy.setSize).toHaveBeenCalledWith(1280, 768);
@@ -89,6 +103,10 @@ describe('Darwin', () => {
   });
 
   it('delegates to webdriver.driver to launch the browser', () => {
+    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
+      callback(null, 'test desc');
+    });
+
     darwin.init();
 
     expect(driverSpy.get).toHaveBeenCalledWith('http://localhost');
@@ -96,6 +114,10 @@ describe('Darwin', () => {
 
   it('delegates to webdriver.driver to inject the browser script', () => {
     setSpy(fsSpy.readFileSync).toReturn('fake script content to be injected');
+
+    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
+      callback(null, 'test desc');
+    });
 
     darwin.init();
 

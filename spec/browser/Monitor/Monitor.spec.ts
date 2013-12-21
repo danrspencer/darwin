@@ -1,13 +1,13 @@
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
 import Monitor = require('../../../src/browser/Monitor/Monitor');
-import Click = require('../../../src/browser/Event/Click')
+import Handler = require('../../../src/browser/Event/Handler')
 
 describe('main', () => {
 
   var windowSpy: Window;
   var consoleSpy: Console;
-  var clickSpy: Click;
+  var handler: Handler;
 
   var windowListeners: { [type: string]: Function } = {};
 
@@ -20,9 +20,9 @@ describe('main', () => {
     });
 
     consoleSpy = jasmine.createSpyObj<Console>('consoleSpy', ['log']);
-    clickSpy = jasmine.createSpyObj<Click>('handlerSpy', ['onMousedown']);
+    handler = jasmine.createSpyObj<Handler>('handlerSpy', ['onMousedown']);
 
-     monitor = new Monitor(windowSpy, consoleSpy, clickSpy);
+    monitor = new Monitor(windowSpy, consoleSpy, handler);
   });
 
   it('listens to mousedown events on the window', () => {
@@ -42,9 +42,9 @@ describe('main', () => {
 
     var eventFake = <MouseEvent>{};
 
-    windowListeners['mousedown'](eventFake)
+    windowListeners['mousedown'](eventFake);
 
-    expect(clickSpy.onMousedown).toHaveBeenCalledWith(eventFake);
+    expect(handler.onMousedown).toHaveBeenCalledWith(eventFake);
   });
 
   it('returns all of the captured data', () => {
@@ -56,16 +56,32 @@ describe('main', () => {
       { "fake3": "something" }
     ];
 
-    setSpy(clickSpy.onMousedown).toReturn(resultsFake[0]);
+    setSpy(handler.onMousedown).toReturn(resultsFake[0]);
     windowListeners['mousedown'](<MouseEvent>{});
 
-    setSpy(clickSpy.onMousedown).toReturn(resultsFake[1]);
+    setSpy(handler.onMousedown).toReturn(resultsFake[1]);
     windowListeners['mousedown'](<MouseEvent>{});
 
-    setSpy(clickSpy.onMousedown).toReturn(resultsFake[2]);
+    setSpy(handler.onMousedown).toReturn(resultsFake[2]);
     windowListeners['mousedown'](<MouseEvent>{});
 
     expect(monitor.getOutput()).toEqual(resultsFake);
+  });
+
+  it('records "ctrl shift s" as a screenshot in the output object', () => {
+    monitor.setup();
+
+    var eventFake = <KeyboardEvent>{
+      shiftKey: true,
+      ctrlKey: true,
+      charCode: 115
+    };
+
+    windowListeners['keypress'](eventFake);
+
+    expect(monitor.getOutput()).toEqual([{
+     "screenshot": true
+    }]);
   });
 
 });

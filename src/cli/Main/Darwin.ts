@@ -19,12 +19,12 @@ class Darwin {
     // Hack: Cast to 'any' then back to 'string' go get TS to recognise as a string
     var browserScript = <string><any>this._fs.readFileSync(this._browserScriptPath, { encoding: 'utf8' });
 
-    var driver = this._webDriverBuilder.usingServer(this._seleniumServerUrl)
-      .withCapabilities(this._capabilities)
-      .build();
-
     this._promptly.prompt('Enter a test description: ', (error: Error, value: string) => {
       this._fs.mkdirSync(value);
+
+      var driver = this._webDriverBuilder.usingServer(this._seleniumServerUrl)
+        .withCapabilities(this._capabilities)
+        .build();
 
       driver.manage().window()
         .setSize(1280, 768)

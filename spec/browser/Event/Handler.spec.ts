@@ -1,6 +1,6 @@
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
-import Click = require('../../../src/browser/Event/Click');
+import Handler = require('../../../src/browser/Event/Handler');
 import ActionType = require('../../../src/browser/Data/ActionType');
 
 import IMouseEvent = require('../../../src/browser/Data/IMouseEvent');
@@ -9,7 +9,7 @@ describe('main', () => {
 
   var eventFake: MouseEvent;
 
-  var click: Click;
+  var handler: Handler;
 
   beforeEach(() => {
     eventFake = <MouseEvent>{};
@@ -19,13 +19,13 @@ describe('main', () => {
       id: 'fakeId'
     };
 
-    click = new Click();
+    handler = new Handler();
   });
 
   it('returns an object with a LEFTCLICK type for left clicks', () => {
     eventFake.button = 0;
 
-    var result = click.onMousedown(eventFake);
+    var result = handler.onMousedown(eventFake);
 
     expect(result.type).toEqual(ActionType.LEFTCLICK);
   });
@@ -33,20 +33,20 @@ describe('main', () => {
   it('returns an object with a RIGHTCLICK type for right clicks', () => {
     eventFake.button = 1;
 
-    var result = click.onMousedown(eventFake);
+    var result = handler.onMousedown(eventFake);
 
     expect(result.type).toEqual(ActionType.RIGHTCLICK);
   });
 
   it('returns an object with the position of the click', () => {
-    var result = click.onMousedown(eventFake);
+    var result = handler.onMousedown(eventFake);
 
     expect(result.pos.x).toEqual(100);
     expect(result.pos.y).toEqual(200);
   });
 
   it('returns an object containing the id of the element clicked on', () => {
-    var result = click.onMousedown(eventFake);
+    var result = handler.onMousedown(eventFake);
 
     expect(result.el.id).toEqual('fakeId');
   });

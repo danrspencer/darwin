@@ -2,7 +2,7 @@
 import ActionType = require('../Data/ActionType');
 import IMouseEvent = require('../Data/IMouseEvent');
 
-class Click {
+class Handler {
 
   public onMousedown(event: MouseEvent): IMouseEvent {
 
@@ -24,4 +24,4 @@ class Click {
 
 }
 
-export = Click;
+export = Handler;

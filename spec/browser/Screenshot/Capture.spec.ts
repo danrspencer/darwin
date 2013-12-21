@@ -2,6 +2,6 @@ import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setS
 
 describe('Capture', ()=> {
 
-    
+
 
 });

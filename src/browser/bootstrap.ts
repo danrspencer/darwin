@@ -1,5 +1,5 @@
 
-import Handler = require('./Event/Click');
+import Handler = require('./Event/Handler');
 import Monitor = require('./Monitor/Monitor');
 
 function bootstrap() {

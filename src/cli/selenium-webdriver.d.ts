@@ -13,6 +13,7 @@ declare module "selenium-webdriver" {
     manage(): Manage;
     get(url: string): void;
     executeScript(script: string): void;
+    executeAsyncScript(script: string): void;
   }
 
   export module Capabilities {
