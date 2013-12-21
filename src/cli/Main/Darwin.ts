@@ -22,19 +22,24 @@ class Darwin {
     this._promptly.prompt('Enter a test description: ', (error: Error, value: string) => {
       this._fs.mkdirSync(value);
 
-      var driver = this._webDriverBuilder.usingServer(this._seleniumServerUrl)
+      var driver = this._webDriverBuilder
+        .usingServer(this._seleniumServerUrl)
         .withCapabilities(this._capabilities)
         .build();
 
-      driver.manage().window()
+      driver.manage()
+        .window()
         .setSize(1280, 768)
         .then(() => {
           driver.get('http://localhost');
-          driver.executeScript(browserScript);
+          driver.executeScript('(function() { '+ browserScript + ' bootstrap(); })();');
         });
+
+      setInterval(() => {
+        console.log('test');
+      }, 100);
     });
   }
-
 }
 
 export = Darwin;

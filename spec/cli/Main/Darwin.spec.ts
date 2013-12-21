@@ -113,7 +113,7 @@ describe('Darwin', () => {
   });
 
   it('delegates to webdriver.driver to inject the browser script', () => {
-    setSpy(fsSpy.readFileSync).toReturn('fake script content to be injected');
+    setSpy(fsSpy.readFileSync).toReturn('function bootstrap() {}');
 
     setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
       callback(null, 'test desc');
@@ -121,7 +121,7 @@ describe('Darwin', () => {
 
     darwin.init();
 
-    expect(driverSpy.executeScript).toHaveBeenCalledWith('fake script content to be injected');
+    expect(driverSpy.executeScript).toHaveBeenCalledWith('(function() { function bootstrap() {} bootstrap(); })();');
   });
 
 });
