@@ -121,7 +121,7 @@ describe('Darwin', () => {
 
     darwin.init();
 
-    expect(driverSpy.executeScript).toHaveBeenCalledWith('(function() { function bootstrap() {} bootstrap(); })();');
+    expect(driverSpy.executeScript).toHaveBeenCalledWith('(function() { function bootstrap() {} }());');
   });
 
 });

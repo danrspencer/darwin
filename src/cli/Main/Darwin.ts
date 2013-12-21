@@ -32,12 +32,8 @@ class Darwin {
         .setSize(1280, 768)
         .then(() => {
           driver.get('http://localhost');
-          driver.executeScript('(function() { '+ browserScript + ' bootstrap(); })();');
+          driver.executeScript('(function() { ' + browserScript + ' }());');
         });
-
-      setInterval(() => {
-        console.log('test');
-      }, 100);
     });
   }
 }

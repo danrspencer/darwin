@@ -8,3 +8,5 @@ function bootstrap() {
 
   monitor.setup();
 }
+
+bootstrap();
