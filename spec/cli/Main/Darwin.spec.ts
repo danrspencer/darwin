@@ -2,6 +2,7 @@
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
 import Darwin = require('../../../src/cli/Main/Darwin');
+import Record = require('../../../src/cli/Selenium/Record');
 
 import fs = require('fs');
 import promptly = require('promptly');
@@ -11,43 +12,20 @@ describe('Darwin', () => {
 
   var promptlySpy: typeof promptly;
   var fsSpy: typeof fs;
-  var builderSpy: webdriver.Builder;
-  var driverSpy: webdriver.Driver;
-  var manageSpy: webdriver.Manage;
-  var windowSpy: webdriver.Window;
-
-  var capabilitiesDummy: any;
+  var recordSpy: Record;
 
   var darwin: Darwin;
 
   beforeEach(() => {
     promptlySpy = jasmine.createSpyObj<typeof promptly>('promptlySpy', ['prompt']);
     fsSpy = jasmine.createSpyObj<typeof fs>('fsSpy', ['mkdirSync', 'readFileSync']);
-    builderSpy = jasmine.createSpyObj<webdriver.Builder>('builderSpy', ['usingServer', 'withCapabilities', 'build']);
-    driverSpy = jasmine.createSpyObj<webdriver.Driver>('driverSpy', ['manage', 'get', 'executeScript']);
-    manageSpy = jasmine.createSpyObj<webdriver.Manage>('manageSpy', ['window']);
-    windowSpy = jasmine.createSpyObj<webdriver.Window>('windowSpy', ['setSize', 'then']);
-
-    setSpy(builderSpy.usingServer).toReturn(builderSpy);
-    setSpy(builderSpy.withCapabilities).toReturn(builderSpy);
-    setSpy(builderSpy.build).toReturn(driverSpy);
-
-    setSpy(driverSpy.manage).toReturn(manageSpy);
-    setSpy(manageSpy.window).toReturn(windowSpy);
-    setSpy(windowSpy.setSize).toReturn(windowSpy);
-    setSpy(windowSpy.then).toCallFake((callback: Function) => {
-      callback();
-    });
-
-    capabilitiesDummy = { capabilities:"dummy" };
+    recordSpy = jasmine.createSpyObj<Record>('recordSpy', ['start']);
 
     darwin = new Darwin(
       fsSpy,
       promptlySpy,
-      builderSpy,
-      'browserScript.js',
-      'http://serverUrl',
-      capabilitiesDummy
+      recordSpy,
+      'browserScript.js'
     );
   });
 
@@ -63,65 +41,33 @@ describe('Darwin', () => {
     expect(fsSpy.readFileSync).toHaveBeenCalledWith('browserScript.js', { encoding: 'utf8' });
   });
 
-  it('delegates to fs to create a directory named after the test', () => {
+//  it('delegates to fs to create a directory named after the test', () => {
+//    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
+//      callback(null, 'test desc');
+//    });
+//
+//    darwin.init();
+//
+//    expect(fsSpy.mkdirSync).toHaveBeenCalledWith('test desc');
+//  });
+
+
+  it('delegates to selenium.record to start the browser', () => {
     setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
       callback(null, 'test desc');
     });
 
+    setSpy(fsSpy.readFileSync).toReturn('function() {}');
+
     darwin.init();
 
-    expect(fsSpy.mkdirSync).toHaveBeenCalledWith('test desc');
+    expect(recordSpy.start).toHaveBeenCalledWith('function() {}')
   });
 
-  it('delegates to webdriver.builder to create a webdriver', () => {
-    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
-      callback(null, 'test desc');
-    });
-
+  it('doesn\'t start selenium until the test name has been entered', () => {
     darwin.init();
 
-    expect(builderSpy.usingServer).toHaveBeenCalledWith('http://serverUrl');
-    expect(builderSpy.withCapabilities).toHaveBeenCalledWith(capabilitiesDummy);
-    expect(builderSpy.build).toHaveBeenCalled();
-  });
-
-  it('doesn\'t build a selenium server until the test name has been entered', () => {
-    darwin.init();
-
-    expect(spyOf(builderSpy.usingServer).callCount).toEqual(0);
-  });
-
-  it('delegates to webdriver.window to setup the browser', () => {
-    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
-      callback(null, 'test desc');
-    });
-
-    darwin.init();
-
-    expect(windowSpy.setSize).toHaveBeenCalledWith(1280, 768);
-    expect(windowSpy.then).toHaveBeenCalledWith(jasmine.any(Function));
-  });
-
-  it('delegates to webdriver.driver to launch the browser', () => {
-    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
-      callback(null, 'test desc');
-    });
-
-    darwin.init();
-
-    expect(driverSpy.get).toHaveBeenCalledWith('http://localhost');
-  });
-
-  it('delegates to webdriver.driver to inject the browser script', () => {
-    setSpy(fsSpy.readFileSync).toReturn('function bootstrap() {}');
-
-    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
-      callback(null, 'test desc');
-    });
-
-    darwin.init();
-
-    expect(driverSpy.executeScript).toHaveBeenCalledWith('(function() { function bootstrap() {} }());');
+    expect(spyOf(recordSpy.start).callCount).toEqual(0);
   });
 
 });

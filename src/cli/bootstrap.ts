@@ -7,6 +7,7 @@ import promptly = require('promptly');
 import webdriver = require('selenium-webdriver');
 
 import Darwin = require('./Main/Darwin');
+import Record = require('./Selenium/Record');
 
 function bootstrap(version: string, argv: string[]) {
 
@@ -15,13 +16,18 @@ function bootstrap(version: string, argv: string[]) {
     .parse(argv);
 
   var webDriverBuilder = new webdriver.Builder();
+
+  var record = new Record(
+    webDriverBuilder,
+    'http://www.google.co.uk',
+    { 'browserName': 'chrome' }
+  );
+
   var darwin = new Darwin(
     fs,
     promptly,
-    webDriverBuilder,
-    'build/src/darwin-browser.js',
-    'http://localhost:9515',
-    webdriver.Capabilities.chrome()
+    record,
+    'build/src/darwin-browser.js'
   );
 
   darwin.init();

@@ -1,11 +1,14 @@
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
 import Monitor = require('../../../src/browser/Monitor/Monitor');
-import Handler = require('../../../src/browser/Event/Handler')
+import Handler = require('../../../src/browser/Event/Handler');
+
+
+import IDarwinWindow = require('../../../src/common/IDarwinWindow');
 
 describe('main', () => {
 
-  var windowSpy: Window;
+  var windowSpy: IDarwinWindow;
   var consoleSpy: Console;
   var handler: Handler;
 
@@ -14,7 +17,7 @@ describe('main', () => {
   var monitor: Monitor;
 
   beforeEach(() => {
-    windowSpy = jasmine.createSpyObj<Window>('windowSpy', ['addEventListener']);
+    windowSpy = jasmine.createSpyObj<IDarwinWindow>('windowSpy', ['addEventListener', '__darwin_callback']);
     setSpy(windowSpy.addEventListener).toCallFake((type, listener) => {
       windowListeners[type] = listener;
     });

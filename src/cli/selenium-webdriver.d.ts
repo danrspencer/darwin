@@ -1,3 +1,6 @@
+/**
+ * Incomplete and probably inaccurate selenium defintion
+ */
 
 declare module "selenium-webdriver" {
 
@@ -13,7 +16,9 @@ declare module "selenium-webdriver" {
     manage(): Manage;
     get(url: string): void;
     executeScript(script: string): void;
-    executeAsyncScript(script: string): void;
+    executeAsyncScript(script: Function): Driver;
+    executeAsyncScript(script: string): Driver;
+    then: (done: any) => void;
   }
 
   export module Capabilities {
@@ -23,11 +28,16 @@ declare module "selenium-webdriver" {
 
   export class Manage {
     window: () => Window;
+    timeouts: () => Timeouts;
   }
 
   export class Window {
     setSize: (x: any,y: any) => Window;
-    then: (done: any) => Window;
+    then: (done: any) => void;
+  }
+
+  export class Timeouts {
+    setScriptTimeout: (amount: number) => void;
   }
 
 }

@@ -1,11 +1,13 @@
 import Handler = require('../Event/Handler');
+
+import IDarwinWindow = require('../../common/IDarwinWindow');
 import IMouseEvent = require('../Data/IMouseEvent');
 
 class Monitor {
 
   private _data: Object[];
 
-  constructor(private _window: Window,
+  constructor(private _window: IDarwinWindow,
               private _console: Console,
               private _handler: Handler) {
 
