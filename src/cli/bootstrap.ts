@@ -19,8 +19,8 @@ function bootstrap(version: string, argv: string[]) {
 
   var record = new Record(
     webDriverBuilder,
-    'http://www.google.co.uk',
-    { 'browserName': 'chrome' }
+    'http://localhost:9515',
+    webdriver.Capabilities.chrome()
   );
 
   var darwin = new Darwin(

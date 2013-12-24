@@ -21,16 +21,17 @@ class Record {
       .setSize(1280, 768)
       .then(() => {
         this._openPage(driver, browserScript);
-        driver.manage().timeouts().setScriptTimeout(60000);
+
         driver.executeAsyncScript((callback: Function) => {
           window['__darwin_callback'] = callback;
         }).then((result) => {
-            console.log(result);
-          });
+          console.log(result);
+        });
       });
   }
 
   private _openPage(driver: webdriver.Driver, browserScript: string) {
+    driver.manage().timeouts().setScriptTimeout(60000);
     driver.get('http://localhost');
     driver.executeScript('(function() { ' + browserScript + ' }());');
   }
