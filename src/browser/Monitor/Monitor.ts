@@ -25,6 +25,8 @@ class Monitor {
 
     this._window.addEventListener('keypress', (event: KeyboardEvent) => {
       this._data.push({"screenshot": true});
+
+      this._window.__darwinCallback({"screenshot": true});
     });
   }
 

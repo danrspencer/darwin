@@ -17,7 +17,7 @@ describe('main', () => {
   var monitor: Monitor;
 
   beforeEach(() => {
-    windowSpy = jasmine.createSpyObj<IDarwinWindow>('windowSpy', ['addEventListener', '__darwin_callback']);
+    windowSpy = jasmine.createSpyObj<IDarwinWindow>('windowSpy', ['addEventListener', '__darwinCallback']);
     setSpy(windowSpy.addEventListener).toCallFake((type, listener) => {
       windowListeners[type] = listener;
     });
@@ -85,6 +85,20 @@ describe('main', () => {
     expect(monitor.getOutput()).toEqual([{
      "screenshot": true
     }]);
+  });
+
+  it('calls the darwin callback on screenshots', () => {
+    monitor.setup();
+
+    var eventFake = <KeyboardEvent>{
+      shiftKey: true,
+      ctrlKey: true,
+      charCode: 115
+    };
+
+    windowListeners['keypress'](eventFake);
+
+    expect(windowSpy.__darwinCallback).toHaveBeenCalledWith({ "screenshot": true });
   });
 
 });

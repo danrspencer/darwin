@@ -16,7 +16,7 @@ class Darwin {
   }
 
   public init() {
-    // Hack: Cast to 'any' then back to 'string' go get TS to recognise as a string
+    // Hack: Cast to 'any' then back to 'string' to get TS to recognise as a string
     var browserScript = <string><any>this._fs.readFileSync(this._browserScriptPath, { encoding: 'utf8' });
 
     this._promptly.prompt('Enter a test description: ', (error: Error, value: string) => {
