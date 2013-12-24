@@ -3,14 +3,14 @@ import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setS
 import Monitor = require('../../../src/browser/Monitor/Monitor');
 import Handler = require('../../../src/browser/Event/Handler');
 
-
+import ActionType = require('../../../src/browser/Data/ActionType');
 import IDarwinWindow = require('../../../src/common/IDarwinWindow');
 
 describe('main', () => {
 
   var windowSpy: IDarwinWindow;
   var consoleSpy: Console;
-  var handler: Handler;
+  var handlerSpy: Handler;
 
   var windowListeners: { [type: string]: Function } = {};
 
@@ -23,9 +23,9 @@ describe('main', () => {
     });
 
     consoleSpy = jasmine.createSpyObj<Console>('consoleSpy', ['log']);
-    handler = jasmine.createSpyObj<Handler>('handlerSpy', ['onMousedown']);
+    handlerSpy = jasmine.createSpyObj<Handler>('handlerSpy', ['mouseDown', 'keypress']);
 
-    monitor = new Monitor(windowSpy, consoleSpy, handler);
+    monitor = new Monitor(windowSpy, consoleSpy, handlerSpy);
   });
 
   it('listens to mousedown events on the window', () => {
@@ -47,7 +47,21 @@ describe('main', () => {
 
     windowListeners['mousedown'](eventFake);
 
-    expect(handler.onMousedown).toHaveBeenCalledWith(eventFake);
+    expect(handlerSpy.mouseDown).toHaveBeenCalledWith(eventFake);
+  });
+
+  it('delegates to Handler to process the keypress event', () => {
+    setSpy(handlerSpy.keypress).toReturn({
+      type: ActionType.KEYPRESS
+    });
+
+    monitor.setup();
+
+    var eventFake = <KeyboardEvent>{};
+
+    windowListeners['keypress'](eventFake);
+
+    expect(handlerSpy.keypress).toHaveBeenCalledWith(eventFake);
   });
 
   it('returns all of the captured data', () => {
@@ -59,46 +73,40 @@ describe('main', () => {
       { "fake3": "something" }
     ];
 
-    setSpy(handler.onMousedown).toReturn(resultsFake[0]);
-    windowListeners['mousedown'](<MouseEvent>{});
+    setSpy(handlerSpy.mouseDown).toReturn(resultsFake[0]);
+    windowListeners['mousedown']({});
 
-    setSpy(handler.onMousedown).toReturn(resultsFake[1]);
-    windowListeners['mousedown'](<MouseEvent>{});
+    setSpy(handlerSpy.mouseDown).toReturn(resultsFake[1]);
+    windowListeners['mousedown']({});
 
-    setSpy(handler.onMousedown).toReturn(resultsFake[2]);
-    windowListeners['mousedown'](<MouseEvent>{});
+    setSpy(handlerSpy.keypress).toReturn(resultsFake[2]);
+    windowListeners['keypress']({});
 
     expect(monitor.getOutput()).toEqual(resultsFake);
   });
 
-  it('records "ctrl shift s" as a screenshot in the output object', () => {
-    monitor.setup();
-
-    var eventFake = <KeyboardEvent>{
-      shiftKey: true,
-      ctrlKey: true,
-      charCode: 115
-    };
-
-    windowListeners['keypress'](eventFake);
-
-    expect(monitor.getOutput()).toEqual([{
-     "screenshot": true
-    }]);
-  });
-
   it('calls the darwin callback on screenshots', () => {
+    setSpy(handlerSpy.keypress).toReturn({
+      type: ActionType.SCREENSHOT
+    });
+
     monitor.setup();
 
-    var eventFake = <KeyboardEvent>{
-      shiftKey: true,
-      ctrlKey: true,
-      charCode: 115
-    };
-
-    windowListeners['keypress'](eventFake);
+    windowListeners['keypress']({});
 
     expect(windowSpy.__darwinCallback).toHaveBeenCalledWith({ "screenshot": true });
+  });
+
+  it('doesn\'t call the darwin callback for normal events', () => {
+    setSpy(handlerSpy.keypress).toReturn({
+      type: ActionType.KEYPRESS
+    });
+
+    monitor.setup();
+
+    windowListeners['keypress']({});
+
+    expect(spyOf(windowSpy.__darwinCallback).callCount).toEqual(0);
   });
 
 });

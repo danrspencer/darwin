@@ -1,3 +1,4 @@
+import ActionType = require('../Data/ActionType');
 import Handler = require('../Event/Handler');
 
 import IDarwinWindow = require('../../common/IDarwinWindow');
@@ -16,17 +17,19 @@ class Monitor {
 
   public setup() {
     this._window.addEventListener('mousedown', (event: MouseEvent) => {
-      var result = this._handler.onMousedown(event);
-
-      this._console.log(JSON.stringify(this._data));
+      var result = this._handler.mouseDown(event);
 
       this._data.push(result);
     });
 
     this._window.addEventListener('keypress', (event: KeyboardEvent) => {
-      this._data.push({"screenshot": true});
+      var result = this._handler.keypress(event);
 
-      this._window.__darwinCallback({"screenshot": true});
+      this._data.push(result);
+
+      if (result.type === ActionType.SCREENSHOT) {
+        this._window.__darwinCallback({"screenshot": true});
+      }
     });
   }
 

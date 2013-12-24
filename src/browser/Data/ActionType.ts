@@ -1,7 +1,9 @@
 
 enum ActionType {
   LEFTCLICK,
-  RIGHTCLICK
+  RIGHTCLICK,
+  KEYPRESS,
+  SCREENSHOT
 }
 
 export = ActionType;
