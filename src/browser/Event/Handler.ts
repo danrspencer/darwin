@@ -1,9 +1,9 @@
 
-import ActionType = require('../Data/ActionType');
+import ActionType = require('../../common/Action/ActionType');
 
-import IAction = require('../Data/IAction');
-import IMouseEvent = require('../Data/IMouseEvent');
-import IKeypressEvent = require('../Data/IKeypressEvent');
+import IAction = require('../../common/Action/IAction');
+import IMouseEvent = require('../../common/Action/IMouseEvent');
+import IKeypressEvent = require('../../common/Action/IKeypressEvent');
 
 class Handler {
 
@@ -27,7 +27,7 @@ class Handler {
 
   public keypress(event: KeyboardEvent): IAction {
 
-    if(String.fromCharCode(event.charCode) === 's'
+    if(event.which === 19
       && event.shiftKey === true
       && event.ctrlKey === true) {
 

@@ -8,17 +8,18 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'build/src/browser/**/*.js',
+      'build/src/common/**/*.js',
       'build/spec/browser/**/*.js',
       'build/spec/jasmine_tss.js'
     ],
 
     // list of files to exclude
     exclude: [
-      'client/main.js'
     ],
 
     preprocessors: {
       'build/src/browser/**/*.js': ['commonjs'],
+      'build/src/common/**/*.js': ['commonjs'],
       'build/spec/browser/**/*.js': ['commonjs'],
       'build/spec/jasmine_tss.js': ['commonjs']
     },

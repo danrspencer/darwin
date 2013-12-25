@@ -20,7 +20,7 @@ class Darwin {
     var browserScript = <string><any>this._fs.readFileSync(this._browserScriptPath, { encoding: 'utf8' });
 
     this._promptly.prompt('Enter a test description: ', (error: Error, value: string) => {
-      //this._fs.mkdirSync(value);
+      this._fs.mkdirSync(value);
 
       this._record.start(browserScript);
     });

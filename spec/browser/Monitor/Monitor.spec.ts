@@ -3,7 +3,7 @@ import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setS
 import Monitor = require('../../../src/browser/Monitor/Monitor');
 import Handler = require('../../../src/browser/Event/Handler');
 
-import ActionType = require('../../../src/browser/Data/ActionType');
+import ActionType = require('../../../src/common/Action/ActionType');
 import IDarwinWindow = require('../../../src/common/IDarwinWindow');
 
 describe('main', () => {
@@ -94,7 +94,9 @@ describe('main', () => {
 
     windowListeners['keypress']({});
 
-    expect(windowSpy.__darwinCallback).toHaveBeenCalledWith({ "screenshot": true });
+    expect(windowSpy.__darwinCallback).toHaveBeenCalledWith({
+      type: ActionType.SCREENSHOT
+    });
   });
 
   it('doesn\'t call the darwin callback for normal events', () => {

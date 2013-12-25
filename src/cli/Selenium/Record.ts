@@ -21,12 +21,7 @@ class Record {
       .setSize(1280, 768)
       .then(() => {
         this._openPage(driver, browserScript);
-
-        driver.executeAsyncScript((callback: Function) => {
-          window['__darwin_callback'] = callback;
-        }).then((result) => {
-          console.log(result);
-        });
+        this._setupCallback(driver);
       });
   }
 
@@ -34,6 +29,16 @@ class Record {
     driver.manage().timeouts().setScriptTimeout(60000);
     driver.get('http://localhost');
     driver.executeScript('(function() { ' + browserScript + ' }());');
+  }
+
+  private _setupCallback(driver: webdriver.Driver) {
+    driver.executeAsyncScript((callback: Function) => {
+      window['__darwinCallback'] = callback;
+    }).then((result) => {
+      this._setupCallback(driver);
+
+      console.log(result);
+    });
   }
 }
 

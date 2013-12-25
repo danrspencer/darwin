@@ -41,16 +41,15 @@ describe('Darwin', () => {
     expect(fsSpy.readFileSync).toHaveBeenCalledWith('browserScript.js', { encoding: 'utf8' });
   });
 
-//  it('delegates to fs to create a directory named after the test', () => {
-//    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
-//      callback(null, 'test desc');
-//    });
-//
-//    darwin.init();
-//
-//    expect(fsSpy.mkdirSync).toHaveBeenCalledWith('test desc');
-//  });
+  it('delegates to fs to create a directory named after the test', () => {
+    setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
+      callback(null, 'test desc');
+    });
 
+    darwin.init();
+
+    expect(fsSpy.mkdirSync).toHaveBeenCalledWith('test desc');
+  });
 
   it('delegates to selenium.record to start the browser', () => {
     setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {

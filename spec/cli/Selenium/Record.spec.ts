@@ -48,7 +48,6 @@ describe('Record', () => {
     );
   });
 
-
   it('creates a webdriver', () => {
     record.start('');
 
@@ -76,17 +75,30 @@ describe('Record', () => {
     expect(driverSpy.executeScript).toHaveBeenCalledWith('(function() { function bootstrap() {} }());');
   });
 
-  it('increase the selenium timeout', () => {
+  it('increases the selenium timeout', () => {
     record.start('');
 
     expect(timeoutsSpy.setScriptTimeout).toHaveBeenCalledWith(60*1000);
   });
 
-  it('sets up an async browser script', () => {
+  it('sets up the browser callback', () => {
     record.start('');
 
     expect(driverSpy.executeAsyncScript).toHaveBeenCalledWith(jasmine.any(Function));
     expect(driverSpy.then).toHaveBeenCalledWith(jasmine.any(Function));
+  });
+
+  it('rebinds the browser callback after each callback', () => {
+    record.start('');
+
+    for(var n = 0; n < 9; n++) {
+      var callback = spyOf(driverSpy.then).argsForCall[n][0];
+
+      callback();
+    }
+
+    expect(spyOf(driverSpy.executeAsyncScript).callCount).toEqual(10);
+    expect(spyOf(driverSpy.then).callCount).toEqual(10);
   });
 
 });

@@ -1,10 +1,10 @@
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
 import Handler = require('../../../src/browser/Event/Handler');
-import ActionType = require('../../../src/browser/Data/ActionType');
 
-import IMouseEvent = require('../../../src/browser/Data/IMouseEvent');
-import IKeypressEvent = require('../../../src/browser/Data/IKeypressEvent');
+import ActionType = require('../../../src/common/Action/ActionType');
+import IMouseEvent = require('../../../src/common/Action/IMouseEvent');
+import IKeypressEvent = require('../../../src/common/Action/IKeypressEvent');
 
 
 describe('main', () => {
@@ -76,7 +76,7 @@ describe('main', () => {
   });
 
   it('returns an object with a SCREENSHOT type for "ctrl shift s"', () => {
-    keyeventFake.charCode = 's'.charCodeAt(0);
+    keyeventFake.which = 19;
     keyeventFake.altKey = false;
     keyeventFake.ctrlKey = true;
     keyeventFake.shiftKey = true;
@@ -85,6 +85,28 @@ describe('main', () => {
 
     expect(result.type).toEqual(ActionType.SCREENSHOT);
   });
+
+//  it('returns an object with a SCREENSHOT type for "ctrl shift s"', () => {
+//    keyeventFake.charCode = 's'.charCodeAt(0);
+//    keyeventFake.altKey = false;
+//    keyeventFake.ctrlKey = true;
+//    keyeventFake.shiftKey = true;
+//
+//    var result = handler.keypress(keyeventFake);
+//
+//    expect(result.type).toEqual(ActionType.SCREENSHOT);
+//  });
+//
+//  it('returns an object with a SCREENSHOT type for "ctrl shift S"', () => {
+//    keyeventFake.charCode = 'S'.charCodeAt(0);
+//    keyeventFake.altKey = false;
+//    keyeventFake.ctrlKey = true;
+//    keyeventFake.shiftKey = true;
+//
+//    var result = handler.keypress(keyeventFake);
+//
+//    expect(result.type).toEqual(ActionType.SCREENSHOT);
+//  });
 
 
 });

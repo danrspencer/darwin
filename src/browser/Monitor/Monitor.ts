@@ -1,8 +1,8 @@
-import ActionType = require('../Data/ActionType');
 import Handler = require('../Event/Handler');
 
+import ActionType = require('../../common/Action/ActionType');
 import IDarwinWindow = require('../../common/IDarwinWindow');
-import IMouseEvent = require('../Data/IMouseEvent');
+import IMouseEvent = require('../../common/Action/IMouseEvent');
 
 class Monitor {
 
@@ -28,7 +28,7 @@ class Monitor {
       this._data.push(result);
 
       if (result.type === ActionType.SCREENSHOT) {
-        this._window.__darwinCallback({"screenshot": true});
+        this._window.__darwinCallback(result);
       }
     });
   }

@@ -3,25 +3,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    ts: {
-      browser: {
-        src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
-        outDir: 'build',
-        options: {
-          module: 'commonjs',
-          sourceMap: true
-        }
-      },
-      cli: {
-        src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
-        outDir: 'build',
-        options: {
-          module: 'commonjs',
-          sourceMap: true
-        }
-      }
-    },
-
     typescript: {
       browser: {
         src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
@@ -32,6 +13,13 @@ module.exports = function(grunt) {
       },
       cli: {
         src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
+        dest: 'build',
+        options: {
+          module: 'commonjs'
+        }
+      },
+      common: {
+        src: ['src/common/**/*.ts'],
         dest: 'build',
         options: {
           module: 'commonjs'
@@ -63,6 +51,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jasmine-node');
 
   grunt.registerTask('default', 'Building everything...', function() {
+    grunt.task.run('common');
     grunt.task.run('browser');
     grunt.task.run('cli');
   });
@@ -76,6 +65,10 @@ module.exports = function(grunt) {
   grunt.registerTask('cli', 'Build cli scripts...', function() {
     grunt.task.run('typescript:cli');
     grunt.task.run('jasmine_node');
+  });
+
+  grunt.registerTask('common', 'Build common scripts...', function() {
+    grunt.task.run('typescript:common');
   });
 
 }
