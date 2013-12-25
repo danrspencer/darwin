@@ -24,8 +24,7 @@ describe('Darwin', () => {
     darwin = new Darwin(
       fsSpy,
       promptlySpy,
-      recordSpy,
-      'browserScript.js'
+      recordSpy
     );
   });
 
@@ -33,12 +32,6 @@ describe('Darwin', () => {
     darwin.init();
 
     expect(promptlySpy.prompt).toHaveBeenCalledWith('Enter a test description: ', jasmine.any(Function));
-  });
-
-  it('delegates to fs to load the browser script', () => {
-    darwin.init();
-
-    expect(fsSpy.readFileSync).toHaveBeenCalledWith('browserScript.js', { encoding: 'utf8' });
   });
 
   it('delegates to fs to create a directory named after the test', () => {
@@ -56,11 +49,9 @@ describe('Darwin', () => {
       callback(null, 'test desc');
     });
 
-    setSpy(fsSpy.readFileSync).toReturn('function() {}');
-
     darwin.init();
 
-    expect(recordSpy.start).toHaveBeenCalledWith('function() {}')
+    expect(recordSpy.start).toHaveBeenCalled();
   });
 
   it('doesn\'t start selenium until the test name has been entered', () => {

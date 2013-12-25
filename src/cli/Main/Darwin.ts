@@ -10,19 +10,18 @@ class Darwin {
 
   constructor(private _fs: typeof fs,
               private _promptly: typeof promptly,
-              private _record: Record,
-              private _browserScriptPath: string) {
+              private _record: Record) {
 
   }
 
-  public init() {
-    // Hack: Cast to 'any' then back to 'string' to get TS to recognise as a string
-    var browserScript = <string><any>this._fs.readFileSync(this._browserScriptPath, { encoding: 'utf8' });
+  // TODO - Create init that downloads selenium, etc..
+  // Should auto start selenium server
 
+  public init() {
     this._promptly.prompt('Enter a test description: ', (error: Error, value: string) => {
       this._fs.mkdirSync(value);
 
-      this._record.start(browserScript);
+      this._record.start();
     });
   }
 }

@@ -1,43 +1,51 @@
 /// <reference path="../ref.d.ts" />
 
+import fs = require('fs');
 import webdriver = require('selenium-webdriver');
+
+import ActionType = require('../../common/Action/ActionType');
+import IAction = require('../../common/Action/IAction');
+
+import Session = require('./Session');
 
 class Record {
 
-  constructor(private _webDriverBuilder: webdriver.Builder,
-              private _seleniumServerUrl: string,
-              private _capabilities: any) {
+  constructor(private _fs: typeof fs,
+              private _session: Session,
+              private _browserScriptPath: String) {
 
   }
 
-  public start(browserScript: string) {
-    var driver = this._webDriverBuilder
-      .usingServer(this._seleniumServerUrl)
-      .withCapabilities(this._capabilities)
-      .build();
+  public start() {
+    // Hack: Cast to 'any' then back to 'string' to get TS to recognise as a string
+    var browserScript = <string><any>this._fs.readFileSync(this._browserScriptPath, { encoding: 'utf8' });
 
-    driver.manage()
-      .window()
-      .setSize(1280, 768)
-      .then(() => {
-        this._openPage(driver, browserScript);
-        this._setupCallback(driver);
-      });
+    this._session.start((driver: webdriver.Driver) => {
+      this._insertRecordScript(driver, browserScript);
+      this._setupCallback(driver);
+    });
   }
 
-  private _openPage(driver: webdriver.Driver, browserScript: string) {
+  private _insertRecordScript(driver: webdriver.Driver, browserScript: string) {
     driver.manage().timeouts().setScriptTimeout(60000);
-    driver.get('http://localhost');
     driver.executeScript('(function() { ' + browserScript + ' }());');
   }
 
   private _setupCallback(driver: webdriver.Driver) {
     driver.executeAsyncScript((callback: Function) => {
       window['__darwinCallback'] = callback;
-    }).then((result) => {
+    }).then((result: IAction) => {
       this._setupCallback(driver);
 
-      console.log(result);
+      if(result.type === ActionType.SCREENSHOT) {
+        driver
+          .takeScreenshot()
+          .then((rawImageBuffer) => {
+            console.log('Write image');
+            var imageBuffer = new Buffer(rawImageBuffer, 'base64');
+            fs.writeFileSync('./test.png', imageBuffer);
+          });
+      }
     });
   }
 }

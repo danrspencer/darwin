@@ -1,5 +1,5 @@
 /**
- * Incomplete and probably inaccurate selenium defintion
+ * Incomplete and probably inaccurate selenium definition
  */
 
 declare module "selenium-webdriver" {
@@ -18,6 +18,7 @@ declare module "selenium-webdriver" {
     executeScript(script: string): void;
     executeAsyncScript(script: Function): Driver;
     executeAsyncScript(script: string): Driver;
+    takeScreenshot(): Driver;
     then: (done: any) => void;
   }
 
