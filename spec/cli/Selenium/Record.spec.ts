@@ -83,44 +83,53 @@ describe('Record', () => {
   });
 
   it('rebinds the browser callback after each callback', () => {
-    record.start('');
+    record.start();
 
-    for(var n = 0; n < 9; n++) {
+    for(var n = 0; n < 10; n++) {
       var callback = spyOf(driverSpy.then).argsForCall[n][0];
 
       callback({ type: ActionType.LEFTCLICK });
     }
 
-    expect(spyOf(driverSpy.executeAsyncScript).callCount).toEqual(10);
-    expect(spyOf(driverSpy.then).callCount).toEqual(10);
+    expect(spyOf(driverSpy.executeAsyncScript).callCount).toEqual(11);
   });
 
-  it('takes a screenshot when the browser callback contains a screenshot event', () => {
+  it('triggers the action callback on each browser callback', () => {
+    var callbackSpy = jasmine.createSpy('callbackSpy');
+
+    record.onAction(callbackSpy);
     record.start();
 
-    var callback = spyOf(driverSpy.then).argsForCall[0][0];
+    for(var n = 0; n < 10; n++) {
+      var callback = spyOf(driverSpy.then).argsForCall[n][0];
 
-    callback({ type: ActionType.SCREENSHOT });
+      callback({ type: ActionType.LEFTCLICK });
+    }
 
-    expect(driverSpy.takeScreenshot).toHaveBeenCalled();
+    expect(callbackSpy).toHaveBeenCalledWith({ type: ActionType.LEFTCLICK });
+    expect(spyOf(callbackSpy).callCount).toEqual(10);
   });
 
-  it('doesn\'t take a screenshot when the browser calback isn\'t a screenshot event', () => {
-    record.start();
-
-    var callback = spyOf(driverSpy.then).argsForCall[0][0];
-
-    callback({ type: ActionType.LEFTCLICK });
-
-    expect(spyOf(driverSpy.takeScreenshot).callCount).toEqual(0);
-  });
 //
-//  it('write the screenshot to disk', () => {
-//    record.start('');
+//  it('takes a screenshot when the browser callback contains a screenshot event', () => {
+//    record.start();
 //
 //    var callback = spyOf(driverSpy.then).argsForCall[0][0];
+//
 //    callback({ type: ActionType.SCREENSHOT });
 //
-//    expect(fsSpy.writeFileSync).toHaveBeenCalledWith()
+//    expect(driverSpy.takeScreenshot).toHaveBeenCalled();
 //  });
+//
+//  it('doesn\'t take a screenshot when the browser calback isn\'t a screenshot event', () => {
+//    record.start();
+//
+//    var callback = spyOf(driverSpy.then).argsForCall[0][0];
+//
+//    callback({ type: ActionType.LEFTCLICK });
+//
+//    expect(spyOf(driverSpy.takeScreenshot).callCount).toEqual(0);
+//  });
+
+
 });
