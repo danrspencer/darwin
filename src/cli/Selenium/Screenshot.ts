@@ -10,9 +10,16 @@ class Screenshot {
 
   public captureAndSave(driver: webdriver.Driver,
                         saveAs: string,
-                        onSuccess: () => void) {
+                        callback: () => void) {
+    driver
+      .takeScreenshot()
+      .then((result) => {
+        var buffer = new Buffer(result, 'base64');
 
-    driver.takeScreenshot();
+        this._fs.writeFileSync(saveAs, buffer);
+
+        callback();
+      });
   }
 
 }

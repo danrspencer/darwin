@@ -51,7 +51,7 @@ describe('Darwin', () => {
 
     darwin.init();
 
-    expect(recordSpy.start).toHaveBeenCalled();
+    expect(recordSpy.start).toHaveBeenCalledWith('test desc');
   });
 
   it('doesn\'t start selenium until the test name has been entered', () => {

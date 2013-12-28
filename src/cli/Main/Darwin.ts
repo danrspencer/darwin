@@ -23,7 +23,7 @@ class Darwin {
     this._promptly.prompt('Enter a test description: ', (error: Error, value: string) => {
       this._fs.mkdirSync(value);
 
-      this._record.start();
+      this._record.start(value);
     });
   }
 }

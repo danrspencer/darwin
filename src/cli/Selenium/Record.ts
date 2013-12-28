@@ -18,7 +18,7 @@ class Record {
 
   }
 
-  public start(): void {
+  public start(testName: string): void {
     // Hack: Cast to 'any' then back to 'string' to get TS to recognise as a string
     var browserScript = <string><any>this._fs.readFileSync(
       this._browserScriptPath,
@@ -27,7 +27,7 @@ class Record {
 
     this._session.start((driver: webdriver.Driver) => {
       this._insertRecordScript(driver, browserScript);
-      this._setupCallback(driver);
+      this._setupCallback(testName, driver);
     });
   }
 
@@ -36,21 +36,21 @@ class Record {
     driver.executeScript('(function() { ' + browserScript + ' }());');
   }
 
-  private _setupCallback(driver: webdriver.Driver) {
+  private _setupCallback(testName: string, driver: webdriver.Driver) {
     driver.executeAsyncScript((callback: Function) => {
       window['__darwinCallback'] = callback;
     }).then((result: IAction) => {
-      this._handleBrowserCallback(driver, result);
+      this._handleBrowserCallback(testName, driver, result);
     });
   }
 
-  private _handleBrowserCallback(driver: webdriver.Driver, result: IAction) {
+  private _handleBrowserCallback(testName: string, driver: webdriver.Driver, result: IAction) {
     if (result.type === ActionType.SCREENSHOT) {
-      this._screenshot.captureAndSave(driver, '', () => {
-        this._setupCallback(driver);
+      this._screenshot.captureAndSave(driver, testName + '/image.png', () => {
+        this._setupCallback(testName, driver);
       });
     } else {
-      this._setupCallback(driver);
+      this._setupCallback(testName, driver);
     }
   }
 }

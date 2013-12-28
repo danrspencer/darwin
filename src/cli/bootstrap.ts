@@ -9,6 +9,7 @@ import webdriver = require('selenium-webdriver');
 import Darwin = require('./Main/Darwin');
 import Record = require('./Selenium/Record');
 import Session = require('./Selenium/Session');
+import Screenshot = require('./Selenium/Screenshot');
 
 function bootstrap(version: string, argv: string[]) {
 
@@ -24,9 +25,14 @@ function bootstrap(version: string, argv: string[]) {
     webdriver.Capabilities.chrome()
   );
 
+  var screenshot = new Screenshot(
+    fs
+  );
+
   var record = new Record(
     fs,
     session,
+    screenshot,
     'build/src/darwin-browser.js'
   );
 
