@@ -6,6 +6,7 @@ import webdriver = require('selenium-webdriver');
 
 import Record = require('../../../src/cli/Selenium/Record');
 import Session = require('../../../src/cli/Selenium/Session');
+import Screenshot = require('../../../src/cli/Selenium/Screenshot');
 
 import ActionType = require('../../../src/common/Action/ActionType');
 
@@ -14,13 +15,11 @@ describe('Record', () => {
   var fsSpy: typeof fs;
 
   var sessionSpy: Session;
+  var screenshotSpy: Screenshot;
 
   var driverSpy: webdriver.Driver;
   var manageSpy: webdriver.Manage;
-  var windowSpy: webdriver.Window
   var timeoutsSpy: webdriver.Timeouts;
-
-  var capabilitiesDummy: any;
 
   var record: Record;
 
@@ -31,6 +30,8 @@ describe('Record', () => {
     setSpy(sessionSpy.start).toCallFake((callback) => {
       callback(driverSpy);
     });
+
+    screenshotSpy = jasmine.createSpyObj<Screenshot>('screenshotSpy', ['captureAndSave']);
 
     driverSpy = jasmine.createSpyObj<webdriver.Driver>('driverSpy', ['manage', 'get', 'executeScript', 'executeAsyncScript', 'then', 'takeScreenshot']);
     manageSpy = jasmine.createSpyObj<webdriver.Manage>('manageSpy', ['window', 'timeouts']);
@@ -45,6 +46,7 @@ describe('Record', () => {
     record = new Record(
       fsSpy,
       sessionSpy,
+      screenshotSpy,
       'browserScript.js'
     );
   });
@@ -79,7 +81,6 @@ describe('Record', () => {
     record.start();
 
     expect(driverSpy.executeAsyncScript).toHaveBeenCalledWith(jasmine.any(Function));
-    expect(driverSpy.then).toHaveBeenCalledWith(jasmine.any(Function));
   });
 
   it('rebinds the browser callback after each callback', () => {
@@ -94,23 +95,40 @@ describe('Record', () => {
     expect(spyOf(driverSpy.executeAsyncScript).callCount).toEqual(11);
   });
 
-  it('triggers the action callback on each browser callback', () => {
-    var callbackSpy = jasmine.createSpy('callbackSpy');
-
-    record.onAction(callbackSpy);
+  it('delegates to screenshot on a screenshot action', () => {
     record.start();
 
-    for(var n = 0; n < 10; n++) {
-      var callback = spyOf(driverSpy.then).argsForCall[n][0];
+    var callback = spyOf(driverSpy.then).argsForCall[0][0];
 
-      callback({ type: ActionType.LEFTCLICK });
-    }
+    callback({ type: ActionType.SCREENSHOT });
 
-    expect(callbackSpy).toHaveBeenCalledWith({ type: ActionType.LEFTCLICK });
-    expect(spyOf(callbackSpy).callCount).toEqual(10);
+    expect(screenshotSpy.captureAndSave).toHaveBeenCalledWith(driverSpy, '', jasmine.any(Function));
   });
 
-//
+  it('doesn\'t take a screenshot when the browser calback isn\'t a screenshot event', () => {
+    record.start();
+
+    var callback = spyOf(driverSpy.then).argsForCall[0][0];
+
+    callback({ type: ActionType.LEFTCLICK });
+
+    expect(spyOf(screenshotSpy.captureAndSave).callCount).toEqual(0);
+  });
+
+  it('doesn\'t rebind the browser callback until the screenshot has been taken', () => {
+    record.start();
+
+    var callback = spyOf(driverSpy.then).argsForCall[0][0];
+    callback({ type: ActionType.SCREENSHOT });
+
+    expect(spyOf(driverSpy.executeAsyncScript).callCount).toEqual(1);
+
+    var screenshotCallback = spyOf(screenshotSpy.captureAndSave).argsForCall[0][2];
+    screenshotCallback();
+
+    expect(spyOf(driverSpy.executeAsyncScript).callCount).toEqual(2);
+  });
+
 //  it('takes a screenshot when the browser callback contains a screenshot event', () => {
 //    record.start();
 //

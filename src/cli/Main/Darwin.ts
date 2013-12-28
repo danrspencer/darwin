@@ -4,6 +4,8 @@ import fs = require('fs');
 import promptly = require('promptly');
 import webdriver = require('selenium-webdriver');
 
+import IAction = require('../../common/Action/IAction');
+
 import Record = require('../Selenium/Record')
 
 class Darwin {

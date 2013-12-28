@@ -7,19 +7,15 @@ import ActionType = require('../../common/Action/ActionType');
 import IAction = require('../../common/Action/IAction');
 
 import Session = require('./Session');
+import Screenshot = require('./Screenshot');
 
 class Record {
 
-  private _onAction: (action: IAction) => void;
-
   constructor(private _fs: typeof fs,
               private _session: Session,
+              private _screenshot: Screenshot,
               private _browserScriptPath: string) {
 
-  }
-
-  public onAction(callback: (action: IAction) => void): void {
-    this._onAction = callback;
   }
 
   public start(): void {
@@ -44,12 +40,18 @@ class Record {
     driver.executeAsyncScript((callback: Function) => {
       window['__darwinCallback'] = callback;
     }).then((result: IAction) => {
-      this._setupCallback(driver);
-
-      if (typeof this._onAction !== 'undefined') {
-        this._onAction(result);
-      }
+      this._handleBrowserCallback(driver, result);
     });
+  }
+
+  private _handleBrowserCallback(driver: webdriver.Driver, result: IAction) {
+    if (result.type === ActionType.SCREENSHOT) {
+      this._screenshot.captureAndSave(driver, '', () => {
+        this._setupCallback(driver);
+      });
+    } else {
+      this._setupCallback(driver);
+    }
   }
 }
 

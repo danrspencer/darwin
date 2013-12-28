@@ -19,7 +19,7 @@ describe('Darwin', () => {
   beforeEach(() => {
     promptlySpy = jasmine.createSpyObj<typeof promptly>('promptlySpy', ['prompt']);
     fsSpy = jasmine.createSpyObj<typeof fs>('fsSpy', ['mkdirSync', 'readFileSync']);
-    recordSpy = jasmine.createSpyObj<Record>('recordSpy', ['start']);
+    recordSpy = jasmine.createSpyObj<Record>('recordSpy', ['start', 'onAction']);
 
     darwin = new Darwin(
       fsSpy,
