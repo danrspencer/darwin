@@ -27,7 +27,7 @@ class Record {
 
     this._session.start((driver: webdriver.Driver) => {
       this._insertRecordScript(driver, browserScript);
-      this._setupCallback(testName, driver);
+      this._setupCallback(testName, driver, []);
     });
   }
 
@@ -36,23 +36,30 @@ class Record {
     driver.executeScript('(function() { ' + browserScript + ' }());');
   }
 
-  private _setupCallback(testName: string, driver: webdriver.Driver) {
+  private _setupCallback(testName: string, driver: webdriver.Driver, actions: IAction[]) {
     driver.executeAsyncScript((callback: Function) => {
       window['__darwinCallback'] = callback;
     }).then((result: IAction) => {
-      this._handleBrowserCallback(testName, driver, result);
+      this._handleBrowserCallback(testName, driver, actions, result);
     });
   }
 
-  private _handleBrowserCallback(testName: string, driver: webdriver.Driver, result: IAction) {
+  private _handleBrowserCallback(testName: string, driver: webdriver.Driver, actions: IAction[], result: IAction) {
     console.log(result);
+
+    if (result === null) {
+      this._fs.writeFileSync(testName + '/actions.json', JSON.stringify(actions));
+      return;
+    }
+
+    actions.push(result);
 
     if (result.type === ActionType.SCREENSHOT) {
       this._screenshot.captureAndSave(driver, testName + '/image.png', () => {
-        this._setupCallback(testName, driver);
+        this._setupCallback(testName, driver, actions);
       });
     } else {
-      this._setupCallback(testName, driver);
+      this._setupCallback(testName, driver, actions);
     }
   }
 }

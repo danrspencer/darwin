@@ -128,4 +128,24 @@ describe('Record', () => {
 
     expect(spyOf(driverSpy.executeAsyncScript).callCount).toEqual(2);
   });
+
+  it('save\'s the actions to a file when the result of the callback is null', () => {
+    var expectedResult = [
+      { type: ActionType.LEFTCLICK },
+      { type: ActionType.KEYPRESS },
+      { type: ActionType.RIGHTCLICK }
+    ]
+
+    record.start('testing something');
+
+    for(var n = 0; n < 3; n++) {
+      var callback = spyOf(driverSpy.then).argsForCall[n][0];
+      callback(expectedResult[n]);
+    }
+
+    var callback = spyOf(driverSpy.then).argsForCall[n][0];
+    callback(null);
+
+    expect(fsSpy.writeFileSync).toHaveBeenCalledWith('testing something/actions.json', JSON.stringify(expectedResult));
+  });
 });
