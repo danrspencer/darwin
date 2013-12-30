@@ -45,6 +45,8 @@ class Record {
   }
 
   private _handleBrowserCallback(testName: string, driver: webdriver.Driver, result: IAction) {
+    console.log(result);
+
     if (result.type === ActionType.SCREENSHOT) {
       this._screenshot.captureAndSave(driver, testName + '/image.png', () => {
         this._setupCallback(testName, driver);

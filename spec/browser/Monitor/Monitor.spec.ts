@@ -64,28 +64,7 @@ describe('main', () => {
     expect(handlerSpy.keypress).toHaveBeenCalledWith(eventFake);
   });
 
-  it('returns all of the captured data', () => {
-    monitor.setup();
-
-    var resultsFake = [
-      { "fake": "result" },
-      { "fake2": "blah" },
-      { "fake3": "something" }
-    ];
-
-    setSpy(handlerSpy.mouseDown).toReturn(resultsFake[0]);
-    windowListeners['mousedown']({});
-
-    setSpy(handlerSpy.mouseDown).toReturn(resultsFake[1]);
-    windowListeners['mousedown']({});
-
-    setSpy(handlerSpy.keypress).toReturn(resultsFake[2]);
-    windowListeners['keypress']({});
-
-    expect(monitor.getOutput()).toEqual(resultsFake);
-  });
-
-  it('calls the darwin callback on screenshots', () => {
+  it('calls the darwin callback on keypress with the action object', () => {
     setSpy(handlerSpy.keypress).toReturn({
       type: ActionType.SCREENSHOT
     });
@@ -99,16 +78,18 @@ describe('main', () => {
     });
   });
 
-  it('doesn\'t call the darwin callback for normal events', () => {
-    setSpy(handlerSpy.keypress).toReturn({
-      type: ActionType.KEYPRESS
+  it('calls the drawin callback on mousedown with the action object', () => {
+    setSpy(handlerSpy.mouseDown).toReturn({
+      type: ActionType.LEFTCLICK
     });
 
     monitor.setup();
 
-    windowListeners['keypress']({});
+    windowListeners['mousedown']({});
 
-    expect(spyOf(windowSpy.__darwinCallback).callCount).toEqual(0);
+    expect(windowSpy.__darwinCallback).toHaveBeenCalledWith({
+      type: ActionType.LEFTCLICK
+    });
   });
 
 });
