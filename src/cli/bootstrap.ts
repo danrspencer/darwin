@@ -15,6 +15,7 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
 
   commander
     .version(version)
+    .option('-i, --init', 'initialise a new darwin test suite at the current path')
     .option('-n, --new', 'create new tests')
     .parse(argv);
 
@@ -45,6 +46,8 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
 
   if (commander['new'] === true) {
     darwin.new();
+  } else if (commander['init'] === true) {
+    darwin.init();
   } else {
     commander['outputHelp']();
   }
