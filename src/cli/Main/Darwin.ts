@@ -7,13 +7,15 @@ import webdriver = require('selenium-webdriver');
 import IAction = require('../../common/Action/IAction');
 import ISuite = require('ISuite');
 
-import Record = require('../Selenium/Record')
+import Playback = require('../Selenium/Playback');
+import Record = require('../Selenium/Record');
 
 class Darwin {
 
   constructor(private _fs: typeof fs,
               private _promptly: typeof promptly,
-              private _record: Record) {
+              private _record: Record,
+              private _playback: Playback) {
 
   }
 
@@ -37,14 +39,29 @@ class Darwin {
 
   public new() {
     this._promptly.prompt('Enter a test description: ', (error: Error, value: string) => {
-      var suiteString = <string><any>this._fs.readFileSync('suite.json', { encoding: 'utf8' });
-      var suite: ISuite = <ISuite>JSON.parse(suiteString);
+      var suite = this._getSuite();
 
       this._fs.mkdirSync(value);
 
       this._record.start(value, suite);
     });
   }
+
+  public run() {
+
+    var suite = this._getSuite();
+
+    this._playback.play(suite);
+  }
+
+  private _getSuite(): ISuite {
+
+    var suiteString = <string><any>this._fs.readFileSync('suite.json', { encoding: 'utf8' });
+    var suite: ISuite = <ISuite>JSON.parse(suiteString);
+
+    return suite;
+  }
+
 }
 
 export = Darwin;

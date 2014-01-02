@@ -2,6 +2,7 @@
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
 import Darwin = require('../../../src/cli/Main/Darwin');
+import Playback = require('../../../src/cli/Selenium/Playback');
 import Record = require('../../../src/cli/Selenium/Record');
 
 import ISuite = require('../../../src/cli/Main/ISuite');
@@ -15,6 +16,7 @@ describe('Darwin', () => {
   var promptlySpy: typeof promptly;
   var fsSpy: typeof fs;
   var recordSpy: Record;
+  var playbackSpy: Playback;
 
   var darwin: Darwin;
 
@@ -22,14 +24,15 @@ describe('Darwin', () => {
     promptlySpy = jasmine.createSpyObj<typeof promptly>('promptlySpy', ['prompt']);
     fsSpy = jasmine.createSpyObj<typeof fs>('fsSpy', ['mkdirSync', 'writeFileSync', 'readFileSync']);
     recordSpy = jasmine.createSpyObj<Record>('recordSpy', ['start', 'onAction']);
+    playbackSpy = jasmine.createSpyObj<Playback>('playbackSpy', ['play']);
 
-    var fakeSuite = { test: 'suite' };
-    setSpy(fsSpy.readFileSync).toReturn(JSON.stringify(fakeSuite));
+    setSpy(fsSpy.readFileSync).toReturn(JSON.stringify( { test: 'suite' }));
 
     darwin = new Darwin(
       fsSpy,
       promptlySpy,
-      recordSpy
+      recordSpy,
+      playbackSpy
     );
   });
 
@@ -83,7 +86,7 @@ describe('Darwin', () => {
     expect(fsSpy.readFileSync).toHaveBeenCalledWith('suite.json', { encoding: 'utf8' });
   });
 
-  it('delegates to selenium.record to start the browser', () => {
+  it('delegates to record to start the browser', () => {
     setSpy(promptlySpy.prompt).toCallFake((value: string, callback: Function) => {
       callback(null, 'test desc');
     });
@@ -97,6 +100,12 @@ describe('Darwin', () => {
     darwin.new();
 
     expect(spyOf(recordSpy.start).callCount).toEqual(0);
+  });
+
+  it('delegates to playback to run the tests', () => {
+    darwin.run();
+
+    expect(playbackSpy.play).toHaveBeenCalledWith({ test: 'suite' });
   });
 
 });
