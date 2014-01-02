@@ -11,7 +11,7 @@ import Record = require('./Selenium/Record');
 import Session = require('./Selenium/Session');
 import Screenshot = require('./Selenium/Screenshot');
 
-function bootstrap(version: string, argv: string[]) {
+function bootstrap(version: string, basePath: string, argv: string[]) {
 
   commander
     .version(version)
@@ -33,7 +33,7 @@ function bootstrap(version: string, argv: string[]) {
     fs,
     session,
     screenshot,
-    'build/src/darwin-browser.js'
+    basePath + '/../build/src/darwin-browser.js'
   );
 
   var darwin = new Darwin(

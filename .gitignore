@@ -3,6 +3,7 @@
 bower_components
 node_modules
 build
+test
 
 npm-debug.log
 watchers.xml
