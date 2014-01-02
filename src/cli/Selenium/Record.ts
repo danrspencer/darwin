@@ -42,7 +42,7 @@ class Record {
     driver.executeScript('(function() { ' + browserScript + ' }());');
   }
 
-  private _setupCallback(testName: string, driver: webdriver.Driver, actions: IAction[], screenshotNum: Number) {
+  private _setupCallback(testName: string, driver: webdriver.Driver, actions: IAction[], screenshotNum: number) {
     driver.executeAsyncScript((callback: Function) => {
       window['__darwinCallback'] = callback;
     }).then((result: IAction) => {
@@ -50,7 +50,7 @@ class Record {
     });
   }
 
-  private _handleBrowserCallback(testName: string, driver: webdriver.Driver, actions: IAction[], result: IAction, screenshotNum: Number) {
+  private _handleBrowserCallback(testName: string, driver: webdriver.Driver, actions: IAction[], result: IAction, screenshotNum: number) {
     console.log(result);
 
     if (result === null) {

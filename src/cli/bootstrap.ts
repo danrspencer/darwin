@@ -15,12 +15,11 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
 
   commander
     .version(version)
-    .option('-i, --init', 'initialise a new darwin test suite at the current path')
-    .option('-n, --new', 'create new tests')
+    .option('init', 'initialise a new darwin test suite at the current path')
+    .option('new', 'create new tests')
     .parse(argv);
 
   var webDriverBuilder = new webdriver.Builder();
-
   var session = new Session(
     webDriverBuilder,
     'http://localhost:9515',

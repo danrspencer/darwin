@@ -117,7 +117,7 @@ describe('Record', () => {
   });
 
   it('can save multiple screenshots in a single recording',  () => {
-    record.start('testing something');
+    record.start('testing something', suiteStub);
 
     for(var n = 0; n < 3; n++) {
       var callback = spyOf(driverSpy.then).argsForCall[n][0];
