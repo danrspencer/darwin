@@ -48,7 +48,7 @@ class Record {
     console.log(result);
 
     if (result === null) {
-      this._fs.writeFileSync(testName + '/actions.json', JSON.stringify(actions));
+      this._fs.writeFileSync(testName + '/actions.json', JSON.stringify(actions, null, 2));
       return;
     }
 
