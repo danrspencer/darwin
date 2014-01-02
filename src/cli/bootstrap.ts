@@ -15,6 +15,7 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
 
   commander
     .version(version)
+    .option('-n, --new', 'create new tests')
     .parse(argv);
 
   var webDriverBuilder = new webdriver.Builder();
@@ -42,7 +43,11 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
     record
   );
 
-  darwin.init();
+  if (commander['new'] === true) {
+    darwin.new();
+  } else {
+    commander['outputHelp']();
+  }
 }
 
 export = bootstrap;

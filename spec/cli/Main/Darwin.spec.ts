@@ -29,7 +29,7 @@ describe('Darwin', () => {
   });
 
   it('delegates to promptly to prompt the user to enter the test description', () => {
-    darwin.init();
+    darwin.new();
 
     expect(promptlySpy.prompt).toHaveBeenCalledWith('Enter a test description: ', jasmine.any(Function));
   });
@@ -39,7 +39,7 @@ describe('Darwin', () => {
       callback(null, 'test desc');
     });
 
-    darwin.init();
+    darwin.new();
 
     expect(fsSpy.mkdirSync).toHaveBeenCalledWith('test desc');
   });
@@ -49,13 +49,13 @@ describe('Darwin', () => {
       callback(null, 'test desc');
     });
 
-    darwin.init();
+    darwin.new();
 
     expect(recordSpy.start).toHaveBeenCalledWith('test desc');
   });
 
   it('doesn\'t start selenium until the test name has been entered', () => {
-    darwin.init();
+    darwin.new();
 
     expect(spyOf(recordSpy.start).callCount).toEqual(0);
   });

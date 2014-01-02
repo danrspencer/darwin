@@ -19,7 +19,7 @@ class Darwin {
   // TODO - Create init that downloads selenium, etc..
   // Should auto start selenium server
 
-  public init() {
+  public new() {
     this._promptly.prompt('Enter a test description: ', (error: Error, value: string) => {
       this._fs.mkdirSync(value);
 
