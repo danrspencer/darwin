@@ -32,7 +32,7 @@ class Record {
       suiteInfo.browserSize.height,
       (driver: webdriver.Driver) => {
         this._insertRecordScript(driver, browserScript);
-        this._setupCallback(testName, driver, []);
+        this._setupCallback(testName, driver, [], 0);
       }
     );
   }
@@ -42,15 +42,15 @@ class Record {
     driver.executeScript('(function() { ' + browserScript + ' }());');
   }
 
-  private _setupCallback(testName: string, driver: webdriver.Driver, actions: IAction[]) {
+  private _setupCallback(testName: string, driver: webdriver.Driver, actions: IAction[], screenshotNum: Number) {
     driver.executeAsyncScript((callback: Function) => {
       window['__darwinCallback'] = callback;
     }).then((result: IAction) => {
-      this._handleBrowserCallback(testName, driver, actions, result);
+      this._handleBrowserCallback(testName, driver, actions, result, screenshotNum);
     });
   }
 
-  private _handleBrowserCallback(testName: string, driver: webdriver.Driver, actions: IAction[], result: IAction) {
+  private _handleBrowserCallback(testName: string, driver: webdriver.Driver, actions: IAction[], result: IAction, screenshotNum: Number) {
     console.log(result);
 
     if (result === null) {
@@ -61,11 +61,15 @@ class Record {
     actions.push(result);
 
     if (result.type === ActionType.SCREENSHOT) {
-      this._screenshot.captureAndSave(driver, testName + '/image.png', () => {
-        this._setupCallback(testName, driver, actions);
+
+      screenshotNum++;
+
+      this._screenshot.captureAndSave(driver, testName + '/' + screenshotNum + '.png', () => {
+        this._setupCallback(testName, driver, actions, screenshotNum);
       });
+
     } else {
-      this._setupCallback(testName, driver, actions);
+      this._setupCallback(testName, driver, actions, screenshotNum);
     }
   }
 }
