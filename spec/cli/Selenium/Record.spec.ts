@@ -146,6 +146,6 @@ describe('Record', () => {
     var callback = spyOf(driverSpy.then).argsForCall[n][0];
     callback(null);
 
-    expect(fsSpy.writeFileSync).toHaveBeenCalledWith('testing something/actions.json', JSON.stringify(expectedResult));
+    expect(fsSpy.writeFileSync).toHaveBeenCalledWith('testing something/actions.json', JSON.stringify(expectedResult, null, 2));
   });
 });
