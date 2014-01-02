@@ -102,7 +102,24 @@ describe('Record', () => {
 
     callback({ type: ActionType.SCREENSHOT });
 
-    expect(screenshotSpy.captureAndSave).toHaveBeenCalledWith(driverSpy, 'testing something/image.png', jasmine.any(Function));
+    expect(screenshotSpy.captureAndSave).toHaveBeenCalledWith(driverSpy, 'testing something/1.png', jasmine.any(Function));
+  });
+
+  it('can save multiple screenshots in a single recording',  () => {
+    record.start('testing something');
+
+    for(var n = 0; n < 3; n++) {
+      var callback = spyOf(driverSpy.then).argsForCall[n][0];
+      callback({ type: ActionType.SCREENSHOT });
+
+      var screenshotCallback = spyOf(screenshotSpy.captureAndSave).argsForCall[n][2];
+      screenshotCallback();
+    }
+
+    expect(screenshotSpy.captureAndSave).toHaveBeenCalledWith(driverSpy, 'testing something/1.png', jasmine.any(Function));
+    expect(screenshotSpy.captureAndSave).toHaveBeenCalledWith(driverSpy, 'testing something/2.png', jasmine.any(Function));
+    expect(screenshotSpy.captureAndSave).toHaveBeenCalledWith(driverSpy, 'testing something/3.png', jasmine.any(Function));
+
   });
 
   it('doesn\'t take a screenshot when the browser calback isn\'t a screenshot event', () => {
