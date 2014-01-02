@@ -5,6 +5,7 @@ import webdriver = require('selenium-webdriver');
 
 import ActionType = require('../../common/Action/ActionType');
 import IAction = require('../../common/Action/IAction');
+import ISuite = require('../Main/ISuite');
 
 import Session = require('./Session');
 import Screenshot = require('./Screenshot');
@@ -18,17 +19,22 @@ class Record {
 
   }
 
-  public start(testName: string): void {
+  public start(testName: string, suiteInfo: ISuite): void {
     // Hack: Cast to 'any' then back to 'string' to get TS to recognise as a string
     var browserScript = <string><any>this._fs.readFileSync(
       this._browserScriptPath,
       { encoding: 'utf8' }
     );
 
-    this._session.start((driver: webdriver.Driver) => {
-      this._insertRecordScript(driver, browserScript);
-      this._setupCallback(testName, driver, []);
-    });
+    this._session.start(
+      suiteInfo.url,
+      suiteInfo.browserSize.width,
+      suiteInfo.browserSize.height,
+      (driver: webdriver.Driver) => {
+        this._insertRecordScript(driver, browserScript);
+        this._setupCallback(testName, driver, []);
+      }
+    );
   }
 
   private _insertRecordScript(driver: webdriver.Driver, browserScript: string) {

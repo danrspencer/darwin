@@ -11,7 +11,7 @@ class Session {
 
   }
 
-  public start(success: (driver: webdriver.Driver) => void) {
+  public start(url: string, width: number, height: number, success: (driver: webdriver.Driver) => void) {
     var driver = this._webDriverBuilder
       .usingServer(this._seleniumServerUrl)
       .withCapabilities(this._capabilities)
@@ -19,9 +19,9 @@ class Session {
 
     driver.manage()
       .window()
-      .setSize(1280, 768)
+      .setSize(width, height)
       .then(() => {
-        driver.get('http://localhost');
+        driver.get(url);
 
         success(driver);
       });

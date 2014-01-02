@@ -53,30 +53,29 @@ describe('Session', () => {
   });
 
   it('creates a webdriver', () => {
-    session.start(() => {});
+    session.start('', 0, 0, () => {});
 
     expect(builderSpy.usingServer).toHaveBeenCalledWith('http://serverUrl');
     expect(builderSpy.withCapabilities).toHaveBeenCalledWith(capabilitiesDummy);
     expect(builderSpy.build).toHaveBeenCalled();
   });
 
-  it('sets the browser up', () => {
-    session.start(() => {});
+  it('sets the browser up with the given values', () => {
+    session.start('', 1280, 768, () => {});
 
     expect(windowSpy.setSize).toHaveBeenCalledWith(1280, 768);
-    expect(windowSpy.then).toHaveBeenCalledWith(jasmine.any(Function));
   });
 
-  it('launches the browser', () => {
-    session.start(() => {});
+  it('launches the browser with the given URL', () => {
+    session.start('www.google.co.uk', 0, 0, () => {});
 
-    expect(driverSpy.get).toHaveBeenCalledWith('http://localhost');
+    expect(driverSpy.get).toHaveBeenCalledWith('www.google.co.uk');
   });
 
   it('triggers the callback once the session has started', () => {
     var callbackSpy = jasmine.createSpy('callback');
 
-    session.start(callbackSpy);
+    session.start('', 0, 0, callbackSpy);
 
     expect(callbackSpy).toHaveBeenCalledWith(driverSpy);
   });

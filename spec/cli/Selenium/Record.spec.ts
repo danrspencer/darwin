@@ -4,11 +4,12 @@ import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setS
 import fs = require('fs');
 import webdriver = require('selenium-webdriver');
 
+import ActionType = require('../../../src/common/Action/ActionType');
+import ISuite = require('../../../src/cli/Main/ISuite');
+
 import Record = require('../../../src/cli/Selenium/Record');
 import Session = require('../../../src/cli/Selenium/Session');
 import Screenshot = require('../../../src/cli/Selenium/Screenshot');
-
-import ActionType = require('../../../src/common/Action/ActionType');
 
 describe('Record', () => {
 
@@ -21,13 +22,15 @@ describe('Record', () => {
   var manageSpy: webdriver.Manage;
   var timeoutsSpy: webdriver.Timeouts;
 
+  var suiteStub: ISuite;
+
   var record: Record;
 
   beforeEach(() => {
     fsSpy = jasmine.createSpyObj<typeof fs>('fsSpy', ['readFileSync', 'writeFileSync']);
 
     sessionSpy = jasmine.createSpyObj<Session>('sessionSpy', ['start']);
-    setSpy(sessionSpy.start).toCallFake((callback) => {
+    setSpy(sessionSpy.start).toCallFake((url, height, width, callback) => {
       callback(driverSpy);
     });
 
@@ -43,6 +46,14 @@ describe('Record', () => {
 
     setSpy(manageSpy.timeouts).toReturn(timeoutsSpy);
 
+    suiteStub = {
+      browserSize: {
+        width: 1280,
+        height: 768
+      },
+      url: 'www.google.co.uk'
+    };
+
     record = new Record(
       fsSpy,
       sessionSpy,
@@ -52,13 +63,13 @@ describe('Record', () => {
   });
 
   it('delegates to session to start a selenium session', () => {
-    record.start('');
+    record.start('', suiteStub);
 
-    expect(sessionSpy.start).toHaveBeenCalledWith(jasmine.any(Function));
+    expect(sessionSpy.start).toHaveBeenCalledWith('www.google.co.uk', 1280, 768, jasmine.any(Function));
   });
 
   it('delegates to fs to load the browser script', () => {
-    record.start('');
+    record.start('', suiteStub);
 
     expect(fsSpy.readFileSync).toHaveBeenCalledWith('browserScript.js', { encoding: 'utf8' });
   });
@@ -66,25 +77,25 @@ describe('Record', () => {
   it('injects the browser script', () => {
     setSpy(fsSpy.readFileSync).toReturn('function bootstrap() {}');
 
-    record.start('');
+    record.start('', suiteStub);
 
     expect(driverSpy.executeScript).toHaveBeenCalledWith('(function() { function bootstrap() {} }());');
   });
 
   it('increases the selenium timeout', () => {
-    record.start('');
+    record.start('', suiteStub);
 
     expect(timeoutsSpy.setScriptTimeout).toHaveBeenCalledWith(60*1000);
   });
 
   it('sets up the browser callback', () => {
-    record.start('');
+    record.start('', suiteStub);
 
     expect(driverSpy.executeAsyncScript).toHaveBeenCalledWith(jasmine.any(Function));
   });
 
   it('rebinds the browser callback after each callback', () => {
-    record.start('');
+    record.start('', suiteStub);
 
     for(var n = 0; n < 10; n++) {
       var callback = spyOf(driverSpy.then).argsForCall[n][0];
@@ -96,7 +107,7 @@ describe('Record', () => {
   });
 
   it('takes a screenshot on a screenshot action', () => {
-    record.start('testing something');
+    record.start('testing something', suiteStub);
 
     var callback = spyOf(driverSpy.then).argsForCall[0][0];
 
@@ -106,7 +117,7 @@ describe('Record', () => {
   });
 
   it('doesn\'t take a screenshot when the browser calback isn\'t a screenshot event', () => {
-    record.start('');
+    record.start('', suiteStub);
 
     var callback = spyOf(driverSpy.then).argsForCall[0][0];
 
@@ -116,7 +127,7 @@ describe('Record', () => {
   });
 
   it('doesn\'t rebind the browser callback until the screenshot has been taken', () => {
-    record.start('');
+    record.start('', suiteStub);
 
     var callback = spyOf(driverSpy.then).argsForCall[0][0];
     callback({ type: ActionType.SCREENSHOT });
@@ -136,7 +147,7 @@ describe('Record', () => {
       { type: ActionType.RIGHTCLICK }
     ]
 
-    record.start('testing something');
+    record.start('testing something', suiteStub);
 
     for(var n = 0; n < 3; n++) {
       var callback = spyOf(driverSpy.then).argsForCall[n][0];
