@@ -36,10 +36,6 @@ describe('Darwin', () => {
     );
   });
 
-  afterEach(() => {
-
-  });
-
   it('prompts the user to enter the url under test', () => {
     darwin.init();
 

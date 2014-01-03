@@ -51,8 +51,6 @@ class Record {
   }
 
   private _handleBrowserCallback(testName: string, driver: webdriver.Driver, actions: IAction[], result: IAction, screenshotNum: number) {
-    console.log(result);
-
     if (result === null) {
       this._fs.writeFileSync(testName + '/actions.json', JSON.stringify(actions, null, 2));
       return;

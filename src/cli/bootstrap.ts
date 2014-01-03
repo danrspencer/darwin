@@ -9,6 +9,7 @@ import webdriver = require('selenium-webdriver');
 import Darwin = require('./Main/Darwin');
 import Playback = require('./Selenium/Playback');
 import Record = require('./Selenium/Record');
+import Robot = require('./Selenium/Playback/Robot');
 import Session = require('./Selenium/Session');
 import Screenshot = require('./Selenium/Screenshot');
 
@@ -39,8 +40,11 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
     basePath + '/../build/src/darwin-browser.js'
   );
 
+  var robot = new Robot();
+
   var playback = new Playback(
     fs,
+    robot,
     session
   );
 
