@@ -13,6 +13,9 @@ describe('main', () => {
 
   var windowListeners: { [type: string]: Function } = {};
 
+  var dateSpy: Date;
+  var dateReal: Date;
+
   var monitor: Monitor;
 
   beforeEach(() => {
@@ -22,6 +25,7 @@ describe('main', () => {
     });
 
     handlerSpy = jasmine.createSpyObj<Handler>('handlerSpy', ['mouseDown', 'keypress']);
+
 
     monitor = new Monitor(windowSpy, handlerSpy);
   });
@@ -90,19 +94,19 @@ describe('main', () => {
     setSpy(handlerSpy.mouseDown).toReturn({});
     setSpy(handlerSpy.keypress).toReturn({});
 
-    setSpy(dateSpy.getTime).toReturn(1000);
+    var nowSpy = spyOn(Date, 'now').andReturn(1000);
 
     monitor.setup();
 
-    setSpy(dateSpy.getTime).toReturn(1100);
+    setSpy(nowSpy).toReturn(1100);
     windowListeners['mousedown']({});
     expect(handlerSpy.mouseDown).toHaveBeenCalledWith(jasmine.any(Object), 100);
 
-    setSpy(dateSpy.getTime).toReturn(1150);
+    setSpy(nowSpy).toReturn(1150);
     windowListeners['keypress']({});
     expect(handlerSpy.keypress).toHaveBeenCalledWith(jasmine.any(Object), 50);
 
-    setSpy(dateSpy.getTime).toReturn(3150);
+    setSpy(nowSpy).toReturn(3150);
     windowListeners['keypress']({});
     expect(handlerSpy.keypress).toHaveBeenCalledWith(jasmine.any(Object), 2000);
   });

@@ -15,7 +15,7 @@ class Monitor {
 
   public setup() {
 
-    this._previousEventTime = new Date().getTime();
+    this._previousEventTime = Date.now();
 
     this._window.addEventListener('mousedown', (event: MouseEvent) => {
       var result = this._handler.mouseDown(event, this.getDelay());
@@ -31,7 +31,7 @@ class Monitor {
   }
 
   private getDelay(): number {
-    var currentEvent = new Date().getTime();
+    var currentEvent = Date.now();
     var elapsedTime = currentEvent - this._previousEventTime;
     this._previousEventTime = currentEvent;
 
