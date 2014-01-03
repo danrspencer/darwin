@@ -7,7 +7,7 @@ import IKeypressEvent = require('../../common/Action/IKeypressEvent');
 
 class Handler {
 
-  public mouseDown(event: MouseEvent): IMouseEvent {
+  public mouseDown(event: MouseEvent, delay: number): IMouseEvent {
 
     var element = <HTMLElement>event.target;
 
@@ -19,21 +19,23 @@ class Handler {
       },
       el: {
         id: element.id
-      }
+      },
+      delay: delay
     };
 
     return result;
   }
 
-  public keypress(event: KeyboardEvent): IAction {
+  public keypress(event: KeyboardEvent, delay: number): IAction {
 
     if(event.which === 19
       && event.shiftKey === true
       && event.ctrlKey === true) {
 
       var screenshot: IAction = {
-        type: ActionType.SCREENSHOT
-      }
+        type: ActionType.SCREENSHOT,
+        delay: delay
+      };
 
       return screenshot;
     }
@@ -43,7 +45,8 @@ class Handler {
       char: event.charCode,
       shift: event.shiftKey,
       alt: event.altKey,
-      ctrl: event.ctrlKey
+      ctrl: event.ctrlKey,
+      delay: delay
     };
 
     return result;

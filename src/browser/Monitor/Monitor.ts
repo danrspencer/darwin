@@ -6,24 +6,36 @@ import IMouseEvent = require('../../common/Action/IMouseEvent');
 
 class Monitor {
 
+  private _previousEventTime;
+
   constructor(private _window: IDarwinWindow,
-              private _console: Console,
               private _handler: Handler) {
 
   }
 
   public setup() {
+
+    this._previousEventTime = new Date().getTime();
+
     this._window.addEventListener('mousedown', (event: MouseEvent) => {
-      var result = this._handler.mouseDown(event);
+      var result = this._handler.mouseDown(event, this.getDelay());
 
       this._window.__darwinCallback(result);
     });
 
     this._window.addEventListener('keypress', (event: KeyboardEvent) => {
-      var result = this._handler.keypress(event);
+      var result = this._handler.keypress(event, this.getDelay());
 
       this._window.__darwinCallback(result);
     });
+  }
+
+  private getDelay(): number {
+    var currentEvent = new Date().getTime();
+    var elapsedTime = currentEvent - this._previousEventTime;
+    this._previousEventTime = currentEvent;
+
+    return elapsedTime;
   }
 
 }
