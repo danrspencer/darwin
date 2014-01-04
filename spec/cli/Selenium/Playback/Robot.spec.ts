@@ -73,6 +73,21 @@ describe('Robot', () => {
     expect(spyOf(performSpy.performAction).callCount).toEqual(1);
   });
 
+  it('creates for all actions', () => {
+    robot.performActions(driverSpy, <IAction[]>[
+      { delay: 100 }, { delay: 200 }, { delay: 300 }, { delay: 500 }
+    ]);
 
+    expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 100);
+
+    timeoutCallback();
+    expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 200);
+
+    timeoutCallback();
+    expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 300);
+
+    timeoutCallback();
+    expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 500);
+  });
 
 });
