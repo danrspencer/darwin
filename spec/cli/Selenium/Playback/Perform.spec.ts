@@ -16,7 +16,8 @@ describe('Perform', () => {
   var perform: Perform;
 
   beforeEach(() => {
-    driverSpy = jasmine.createSpyObj<webdriver.Driver>('driverSpy', ['executeScript']);
+    driverSpy = jasmine.createSpyObj<webdriver.Driver>('driverSpy', ['executeScript', 'then']);
+    setSpy(driverSpy.executeScript).toReturn(driverSpy);
 
     perform = new Perform();
   });
@@ -38,6 +39,23 @@ describe('Perform', () => {
     perform.performAction(driverSpy, action);
 
     expect(driverSpy.executeScript).toHaveBeenCalledWith(expectedScript);
+  });
+
+  it('uses selenium to click on the element', () => {
+    var action = <IMouseEvent>{
+      type: ActionType.LEFTCLICK,
+      pos: { x: 100, y: 200 }
+    };
+
+    var elementSpy = jasmine.createSpyObj<HTMLElement>('elementSpy', ['click']);
+
+    setSpy(driverSpy.then).toCallFake((callback) => {
+      callback(elementSpy);
+    });
+
+    perform.performAction(driverSpy, action);
+
+    expect(elementSpy.click).toHaveBeenCalled();
   });
 
 
