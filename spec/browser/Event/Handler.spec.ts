@@ -69,7 +69,8 @@ describe('main', () => {
   it('returns an object containing the details of a keypress', () => {
     var result = <IKeypressEvent>handler.keypress(keyeventFake, 0);
 
-    expect(result.char).toEqual(50);
+    expect(result.char).toEqual(String.fromCharCode(50));
+    expect(result.charCode).toEqual(50);
     expect(result.alt).toEqual(true);
     expect(result.shift).toEqual(false);
     expect(result.ctrl).toEqual(false);

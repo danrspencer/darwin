@@ -8,21 +8,24 @@ module.exports = function(grunt) {
         src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
         dest: 'build',
         options: {
-          module: 'commonjs'
+          module: 'commonjs',
+          ignoreTypeCheck: false
         }
       },
       cli: {
         src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
         dest: 'build',
         options: {
-          module: 'commonjs'
+          module: 'commonjs',
+          ignoreTypeCheck: false
         }
       },
       common: {
         src: ['src/common/**/*.ts'],
         dest: 'build',
         options: {
-          module: 'commonjs'
+          module: 'commonjs',
+          ignoreTypeCheck: false
         }
       }
     },

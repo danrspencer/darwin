@@ -42,7 +42,8 @@ class Handler {
 
     var result: IKeypressEvent = {
       type: ActionType.KEYPRESS,
-      char: event.charCode,
+      char: String.fromCharCode(event.charCode),
+      charCode: event.charCode,
       shift: event.shiftKey,
       alt: event.altKey,
       ctrl: event.ctrlKey,

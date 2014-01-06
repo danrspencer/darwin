@@ -6,6 +6,7 @@ import webdriver = require('selenium-webdriver');
 import ActionType = require('../../../../src/common/Action/ActionType');
 import IAction = require('../../../../src/common/Action/IAction');
 import IMouseEvent = require('../../../../src/common/Action/IMouseEvent');
+import IKeypressEvent = require('../../../../src/common/Action/IKeypressEvent');
 
 import Perform = require('../../../../src/cli/Selenium/Playback/Perform');
 
@@ -56,6 +57,36 @@ describe('Perform', () => {
     perform.performAction(driverSpy, action);
 
     expect(elementSpy.click).toHaveBeenCalled();
+  });
+
+  it('inserts a script to get the current active element', () => {
+    var action = <IKeypressEvent>{
+      type: ActionType.KEYPRESS,
+      char: 'a'
+    };
+
+    var expectedScript = 'return document.activeElement;';
+
+    perform.performAction(driverSpy, action);
+
+    expect(driverSpy.executeScript).toHaveBeenCalledWith(expectedScript);
+  });
+
+  it('uses selenium to send the keypress', () => {
+    var action = <IKeypressEvent>{
+      type: ActionType.KEYPRESS,
+      char: 'a'
+    };
+
+    var elementSpy = jasmine.createSpyObj<HTMLElement>('elementSpy', ['sendKeys']);
+
+    setSpy(driverSpy.then).toCallFake((callback) => {
+      callback(elementSpy);
+    });
+
+    perform.performAction(driverSpy, action);
+
+    expect(elementSpy['sendKeys']).toHaveBeenCalledWith('a');
   });
 
 
