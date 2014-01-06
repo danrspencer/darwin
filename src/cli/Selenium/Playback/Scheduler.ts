@@ -5,7 +5,7 @@ import IAction = require('../../../common/Action/IAction');
 
 import Perform = require('./Perform');
 
-class Robot {
+class Scheduler {
 
   constructor(private _perform: Perform) {
 
@@ -27,4 +27,4 @@ class Robot {
 
 }
 
-export = Robot;
+export = Scheduler;

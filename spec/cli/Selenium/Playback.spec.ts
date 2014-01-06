@@ -7,7 +7,7 @@ import webdriver = require('selenium-webdriver');
 import ISuite = require('../../../src/cli/Main/ISuite');
 
 import Playback = require('../../../src/cli/Selenium/Playback');
-import Robot = require('../../../src/cli/Selenium/Playback/Robot');
+import Robot = require('../../../src/cli/Selenium/Playback/Scheduler');
 import Session = require('../../../src/cli/Selenium/Session');
 
 describe('Playback', () => {
@@ -91,7 +91,7 @@ describe('Playback', () => {
     expect(spyOf(sessionSpy.start).callCount).toEqual(2);
   });
 
-  it('delegates to Robot to run the test actions', () => {
+  it('delegates to Scheduler to run the test actions', () => {
     var file1Data = { test1: 'data' };
     var file2Data = { test2: 'stuff' };
 

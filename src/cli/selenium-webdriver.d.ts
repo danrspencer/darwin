@@ -15,7 +15,7 @@ declare module "selenium-webdriver" {
   export class Driver {
     manage(): Manage;
     get(url: string): void;
-    executeScript(script: string): void;
+    executeScript(script: string): Driver;
     executeAsyncScript(script: Function): Driver;
     executeAsyncScript(script: string): Driver;
     takeScreenshot(): Driver;

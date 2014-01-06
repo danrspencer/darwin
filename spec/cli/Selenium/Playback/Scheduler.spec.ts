@@ -6,9 +6,9 @@ import webdriver = require('selenium-webdriver');
 import IAction = require('../../../../src/common/Action/IAction');
 
 import Perform = require('../../../../src/cli/Selenium/Playback/Perform');
-import Robot = require('../../../../src/cli/Selenium/Playback/Robot');
+import Scheduler = require('../../../../src/cli/Selenium/Playback/Scheduler');
 
-describe('Robot', () => {
+describe('Scheduler', () => {
 
   var driverSpy: webdriver.Driver;
   var performSpy: Perform
@@ -16,7 +16,7 @@ describe('Robot', () => {
   var timeoutSpy: Function;
   var timeoutCallback: Function;
 
-  var robot: Robot;
+  var scheduler: Scheduler;
 
   beforeEach(() => {
     driverSpy = jasmine.createSpyObj<webdriver.Driver>('driverSpy', ['test']);
@@ -25,37 +25,37 @@ describe('Robot', () => {
     timeoutSpy = spyOn(global, 'setTimeout');
     setSpy(timeoutSpy).toCallFake((callback) => { timeoutCallback = callback });
 
-    robot = new Robot(performSpy);
+    scheduler = new Scheduler(performSpy);
   });
 
   it('creates a timeout for the first action', () => {
-    robot.performActions(driverSpy, <IAction[]>[ { delay: 100 } ]);
+    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 } ]);
 
     expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 100);
   });
 
   it('delegates to Perform for the first action', () => {
-    robot.performActions(driverSpy, <IAction[]>[ { delay: 100 } ]);
+    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 } ]);
 
     timeoutCallback();
     expect(performSpy.performAction).toHaveBeenCalledWith(driverSpy, { delay: 100 });
   });
 
   it('doesn\'t delegate to Perform until the timeout has completed', () => {
-    robot.performActions(driverSpy, <IAction[]>[ { delay: 100 } ]);
+    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 } ]);
 
     expect(spyOf(performSpy.performAction).callCount).toEqual(0);
   });
 
   it('creates a timeout for the second action', () => {
-    robot.performActions(driverSpy, <IAction[]>[ { delay: 100 }, { delay: 200 } ]);
+    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 }, { delay: 200 } ]);
 
     timeoutCallback();
     expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 200);
   });
 
   it('delegates to Perform for the second action', () => {
-    robot.performActions(driverSpy, <IAction[]>[ { delay: 100 }, { delay: 200 } ]);
+    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 }, { delay: 200 } ]);
 
     timeoutCallback();
     expect(performSpy.performAction).toHaveBeenCalledWith(driverSpy, { delay: 100 });
@@ -65,7 +65,7 @@ describe('Robot', () => {
   });
 
   it('doesn\'t process the second action until the first timeout has completed', () => {
-    robot.performActions(driverSpy, <IAction[]>[ { delay: 100 }, { delay: 200 } ]);
+    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 }, { delay: 200 } ]);
 
     expect(spyOf(timeoutSpy).callCount).toEqual(1);
 
@@ -73,8 +73,8 @@ describe('Robot', () => {
     expect(spyOf(performSpy.performAction).callCount).toEqual(1);
   });
 
-  it('creates for all actions', () => {
-    robot.performActions(driverSpy, <IAction[]>[
+  it('creates timeouts for all actions', () => {
+    scheduler.performActions(driverSpy, <IAction[]>[
       { delay: 100 }, { delay: 200 }, { delay: 300 }, { delay: 500 }
     ]);
 

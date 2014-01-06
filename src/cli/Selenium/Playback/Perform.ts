@@ -1,3 +1,4 @@
+/// <reference path="../../ref.d.ts" />
 
 import webdriver = require('selenium-webdriver');
 
