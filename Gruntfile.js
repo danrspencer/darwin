@@ -27,6 +27,22 @@ module.exports = function(grunt) {
           module: 'commonjs',
           ignoreTypeCheck: false
         }
+      },
+      browser_dev: {
+        src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
+        dest: 'build',
+        options: {
+          module: 'commonjs',
+          ignoreTypeCheck: true
+        }
+      },
+      cli_dev: {
+        src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
+        dest: 'build',
+        options: {
+          module: 'commonjs',
+          ignoreTypeCheck: true
+        }
       }
     },
     browserify: {
@@ -53,25 +69,34 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-jasmine-node');
 
-  grunt.registerTask('default', 'Building everything...', function() {
-    grunt.task.run('common');
-    grunt.task.run('browser');
-    grunt.task.run('cli');
-  });
+  grunt.registerTask('default', [
+    'common',
+    'browser',
+    'cli'
+  ]);
 
-  grunt.registerTask('browser', 'Build browser scripts...', function() {
-    grunt.task.run('typescript:browser');
-    grunt.task.run('browserify:browser');
-    grunt.task.run('karma:browser');
-  });
+  grunt.registerTask('browser', [
+    'typescript:browser',
+    'browserify:browser',
+    'karma:browser'
+  ]);
 
-  grunt.registerTask('cli', 'Build cli scripts...', function() {
-    grunt.task.run('typescript:cli');
-    grunt.task.run('jasmine_node');
-  });
+  grunt.registerTask('cli', [
+    'typescript:cli',
+    'jasmine_node'
+  ]);
 
-  grunt.registerTask('common', 'Build common scripts...', function() {
-    grunt.task.run('typescript:common');
-  });
+  grunt.registerTask('common', [
+    'typescript:common'
+  ]);
 
+  grunt.registerTask('browser_dev', [
+    'typescript:browser_dev',
+    'browserify:browser',
+    'karma:browser'
+  ]);
+  grunt.registerTask('cli_dev', [
+    'typescript:cli_dev',
+    'jasmine_node'
+  ]);
 }

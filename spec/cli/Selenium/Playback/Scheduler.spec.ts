@@ -1,93 +1,79 @@
 /// <reference path="../../ref.d.ts" />
 import jasmine_tss = require('../../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
-import webdriver = require('selenium-webdriver');
-
-import IAction = require('../../../../src/common/Action/IAction');
-
-import Perform = require('../../../../src/cli/Selenium/Playback/Perform');
 import Scheduler = require('../../../../src/cli/Selenium/Playback/Scheduler');
 
 describe('Scheduler', () => {
 
-  var driverSpy: webdriver.Driver;
-  var performSpy: Perform
+  var intervalSpy: Function;
+  var intervalCallback: Function;
 
-  var timeoutSpy: Function;
-  var timeoutCallback: Function;
+  var nowSpy: Function;
+  var nowTime: number;
+
+  var callbackSpy: Function;
 
   var scheduler: Scheduler;
 
+  function tick(time: number) {
+    var intervals = Math.floor(time / 50);
+
+    for(var n = 0; n < intervals; n++) {
+      nowTime += 50;
+      intervalCallback();
+    }
+
+    nowTime += time - (intervals * 50);
+  }
+
   beforeEach(() => {
-    driverSpy = jasmine.createSpyObj<webdriver.Driver>('driverSpy', ['test']);
-    performSpy = jasmine.createSpyObj<Perform>('performSpy', ['performAction']);
+    intervalSpy = spyOn(global, 'setInterval');
+    setSpy(intervalSpy).toCallFake((callback) => {
+      intervalCallback = callback;
+    });
 
-    timeoutSpy = spyOn(global, 'setTimeout');
-    setSpy(timeoutSpy).toCallFake((callback) => { timeoutCallback = callback });
+    nowTime = 1000;
+    nowSpy = spyOn(Date, 'now');
+    setSpy(nowSpy).toCallFake(() => { return nowTime; });
 
-    scheduler = new Scheduler(performSpy);
+    callbackSpy = jasmine.createSpy('callbackSpy');
+
+    scheduler = new Scheduler();
   });
 
-  it('creates a timeout for the first action', () => {
-    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 } ]);
+  it('registers an interval with 50ms', () => {
+    scheduler.start();
 
-    expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 100);
+    expect(intervalSpy).toHaveBeenCalledWith(jasmine.any(Function), 50);
   });
 
-  it('delegates to Perform for the first action', () => {
-    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 } ]);
+  it('calls the callback if more than 100ms has passed since start', () => {
+    scheduler.start();
 
-    timeoutCallback();
-    expect(performSpy.performAction).toHaveBeenCalledWith(driverSpy, { delay: 100 });
+    scheduler.callAfter(100, callbackSpy);
+
+    expect(spyOf(callbackSpy).callCount).toEqual(0);
+    tick(100);
+    expect(spyOf(callbackSpy).callCount).toEqual(1);
   });
 
-  it('doesn\'t delegate to Perform until the timeout has completed', () => {
-    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 } ]);
+  it('does\'t call the callback more than once', () => {
+    scheduler.start();
 
-    expect(spyOf(performSpy.performAction).callCount).toEqual(0);
+    scheduler.callAfter(100, callbackSpy);
+
+    tick(200);
+    expect(spyOf(callbackSpy).callCount).toEqual(1);
   });
 
-  it('creates a timeout for the second action', () => {
-    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 }, { delay: 200 } ]);
+  it('calls the callback instantly if the delay is less than time already passed', () => {
+    scheduler.start();
 
-    timeoutCallback();
-    expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 200);
-  });
+    tick(200);
 
-  it('delegates to Perform for the second action', () => {
-    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 }, { delay: 200 } ]);
+    scheduler.callAfter(100, callbackSpy);
 
-    timeoutCallback();
-    expect(performSpy.performAction).toHaveBeenCalledWith(driverSpy, { delay: 100 });
-
-    timeoutCallback();
-    expect(performSpy.performAction).toHaveBeenCalledWith(driverSpy, { delay: 200 });
-  });
-
-  it('doesn\'t process the second action until the first timeout has completed', () => {
-    scheduler.performActions(driverSpy, <IAction[]>[ { delay: 100 }, { delay: 200 } ]);
-
-    expect(spyOf(timeoutSpy).callCount).toEqual(1);
-
-    timeoutCallback();
-    expect(spyOf(performSpy.performAction).callCount).toEqual(1);
-  });
-
-  it('creates timeouts for all actions', () => {
-    scheduler.performActions(driverSpy, <IAction[]>[
-      { delay: 100 }, { delay: 200 }, { delay: 300 }, { delay: 500 }
-    ]);
-
-    expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 100);
-
-    timeoutCallback();
-    expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 200);
-
-    timeoutCallback();
-    expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 300);
-
-    timeoutCallback();
-    expect(timeoutSpy).toHaveBeenCalledWith(jasmine.any(Function), 500);
+    expect(spyOf(callbackSpy).callCount).toEqual(1);
   });
 
 });

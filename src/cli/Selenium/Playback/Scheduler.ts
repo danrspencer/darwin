@@ -1,29 +1,42 @@
 
-import webdriver = require('selenium-webdriver');
-
-import IAction = require('../../../common/Action/IAction');
-
-import Perform = require('./Perform');
-
 class Scheduler {
 
-  constructor(private _perform: Perform) {
+  private _startTime: number;
+  private _timeFromStart: number;
 
+  private _callbackDelay: number;
+  private _callback: Function;
+
+  constructor() {
+    this._callback = null;
   }
 
-  public performActions(driver: webdriver.Driver, actions: IAction[]) {
-    this._processAction(driver, actions, 0);
+  public start() {
+    this._startTime = Date.now();
+
+    setInterval(() => { this._tick() }, 50);
   }
 
-  private _processAction(driver: webdriver.Driver, actions: IAction[], currentAction: number) {
-    setTimeout(() => {
-      this._perform.performAction(driver, actions[currentAction]);
-
-      if (currentAction < actions.length - 1) {
-        this._processAction(driver, actions, currentAction + 1);
-      }
-    }, actions[currentAction].delay);
+  public callAfter(delayFromStart: number, callback: Function) {
+    if (delayFromStart < this._timeFromStart) {
+      callback();
+    } else {
+      this._callback = callback;
+      this._callbackDelay = delayFromStart;
+    }
   }
+
+  private _tick() {
+    this._timeFromStart = Date.now() - this._startTime;
+
+    if(this._callbackDelay <= this._timeFromStart &&
+       this._callback !== null) {
+      this._callback();
+
+      this._callback = null;
+    }
+  }
+
 
 }
 
