@@ -7,12 +7,14 @@ import promptly = require('promptly');
 import webdriver = require('selenium-webdriver');
 
 import Darwin = require('./Main/Darwin');
-import Perform = require('./Selenium/Playback/Perform');
 import Playback = require('./Selenium/Playback');
+import Perform = require('./Selenium/Playback/Perform');
+import Robot = require('./Selenium/Playback/Robot');
+import SchedulerBuilder = require('./Selenium/Playback/SchedulerBuilder');
 import Record = require('./Selenium/Record');
-import Robot = require('./Selenium/Playback/Scheduler');
-import Session = require('./Selenium/Session');
 import Screenshot = require('./Selenium/Screenshot');
+import Session = require('./Selenium/Session');
+
 
 function bootstrap(version: string, basePath: string, argv: string[]) {
 
@@ -41,9 +43,7 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
     basePath + '/../build/src/darwin-browser.js'
   );
 
-  var perform = new Perform();
-
-  var robot = new Robot(perform);
+  var robot = new Robot(new SchedulerBuilder(), new Perform());
 
   var playback = new Playback(
     fs,

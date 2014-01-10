@@ -20,6 +20,7 @@ describe('Robot', () => {
   var schedulerBuilderSpy: SchedulerBuilder;
 
   var triggerScheduler: Function;
+  var triggerPerformCallback: Function;
 
   var robot: Robot;
 
@@ -27,10 +28,12 @@ describe('Robot', () => {
     driverSpy = jasmine.createSpyObj<webdriver.Driver>('driverSpy', ['test']);
 
     performSpy = jasmine.createSpyObj<Perform>('performSpy', ['performAction']);
-    schedulerSpy = jasmine.createSpyObj<Scheduler>('schedulerSpy', ['start', 'callAfter']);
-    schedulerBuilderSpy = jasmine.createSpyObj<SchedulerBuilder>('SchedulerBuilderSpy', ['getScheduler']);
+    setSpy(performSpy.performAction).toCallFake((driver, action, callback) => { triggerPerformCallback = callback });
 
+    schedulerSpy = jasmine.createSpyObj<Scheduler>('schedulerSpy', ['start', 'callAfter']);
     setSpy(schedulerSpy.callAfter).toCallFake((delay, callback) => { triggerScheduler = callback });
+
+    schedulerBuilderSpy = jasmine.createSpyObj<SchedulerBuilder>('SchedulerBuilderSpy', ['getScheduler']);
     setSpy(schedulerBuilderSpy.getScheduler).toReturn(schedulerSpy);
 
     robot = new Robot(schedulerBuilderSpy, performSpy);
@@ -59,13 +62,64 @@ describe('Robot', () => {
 
     triggerScheduler();
 
-    expect(performSpy.performAction).toHaveBeenCalledWith(driverSpy, { delay: 100 });
+    expect(performSpy.performAction).toHaveBeenCalledWith(driverSpy, { delay: 100 }, jasmine.any(Function));
   });
 
   it('doesn\'t call Perform until the scheduler triggers', () => {
     robot.performActions(driverSpy, <IAction[]>[{ delay: 100 }]);
 
     expect(performSpy.performAction).not.toHaveBeenCalled();
+  });
+
+  it('delegates to Scheduler for the second action with the sum of the delays', () => {
+    robot.performActions(driverSpy, <IAction[]>[{ delay: 100 }, { delay: 300 }]);
+
+    triggerScheduler();
+    triggerPerformCallback();
+
+    expect(schedulerSpy.callAfter).toHaveBeenCalledWith(400, jasmine.any(Function));
+  });
+
+  it('doesn\'t delegate to Scheduler for the second action until the first action has completed', () => {
+    robot.performActions(driverSpy, <IAction[]>[{ delay: 100 }, { delay: 300 }]);
+
+    triggerScheduler();
+
+    expect(schedulerSpy.callAfter).not.toHaveBeenCalledWith(400, jasmine.any(Function));
+  });
+
+  it('delegates to Perform for the second action', () => {
+    robot.performActions(driverSpy, <IAction[]>[{ delay: 100 }, { delay: 300 }]);
+
+    triggerScheduler();
+    triggerPerformCallback();
+    triggerScheduler();
+
+    expect(performSpy.performAction).toHaveBeenCalledWith(driverSpy, { delay: 300 }, jasmine.any(Function));
+  });
+
+  it('delegates to Scheduler for the 5th action with the sum of the delays', () => {
+    robot.performActions(driverSpy, <IAction[]>[
+      { delay: 100 }, { delay: 200 }, { delay: 300 }, { delay: 400 }, { delay: 500 }
+    ]);
+
+    for (var n = 0; n < 5; n++) {
+      triggerScheduler();
+      triggerPerformCallback();
+    }
+
+    expect(schedulerSpy.callAfter).toHaveBeenCalledWith(1500, jasmine.any(Function));
+  });
+
+  it('doesn\'t delegate to Scheduler for the 5th action until the 4th action has completed', () => {
+    robot.performActions(driverSpy, <IAction[]>[{ delay: 100 }, { delay: 300 }]);
+
+    for (var n = 0; n < 4; n++) {
+      triggerScheduler();
+      triggerPerformCallback();
+    }
+
+    expect(schedulerSpy.callAfter).not.toHaveBeenCalledWith(1500, jasmine.any(Function));
   });
 
 

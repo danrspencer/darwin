@@ -37,7 +37,7 @@ describe('Perform', () => {
       '}' +
       'return document.elementFromPoint(100,200);';
 
-    perform.performAction(driverSpy, action);
+    perform.performAction(driverSpy, action, () => {});
 
     expect(driverSpy.executeScript).toHaveBeenCalledWith(expectedScript);
   });
@@ -54,9 +54,24 @@ describe('Perform', () => {
       callback(elementSpy);
     });
 
-    perform.performAction(driverSpy, action);
+    perform.performAction(driverSpy, action, () => {});
 
     expect(elementSpy.click).toHaveBeenCalled();
+  });
+
+  it('triggers the done callback after sending the click', () => {
+    var action = <IMouseEvent>{ type: ActionType.LEFTCLICK, pos: { x: 100, y: 200 } };
+
+    var doneSpy = jasmine.createSpy('doneSpy');
+    var elementSpy = jasmine.createSpyObj<HTMLElement>('elementSpy', ['click']);
+
+    setSpy(driverSpy.then).toCallFake((callback) => {
+      callback(elementSpy);
+    });
+
+    perform.performAction(driverSpy, action, doneSpy);
+
+    expect(doneSpy).toHaveBeenCalled();
   });
 
   it('inserts a script to get the current active element', () => {
@@ -67,7 +82,7 @@ describe('Perform', () => {
 
     var expectedScript = 'return document.activeElement;';
 
-    perform.performAction(driverSpy, action);
+    perform.performAction(driverSpy, action, () => {});
 
     expect(driverSpy.executeScript).toHaveBeenCalledWith(expectedScript);
   });
@@ -84,9 +99,27 @@ describe('Perform', () => {
       callback(elementSpy);
     });
 
-    perform.performAction(driverSpy, action);
+    perform.performAction(driverSpy, action, () => {});
 
     expect(elementSpy['sendKeys']).toHaveBeenCalledWith('a');
+  });
+
+  it('triggers the done callback after sending the keypress', () => {
+    var action = <IKeypressEvent>{
+      type: ActionType.KEYPRESS,
+      char: 'a'
+    };
+
+    var doneSpy = jasmine.createSpy('doneSpy');
+    var elementSpy = jasmine.createSpyObj<HTMLElement>('elementSpy', ['sendKeys']);
+
+    setSpy(driverSpy.then).toCallFake((callback) => {
+      callback(elementSpy);
+    });
+
+    perform.performAction(driverSpy, action, doneSpy);
+
+    expect(doneSpy).toHaveBeenCalled();
   });
 
 

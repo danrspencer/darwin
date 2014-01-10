@@ -9,27 +9,28 @@ import IKeypressEvent = require('../../../common/Action/IKeypressEvent');
 
 class Perform {
 
-  public performAction(driver: webdriver.Driver, action: IAction) {
+  public performAction(driver: webdriver.Driver, action: IAction, done: Function) {
 
     if (action.type === ActionType.LEFTCLICK || action.type === ActionType.RIGHTCLICK) {
-      this._handleMouseEvent(driver, <IMouseEvent>action);
+      this._handleMouseEvent(driver, <IMouseEvent>action, done);
     } else {
-      this._handleKeypress(driver, <IKeypressEvent>action);
+      this._handleKeypress(driver, <IKeypressEvent>action, done);
     }
 
   }
 
-  private _handleKeypress(driver: webdriver.Driver, action: IKeypressEvent) {
+  private _handleKeypress(driver: webdriver.Driver, action: IKeypressEvent, done: Function) {
     var script = 'return document.activeElement;';
 
     driver
       .executeScript(script)
       .then((el) => {
         el.sendKeys(action.char);
+        done();
       });
   }
 
-  private _handleMouseEvent(driver: webdriver.Driver, action: IMouseEvent) {
+  private _handleMouseEvent(driver: webdriver.Driver, action: IMouseEvent, done: Function) {
     var position = action.pos.x + ',' + action.pos.y;
 
     var script = 'var el = document.elementFromPoint(' + position + ');' +
@@ -44,6 +45,7 @@ class Perform {
       .executeScript(script)
       .then((el) => {
         el.click();
+        done();
       });
   }
 

@@ -20,13 +20,13 @@ class Monitor {
     this._window.addEventListener('mousedown', (event: MouseEvent) => {
       var result = this._handler.mouseDown(event, this.getDelay());
 
-      this._window.__darwinCallback(result);
+      this._window.__darwinCallback([result]);
     });
 
     this._window.addEventListener('keypress', (event: KeyboardEvent) => {
       var result = this._handler.keypress(event, this.getDelay());
 
-      this._window.__darwinCallback(result);
+      this._window.__darwinCallback([result]);
     });
   }
 

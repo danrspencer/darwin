@@ -75,7 +75,7 @@ describe('main', () => {
 
     windowListeners['keypress']({});
 
-    expect(windowSpy.__darwinCallback).toHaveBeenCalledWith({ type: ActionType.SCREENSHOT});
+    expect(windowSpy.__darwinCallback).toHaveBeenCalledWith([{ type: ActionType.SCREENSHOT}]);
   });
 
   it('calls the drawin callback on mousedown with the action object', () => {
@@ -87,7 +87,7 @@ describe('main', () => {
 
     windowListeners['mousedown']({});
 
-    expect(windowSpy.__darwinCallback).toHaveBeenCalledWith({ type: ActionType.LEFTCLICK });
+    expect(windowSpy.__darwinCallback).toHaveBeenCalledWith([{ type: ActionType.LEFTCLICK }]);
   });
 
   it('calls the handler with the delay since the last event', () => {

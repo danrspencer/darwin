@@ -5,13 +5,13 @@ import webdriver = require('selenium-webdriver');
 import IAction = require('../../common/Action/IAction');
 import ISuite = require('../Main/ISuite');
 
-import Scheduler = require('./Playback/Scheduler');
+import Robot = require('./Playback/Robot');
 import Session = require('./Session');
 
 class Playback {
 
   constructor(private _fs: typeof fs,
-              private _scheduler: Scheduler,
+              private _robot: Robot,
               private _session: Session) {
 
   }
@@ -48,7 +48,7 @@ class Playback {
 
         }
 
-        this._scheduler.performActions(driver, actions);
+        this._robot.performActions(driver, actions);
       }
     );
   }
