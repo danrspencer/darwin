@@ -68,6 +68,6 @@ describe('Robot', () => {
     expect(performSpy.performAction).not.toHaveBeenCalled();
   });
 
-  
+
 
 });
