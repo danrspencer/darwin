@@ -13,9 +13,6 @@ describe('main', () => {
 
   var windowListeners: { [type: string]: Function } = {};
 
-  var dateSpy: Date;
-  var dateReal: Date;
-
   var monitor: Monitor;
 
   beforeEach(() => {
@@ -25,7 +22,6 @@ describe('main', () => {
     });
 
     handlerSpy = jasmine.createSpyObj<Handler>('handlerSpy', ['mouseDown', 'keypress']);
-
 
     monitor = new Monitor(windowSpy, handlerSpy);
   });
@@ -78,7 +74,7 @@ describe('main', () => {
     expect(windowSpy.__darwinCallback).toHaveBeenCalledWith([{ type: ActionType.SCREENSHOT}]);
   });
 
-  it('calls the drawin callback on mousedown with the action object', () => {
+  it('calls the darwin callback on mousedown with the action object', () => {
     setSpy(handlerSpy.mouseDown).toReturn({
       type: ActionType.LEFTCLICK
     });

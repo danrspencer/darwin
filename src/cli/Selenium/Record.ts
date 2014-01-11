@@ -46,6 +46,10 @@ class Record {
     driver.executeAsyncScript((callback: Function) => {
       window['__darwinCallback'] = callback;
     }).then((result: IAction) => {
+      if (result !== null) {
+        console.log(result);
+      }
+
       this._handleBrowserCallback(testName, driver, actions, result, screenshotNum);
     });
   }

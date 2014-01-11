@@ -15,6 +15,9 @@ class Monitor {
 
   public setup() {
 
+    // Move handling of events to action manager
+    // Move handling the darwin callback to the dispatcher
+
     this._previousEventTime = Date.now();
 
     this._window.addEventListener('mousedown', (event: MouseEvent) => {
