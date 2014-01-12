@@ -1,14 +1,22 @@
 
-import Handler = require('./Event/Handler');
-import Monitor = require('./Monitor/Monitor');
+import Binder = require('./Record/Binder');
+import KeyHandler = require('./Record/KeyHandler');
+import MouseHandler = require('./Record/MouseHandler');
+import Recorder = require('./Record/Recorder');
+import Timer = require('./Record/Timer');
 
 import IDarwinWindow = require('../common/IDarwinWindow');
 
 function bootstrap() {
-  var handler = new Handler();
-  var monitor = new Monitor(<IDarwinWindow>window, handler);
+  var keyHandler = new KeyHandler();
+  var mouseHandler = new MouseHandler();
+  var binder = new Binder(<IDarwinWindow>window, keyHandler, mouseHandler);
 
-  monitor.setup();
+  var timer = new Timer();
+
+  var recorder = new Recorder(binder, timer);
+
+  recorder.start();
 }
 
 bootstrap();

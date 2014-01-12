@@ -2,31 +2,13 @@
 import ActionType = require('../../common/Action/ActionType');
 
 import IAction = require('../../common/Action/IAction');
-import IMouseEvent = require('../../common/Action/IMouseEvent');
 import IKeypressEvent = require('../../common/Action/IKeypressEvent');
 
-class Handler {
+class KeyHandler {
 
-  public mouseDown(event: MouseEvent, delay: number): IMouseEvent {
 
-    var element = <HTMLElement>event.target;
 
-    var result: IMouseEvent = {
-      type: event.button === 0 ? ActionType.LEFTCLICK : ActionType.RIGHTCLICK,
-      pos: {
-        x: event.clientX,
-        y: event.clientY
-      },
-      el: {
-        id: element.id
-      },
-      delay: delay
-    };
-
-    return result;
-  }
-
-  public keypress(event: KeyboardEvent, delay: number): IAction {
+  public keypress(event: KeyboardEvent) {
 
     if(event.which === 19
       && event.shiftKey === true
@@ -34,7 +16,7 @@ class Handler {
 
       var screenshot: IAction = {
         type: ActionType.SCREENSHOT,
-        delay: delay
+        delay: 0
       };
 
       return screenshot;
@@ -47,7 +29,7 @@ class Handler {
       shift: event.shiftKey,
       alt: event.altKey,
       ctrl: event.ctrlKey,
-      delay: delay
+      delay: 0
     };
 
     return result;
@@ -55,4 +37,4 @@ class Handler {
 
 }
 
-export = Handler;
+export = KeyHandler;
