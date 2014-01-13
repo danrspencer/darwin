@@ -25,6 +25,7 @@
     "browserify": "~2.36.1",
     "grunt": "~0.4.2",
     "grunt-browserify": "~1.2.12",
+    "grunt-contrib-clean": "~0.5.0",
     "grunt-jasmine-node": "~0.1.0",
     "grunt-karma": "~0.6.2",
     "grunt-typescript": "~0.2.7",

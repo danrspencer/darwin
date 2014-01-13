@@ -6,40 +6,57 @@ import MouseHandler = require('../../../src/browser/Record/MouseHandler');
 
 
 import ActionType = require('../../../src/common/Action/ActionType');
-import IDarwinWindow = require('../../../src/common/IDarwinWindow');
 
 describe('Binder', () => {
 
-  var windowSpy: IDarwinWindow;
-  var keyHandlerSpy: KeyHandler;
-  var mouseHandlerSpy: MouseHandler;
+  var window: Window;
+  var keyHandler: KeyHandler;
+  var mouseHandler: MouseHandler;
 
   var windowListeners: { [type: string]: Function } = {};
 
   var binder: Binder;
 
   beforeEach(() => {
-    windowSpy = jasmine.createSpyObj<IDarwinWindow>('windowSpy', ['addEventListener']);
-    setSpy(windowSpy.addEventListener).toCallFake((type, listener) => {
+    window = jasmine.createSpyObj<Window>('window', ['addEventListener']);
+    setSpy(window.addEventListener).toCallFake((type, listener) => {
       windowListeners[type] = listener;
     });
 
-    keyHandlerSpy = jasmine.createSpyObj<KeyHandler>('keyHandlerSpy', ['keypress']);
-    mouseHandlerSpy = jasmine.createSpyObj<MouseHandler>('mouseHandlerSpy', ['mousedown']);
+    keyHandler = jasmine.createSpyObj<KeyHandler>('keyHandler', ['keypress']);
+    mouseHandler = jasmine.createSpyObj<MouseHandler>('mouseHandler', ['mousedown']);
 
-    binder = new Binder(windowSpy, keyHandlerSpy, mouseHandlerSpy);
+    binder = new Binder(window, keyHandler, mouseHandler);
   });
 
   it('listens to mousedown events on the window', () => {
     binder.bindEvents();
 
-    expect(windowSpy.addEventListener).toHaveBeenCalledWith('mousedown', mouseHandlerSpy.mousedown);
+    expect(window.addEventListener).toHaveBeenCalledWith('mousedown', jasmine.any(Function));
   });
 
   it('listens to the keypress event on the window', () => {
     binder.bindEvents();
 
-    expect(windowSpy.addEventListener).toHaveBeenCalledWith('keypress', keyHandlerSpy.keypress);
+    expect(window.addEventListener).toHaveBeenCalledWith('keypress', jasmine.any(Function));
+  });
+
+  it('delegates to Handler to process the mousedown event', () => {
+    binder.bindEvents();
+
+    var eventFake = <MouseEvent>{};
+    windowListeners['mousedown'](eventFake);
+
+    expect(mouseHandler.mousedown).toHaveBeenCalledWith(eventFake);
+  });
+
+  it('delegates to Handler to process the keypress event', () => {
+    binder.bindEvents();
+
+    var eventFake = <KeyboardEvent>{};
+    windowListeners['keypress'](eventFake);
+
+    expect(keyHandler.keypress).toHaveBeenCalledWith(eventFake);
   });
 
 

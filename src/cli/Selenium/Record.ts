@@ -8,13 +8,13 @@ import IAction = require('../../common/Action/IAction');
 import ISuite = require('../Main/ISuite');
 
 import Session = require('./Session');
-import Screenshot = require('./Screenshot');
+import BrowserSync = require('./Record/BrowserSync');
 
 class Record {
 
   constructor(private _fs: typeof fs,
               private _session: Session,
-              private _screenshot: Screenshot,
+              private _browserSync: BrowserSync,
               private _browserScriptPath: string) {
 
   }
@@ -32,7 +32,8 @@ class Record {
       suiteInfo.browserSize.height,
       (driver: webdriver.Driver) => {
         this._insertRecordScript(driver, browserScript);
-        this._setupCallback(testName, driver, [], 0);
+        this._browserSync.start(driver, testName, () => {});
+        //this._setupCallback(testName, driver, [], 0);
       }
     );
   }
@@ -42,38 +43,38 @@ class Record {
     driver.executeScript('(function() { ' + browserScript + ' }());');
   }
 
-  private _setupCallback(testName: string, driver: webdriver.Driver, actions: IAction[], screenshotNum: number) {
-    driver.executeAsyncScript((callback: Function) => {
-      window['__darwinCallback'] = callback;
-    }).then((result: IAction) => {
-      if (result !== null) {
-        console.log(result);
-      }
-
-      this._handleBrowserCallback(testName, driver, actions, result, screenshotNum);
-    });
-  }
-
-  private _handleBrowserCallback(testName: string, driver: webdriver.Driver, actions: IAction[], result: IAction, screenshotNum: number) {
-    if (result === null) {
-      this._fs.writeFileSync(testName + '/actions.json', JSON.stringify(actions, null, 2));
-      return;
-    }
-
-    actions.push(result);
-
-    if (result.type === ActionType.SCREENSHOT) {
-
-      screenshotNum++;
-
-      this._screenshot.captureAndSave(driver, testName + '/' + screenshotNum + '.png', () => {
-        this._setupCallback(testName, driver, actions, screenshotNum);
-      });
-
-    } else {
-      this._setupCallback(testName, driver, actions, screenshotNum);
-    }
-  }
+//  private _setupCallback(testName: string, driver: webdriver.Driver, actions: IAction[], screenshotNum: number) {
+//    driver.executeAsyncScript((callback: Function) => {
+//      window['__darwinCallback'] = callback;
+//    }).then((result: IAction) => {
+//      if (result !== null) {
+//        console.log(result);
+//      }
+//
+//      this._handleBrowserCallback(testName, driver, actions, result, screenshotNum);
+//    });
+//  }
+//
+//  private _handleBrowserCallback(testName: string, driver: webdriver.Driver, actions: IAction[], result: IAction, screenshotNum: number) {
+//    if (result === null) {
+//      this._fs.writeFileSync(testName + '/actions.json', JSON.stringify(actions, null, 2));
+//      return;
+//    }
+//
+//    actions.push(result);
+//
+//    if (result.type === ActionType.SCREENSHOT) {
+//
+//      screenshotNum++;
+//
+//      this._screenshot.captureAndSave(driver, testName + '/' + screenshotNum + '.png', () => {
+//        this._setupCallback(testName, driver, actions, screenshotNum);
+//      });
+//
+//    } else {
+//      this._setupCallback(testName, driver, actions, screenshotNum);
+//    }
+//  }
 }
 
 export = Record;

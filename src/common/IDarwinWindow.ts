@@ -1,11 +1,8 @@
 
-import IAction = require('Action/IAction');
+import IDarwinObject = require('./IDarwinObject');
 
 interface IDarwinWindow extends Window {
-  __darwin: {
-    actions: IAction[];
-    pendingScreenshot: boolean;
-  }
+  __darwin: IDarwinObject
 }
 
 export = IDarwinWindow;

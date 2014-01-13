@@ -1,70 +1,91 @@
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
 import KeyHandler = require('../../../src/browser/Record/KeyHandler');
+import Timer = require('../../../src/browser/Record/Timer');
+import WindowProxy = require('../../../src/browser/Record/WindowProxy');
 
 import ActionType = require('../../../src/common/Action/ActionType');
 import IKeypressEvent = require('../../../src/common/Action/IKeypressEvent');
 
 describe('KeyHandler', () => {
 
-  var mouseEventFake: MouseEvent;
-  var keyeventFake: KeyboardEvent;
+  var keyboardEvent: KeyboardEvent;
+  var timer: Timer;
+  var windowProxy: WindowProxy;
 
   var keyHandler: KeyHandler;
 
   beforeEach(() => {
-    keyeventFake = <KeyboardEvent>{};
-    keyeventFake.charCode = 50;
-    keyeventFake.altKey = true;
-    keyeventFake.shiftKey = false;
-    keyeventFake.ctrlKey = false;
+    keyboardEvent = <KeyboardEvent>{};
+    keyboardEvent.charCode = 50;
 
-    keyHandler = new KeyHandler();
+    timer = jasmine.createSpyObj<Timer>('timer', ['getInterval']);
+    windowProxy = jasmine.createSpyObj<WindowProxy>('windowProxy', ['addAction']);
+
+    keyHandler = new KeyHandler(windowProxy, timer);
+  });
+
+  it('delegates to windowProxy with the created Action', () => {
+    keyHandler.keypress(keyboardEvent);
+
+    expect(windowProxy.addAction).toHaveBeenCalled();
   });
 
   it('returns an object with a KEYPRESS type for keypress events', () => {
-    var result = keyHandler.keypress(keyeventFake);
+    keyHandler.keypress(keyboardEvent);
 
-    expect(result.type).toEqual(ActionType.KEYPRESS);
+    var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
+    expect(action.type).toEqual(ActionType.KEYPRESS);
   });
 
   it('returns an object containing the details of a keypress', () => {
-    var result = <IKeypressEvent>keyHandler.keypress(keyeventFake);
+    keyHandler.keypress(keyboardEvent);
 
-    expect(result.char).toEqual(String.fromCharCode(50));
-    expect(result.charCode).toEqual(50);
-    expect(result.alt).toEqual(true);
-    expect(result.shift).toEqual(false);
-    expect(result.ctrl).toEqual(false);
+    var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
+    expect(action.char).toEqual(String.fromCharCode(50));
+    expect(action.charCode).toEqual(50);
   });
 
   it('returns an object with a SCREENSHOT type for "ctrl shift s"', () => {
-    keyeventFake.which = 19;
-    keyeventFake.altKey = false;
-    keyeventFake.ctrlKey = true;
-    keyeventFake.shiftKey = true;
+    keyboardEvent.which = 19;
+    keyboardEvent.shiftKey = true;
+    keyboardEvent.ctrlKey = true;
 
-    var result = keyHandler.keypress(keyeventFake);
+    keyHandler.keypress(keyboardEvent);
 
-    expect(result.type).toEqual(ActionType.SCREENSHOT);
+    var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
+    expect(action.type).toEqual(ActionType.SCREENSHOT);
+  });
+
+  it('delegates to Timer.getInterval to get the delay', () => {
+    keyHandler.keypress(keyboardEvent);
+
+    expect(timer.getInterval).toHaveBeenCalled();
   });
 
   it('adds the delay to action for keypress', () => {
-    var result = keyHandler.keypress(keyeventFake);
+    setSpy(timer.getInterval).toReturn(100);
 
-    expect(result.delay).toEqual(100);
+    keyHandler.keypress(keyboardEvent);
+
+    var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
+    expect(action.delay).toEqual(100);
   });
 
   it('adds the delay to screenshot actions', () => {
-    keyeventFake.which = 19;
-    keyeventFake.altKey = false;
-    keyeventFake.ctrlKey = true;
-    keyeventFake.shiftKey = true;
+    setSpy(timer.getInterval).toReturn(300);
 
-    var result = keyHandler.keypress(keyeventFake);
+    keyboardEvent.which = 19;
+    keyboardEvent.shiftKey = true;
+    keyboardEvent.ctrlKey = true;
 
-    expect(result.delay).toEqual(300);
+    keyHandler.keypress(keyboardEvent);
+
+    var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
+    expect(action.delay).toEqual(300);
   });
+
+
 
 
 });

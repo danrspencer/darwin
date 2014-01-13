@@ -12,6 +12,7 @@ import Perform = require('./Selenium/Playback/Perform');
 import Robot = require('./Selenium/Playback/Robot');
 import SchedulerBuilder = require('./Selenium/Playback/SchedulerBuilder');
 import Record = require('./Selenium/Record');
+import BrowserSync = require('./Selenium/Record/BrowserSync');
 import Screenshot = require('./Selenium/Screenshot');
 import Session = require('./Selenium/Session');
 
@@ -32,14 +33,14 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
     webdriver.Capabilities.chrome()
   );
 
-  var screenshot = new Screenshot(
-    fs
-  );
+  var screenshot = new Screenshot(fs);
+
+  var browserSync = new BrowserSync(screenshot);
 
   var record = new Record(
     fs,
     session,
-    screenshot,
+    browserSync,
     basePath + '/../build/src/darwin-browser.js'
   );
 

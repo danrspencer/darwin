@@ -38,12 +38,12 @@ class Darwin {
   }
 
   public new() {
-    this._promptly.prompt('Enter a test description: ', (error: Error, value: string) => {
+    this._promptly.prompt('Enter a test description: ', (error: Error, description: string) => {
       var suite = this._getSuite();
 
-      this._fs.mkdirSync(value);
+      this._fs.mkdirSync(description);
 
-      this._record.start(value, suite);
+      this._record.start(description, suite);
     });
   }
 

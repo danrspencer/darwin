@@ -19,7 +19,7 @@ declare module "selenium-webdriver" {
     executeAsyncScript(script: Function): Driver;
     executeAsyncScript(script: string): Driver;
     takeScreenshot(): Driver;
-    then: (done: any) => void;
+    then: (done: any, error?: any) => Driver;
   }
 
   export module Capabilities {

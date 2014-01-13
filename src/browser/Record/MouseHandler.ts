@@ -1,15 +1,22 @@
 
-import ActionType = require('../../common/Action/ActionType');
+import Timer = require('./Timer');
+import WindowProxy = require('./WindowProxy');
 
+import ActionType = require('../../common/Action/ActionType');
 import IMouseEvent = require('../../common/Action/IMouseEvent');
 
 class MouseHandler {
 
-  public mousedown(event: MouseEvent): IMouseEvent {
+  constructor(private _windowProxy: WindowProxy,
+              private _timer: Timer) {
+
+  }
+
+  public mousedown(event: MouseEvent) {
 
     var element = <HTMLElement>event.target;
 
-    var result: IMouseEvent = {
+    var action: IMouseEvent = {
       type: event.button === 0 ? ActionType.LEFTCLICK : ActionType.RIGHTCLICK,
       pos: {
         x: event.clientX,
@@ -18,10 +25,10 @@ class MouseHandler {
       el: {
         id: element.id
       },
-      delay: 0
+      delay: this._timer.getInterval()
     };
 
-    return result;
+    this._windowProxy.addAction(action);
   }
 
 }
