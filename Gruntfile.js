@@ -66,7 +66,8 @@ module.exports = function(grunt) {
       }
     },
     jasmine_node: {
-      projectRoot: "build/spec/cli"
+      projectRoot: "build/spec/cli",
+      forceExit: true
     }
   });
 
