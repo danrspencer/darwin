@@ -6,39 +6,55 @@ import Screenshot = require('../Screenshot');
 import IAction = require('../../../common/Action/IAction');
 import IDarwinObject = require('../../../common/IDarwinObject');
 
-
 class BrowserSync {
+
+  private _actions: IAction[];
+  private _screenshotCounter = 1;
+  private _driver: webdriver.Driver;
+  private _testName: string;
+  private _done: (actions: IAction[]) => void;
 
   constructor(private _screenshot: Screenshot) {
 
   }
 
   public start(driver: webdriver.Driver, testName: string,  done: (actions: IAction[]) => void) {
+    this._screenshotCounter = 1;
+    this._driver = driver;
+    this._testName = testName;
+    this._done = done;
 
-     this._pollBrowser(driver, testName, done);
+    this._pollBrowser();
   }
 
-  private _pollBrowser(driver: webdriver.Driver, testName: string,  done: (actions: IAction[]) => void) {
-    var actions: IAction[];
-    var screenshotCounter = 1;
-
+  private _pollBrowser() {
     setTimeout(() => {
-      driver
+      this._driver
         .executeScript('return window.__darwin.poll();')
         .then((darwinObj: IDarwinObject) => {
-          actions = darwinObj.actions;
-
-          if (darwinObj.pendingScreenshot === true) {
-            this._screenshot.captureAndSave(driver, testName + '/' + screenshotCounter++ + '.png', () => {
-              this._pollBrowser(driver, testName, done);
-            });
-          } else {
-            this._pollBrowser(driver, testName, done);
-          }
+          this._handleBrowserResult(darwinObj);
         }, () => {
-          done(actions);
+          this._done(this._actions);
         });
     }, 200);
+  }
+
+  private _handleBrowserResult(darwinObj: IDarwinObject) {
+    if(typeof darwinObj === 'undefined') {
+      this._pollBrowser();
+    }
+
+    this._actions = darwinObj.actions;
+
+    if (darwinObj.pendingScreenshot === true) {
+      var screenshotPath = this._testName + '/' + this._screenshotCounter++ + '.png';
+
+      this._screenshot.captureAndSave(this._driver, screenshotPath, () => {
+        this._pollBrowser();
+      });
+    } else {
+      this._pollBrowser();
+    }
   }
 
 }

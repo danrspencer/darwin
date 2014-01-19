@@ -67,7 +67,7 @@ describe('BrowserSync', () => {
   it('calls the done callback with the latest actions', () => {
     var done = jasmine.createSpy('done');
     var darwinObject = { actions: [ { a1: '1', a2: '2'} ]  };
-    var darwinObject2 = { actions: [ { a1: '1', a2: '2'} ]  };
+    var darwinObject2 = { actions: [ { a1: '1', a2: '2', a3: '3'} ] };
 
     browserSync.start(driver, '', done);
 
@@ -102,28 +102,27 @@ describe('BrowserSync', () => {
   });
 
   it('doesn\'t rebind the browser callback until the screenshot has been taken', () => {
+    // Disable the callback from captureAndSave
+    setSpy(screenshot.captureAndSave).toReturn(null);
+
     browserSync.start(driver, '', () => {});
 
     jasmine.Clock.tick(1000);
     setSpy(driver.then).toCallFake((handler) => { handler({ pendingScreenshot: true }); });
     jasmine.Clock.tick(1000);
 
-    expect(spyOf(driver.executeScript).callCount).toEqual(5);
+    expect(spyOf(driver.executeScript).callCount).toEqual(6);
   });
 
-//  it('stops calling executeScript after a driver error', () => {
-//
-//    // Look at improving test when moving to Jasmine 2.0 (better clock support)
-//
-//    var clearInterval = spyOn(global, ('clearInterval'));
-//
-//    browserSync.start(driver, '', () => {});
-//
-//    jasmine.Clock.tick(1000);
-//    setSpy(driver.then).toCallFake((handler, error) => { error(); });
-//    jasmine.Clock.tick(1000);
-//
-//    expect(clearInterval).toHaveBeenCalled();
-//  });
+  it('stops calling executeScript after a driver error', () => {
+
+    browserSync.start(driver, '', () => {});
+
+    jasmine.Clock.tick(1000);
+    setSpy(driver.then).toCallFake((handler, error) => { error(); });
+    jasmine.Clock.tick(1000);
+
+    expect(spyOf(driver.executeScript).callCount).toEqual(6);
+  });
 
 });
