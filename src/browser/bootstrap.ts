@@ -9,6 +9,7 @@ import WindowProxy = require('./Record/WindowProxy');
 import IDarwinWindow = require('../common/IDarwinWindow');
 
 function bootstrap() {
+
   var timer = new Timer();
   var windowProxy = new WindowProxy(<IDarwinWindow>window);
 

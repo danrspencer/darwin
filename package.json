@@ -29,6 +29,7 @@
     "grunt-jasmine-node": "~0.1.0",
     "grunt-karma": "~0.6.2",
     "grunt-typescript": "~0.2.7",
+    "grunt-tslint": "~0.4.0",
     "karma-commonjs": "0.0.6"
   }
 }

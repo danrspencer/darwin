@@ -1,5 +1,3 @@
-
-
 import Timer = require('./Timer');
 import WindowProxy = require('./WindowProxy');
 
@@ -16,7 +14,7 @@ class KeyHandler {
 
   public keypress(event: KeyboardEvent) {
     if(event.which === 19 && event.shiftKey === true && event.ctrlKey === true) {
-      this._screenshot()
+      this._screenshot();
     } else {
       this._standardKeypress(event);
     }

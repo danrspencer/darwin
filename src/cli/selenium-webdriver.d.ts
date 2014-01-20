@@ -2,7 +2,7 @@
  * Incomplete and probably inaccurate selenium definition
  */
 
-declare module "selenium-webdriver" {
+declare module 'selenium-webdriver' {
 
   export class Builder {
 

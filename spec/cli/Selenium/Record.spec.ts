@@ -94,92 +94,19 @@ describe('Record', () => {
     expect(browserSync.start).toHaveBeenCalledWith(driver, 'test name', jasmine.any(Function));
   });
 
-//  it('sets up the browser callback', () => {
-//    record.start('', suiteStub);
-//
-//    expect(driverSpy.executeAsyncScript).toHaveBeenCalledWith(jasmine.any(Function));
-//  });
-//
-//  it('rebinds the browser callback after each callback', () => {
-//    record.start('', suiteStub);
-//
-//    for(var n = 0; n < 10; n++) {
-//      var callback = spyOf(driverSpy.then).argsForCall[n][0];
-//
-//      callback({ type: ActionType.LEFTCLICK });
-//    }
-//
-//    expect(spyOf(driverSpy.executeAsyncScript).callCount).toEqual(11);
-//  });
-//
-//  it('takes a screenshot on a screenshot action', () => {
-//    record.start('testing something', suiteStub);
-//
-//    var callback = spyOf(driverSpy.then).argsForCall[0][0];
-//
-//    callback({ type: ActionType.SCREENSHOT });
-//
-//    expect(screenshotSpy.captureAndSave).toHaveBeenCalledWith(driverSpy, 'testing something/1.png', jasmine.any(Function));
-//  });
-//
-//  it('can save multiple screenshots in a single recording',  () => {
-//    record.start('testing something', suiteStub);
-//
-//    for(var n = 0; n < 3; n++) {
-//      var callback = spyOf(driverSpy.then).argsForCall[n][0];
-//      callback({ type: ActionType.SCREENSHOT });
-//
-//      var screenshotCallback = spyOf(screenshotSpy.captureAndSave).argsForCall[n][2];
-//      screenshotCallback();
-//    }
-//
-//    expect(screenshotSpy.captureAndSave).toHaveBeenCalledWith(driverSpy, 'testing something/1.png', jasmine.any(Function));
-//    expect(screenshotSpy.captureAndSave).toHaveBeenCalledWith(driverSpy, 'testing something/2.png', jasmine.any(Function));
-//    expect(screenshotSpy.captureAndSave).toHaveBeenCalledWith(driverSpy, 'testing something/3.png', jasmine.any(Function));
-//
-//  });
-//
-//  it('doesn\'t take a screenshot when the browser calback isn\'t a screenshot event', () => {
-//    record.start('', suiteStub);
-//
-//    var callback = spyOf(driverSpy.then).argsForCall[0][0];
-//
-//    callback({ type: ActionType.LEFTCLICK });
-//
-//    expect(spyOf(screenshotSpy.captureAndSave).callCount).toEqual(0);
-//  });
-//
-//  it('doesn\'t rebind the browser callback until the screenshot has been taken', () => {
-//    record.start('', suiteStub);
-//
-//    var callback = spyOf(driverSpy.then).argsForCall[0][0];
-//    callback({ type: ActionType.SCREENSHOT });
-//
-//    expect(spyOf(driverSpy.executeAsyncScript).callCount).toEqual(1);
-//
-//    var screenshotCallback = spyOf(screenshotSpy.captureAndSave).argsForCall[0][2];
-//    screenshotCallback();
-//
-//    expect(spyOf(driverSpy.executeAsyncScript).callCount).toEqual(2);
-//  });
-//
-//  it('save\'s the actions to a file when the result of the callback is null', () => {
-//    var expectedResult = [
-//      { type: ActionType.LEFTCLICK },
-//      { type: ActionType.KEYPRESS },
-//      { type: ActionType.RIGHTCLICK }
-//    ]
-//
-//    record.start('testing something', suiteStub);
-//
-//    for(var n = 0; n < 3; n++) {
-//      var callback = spyOf(driverSpy.then).argsForCall[n][0];
-//      callback(expectedResult[n]);
-//    }
-//
-//    var callback = spyOf(driverSpy.then).argsForCall[n][0];
-//    callback(null);
-//
-//    expect(fsSpy.writeFileSync).toHaveBeenCalledWith('testing something/actions.json', JSON.stringify(expectedResult, null, 2));
-//  });
+  it('save\'s the actions to a file when the result of the callback is null', () => {
+    var expectedResult = [
+      { type: ActionType.LEFTCLICK },
+      { type: ActionType.KEYPRESS },
+      { type: ActionType.RIGHTCLICK }
+    ]
+
+    setSpy(browserSync.start).toCallFake((driver, testName, done) => {
+      done(expectedResult);
+    });
+
+    record.start('testing something', suiteStub);
+
+    expect(filesystem.writeFileSync).toHaveBeenCalledWith('testing something/actions.json', JSON.stringify(expectedResult, null, 2));
+  });
 });

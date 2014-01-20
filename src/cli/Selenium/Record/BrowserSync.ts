@@ -33,7 +33,10 @@ class BrowserSync {
         .executeScript('return window.__darwin.poll();')
         .then((darwinObj: IDarwinObject) => {
           this._handleBrowserResult(darwinObj);
-        }, () => {
+        }, (error) => {
+
+          // TODO check that error is expected error (browser closed)
+
           this._done(this._actions);
         });
     }, 200);

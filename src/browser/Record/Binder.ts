@@ -18,7 +18,6 @@ class Binder {
       this._mouseHandler.mousedown(event);
     });
   }
-
 }
 
 export = Binder;

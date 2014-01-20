@@ -1,62 +1,26 @@
 
 module.exports = function(grunt) {
 
+  var tsTypeCheck = true;
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    clean: {
-      full: ["build"],
-      cli: ["build/src/cli", "build/spec/cli"],
-      browser: ["build/src/browser", "build/spec/browser"],
-      common: ["build/src/common"]
-    },
-    typescript: {
-      browser: {
-        src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
-        dest: 'build',
-        options: {
-          module: 'commonjs',
-          ignoreTypeCheck: false
-        }
-      },
-      cli: {
-        src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
-        dest: 'build',
-        options: {
-          module: 'commonjs',
-          ignoreTypeCheck: false
-        }
-      },
-      common: {
-        src: ['src/common/**/*.ts'],
-        dest: 'build',
-        options: {
-          module: 'commonjs',
-          ignoreTypeCheck: false
-        }
-      },
-      browser_dev: {
-        src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
-        dest: 'build',
-        options: {
-          module: 'commonjs',
-          ignoreTypeCheck: true
-        }
-      },
-      cli_dev: {
-        src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
-        dest: 'build',
-        options: {
-          module: 'commonjs',
-          ignoreTypeCheck: true
-        }
-      }
-    },
     browserify: {
       browser: {
         files: {
           'build/src/darwin-browser.js': ['build/src/browser/**/*.js']
         }
       }
+    },
+    clean: {
+      full: ["build"],
+      cli: ["build/src/cli", "build/spec/cli"],
+      browser: ["build/src/browser", "build/spec/browser"],
+      common: ["build/src/common"]
+    },
+    jasmine_node: {
+      projectRoot: "build/spec/cli",
+      forceExit: true
     },
     karma: {
       browser: {
@@ -65,19 +29,42 @@ module.exports = function(grunt) {
         browsers: ['PhantomJS']
       }
     },
-    jasmine_node: {
-      projectRoot: "build/spec/cli",
-      forceExit: true
+    typescript: {
+      browser: {
+        src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
+        dest: 'build',
+        options: { module: 'commonjs', ignoreTypeCheck: tsTypeCheck }
+      },
+      cli: {
+        src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
+        dest: 'build',
+        options: { module: 'commonjs', ignoreTypeCheck: tsTypeCheck }
+      },
+      common: {
+        src: ['src/common/**/*.ts'],
+        dest: 'build',
+        options: { module: 'commonjs', ignoreTypeCheck: tsTypeCheck }
+      }
+    },
+    tslint: {
+      options: {
+        configuration: grunt.file.readJSON('tslint.json')
+      },
+      files: {
+        src: ['src/**/*.ts', 'spec/**/*.ts']
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-typescript');
-  grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-jasmine-node');
+  grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-typescript');
+  grunt.loadNpmTasks('grunt-tslint');
 
   grunt.registerTask('default', [
+    //'tslint',
     'clean:full',
     'common',
     'browser',
@@ -103,20 +90,21 @@ module.exports = function(grunt) {
   ]);
 
   // Dev tasks - won't fail on TypeScript type mismatches
-  grunt.registerTask('dev', [
-    'browser_dev',
-    'cli_dev'
-  ]);
+  grunt.registerTask('dev', 'Build without type checking', function(thing) {
+    tsTypeCheck = false;
 
-  grunt.registerTask('browser_dev', [
-    'clean:browser',
-    'typescript:browser_dev',
-    'browserify:browser',
-    'karma:browser'
-  ]);
-  grunt.registerTask('cli_dev', [
-    'clean:cli',
-    'typescript:cli_dev',
-    'jasmine_node'
-  ]);
+    grunt.task.run('browser', 'cli', 'common');
+  });
+
+  grunt.registerTask('browser_dev', 'Build browser without type checking', function() {
+    tsTypeCheck = false;
+
+    grunt.task.run('browser');
+  });
+
+  grunt.registerTask('cli_dev', 'Build cli without type checking', function() {
+    tsTypeCheck = false;
+
+    grunt.task.run('cli');
+  });
 }
