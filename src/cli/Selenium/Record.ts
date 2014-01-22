@@ -33,8 +33,6 @@ class Record {
       (driver: webdriver.Driver) => {
         this._insertRecordScript(driver, browserScript);
         this._browserSync.start(driver, testName, (actions: IAction[]) => {
-          console.log('here!');
-
           this._fs.writeFileSync(testName + '/actions.json', JSON.stringify(actions, null, 2));
         });
       }

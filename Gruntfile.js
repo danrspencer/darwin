@@ -53,6 +53,13 @@ module.exports = function(grunt) {
       files: {
         src: ['src/**/*.ts', 'spec/**/*.ts']
       }
+    },
+    "tpm-install": {
+      options: { dev: true },
+      all: { src: 'package.json', dest: 'd.ts/' }
+    },
+    "tpm-index": {
+      all: { src: ['d.ts/**/*.d.ts'], dest: 'd.ts/all.d.ts' }
     }
   });
 

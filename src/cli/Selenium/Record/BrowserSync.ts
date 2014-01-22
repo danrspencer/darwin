@@ -43,6 +43,11 @@ class BrowserSync {
   }
 
   private _handleBrowserResult(darwinObj: IDarwinObject) {
+    if(darwinObj === null) {
+      this._done(this._actions);
+      return;
+    }
+
     if(typeof darwinObj === 'undefined') {
       this._pollBrowser();
     }

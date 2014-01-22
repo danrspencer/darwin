@@ -49,7 +49,7 @@ describe('BrowserSync', () => {
     expect(spyOf(driver.executeScript).callCount).toEqual(10);
   });
 
-  it('calls the done callback with the actions from the darwin object', () => {
+  it('calls the done callback with the recorded actions on a Driver error', () => {
     var done = jasmine.createSpy('done');
     var darwinObject = { actions: [ { a1: '1', a2: '2'} ] };
 
@@ -62,6 +62,31 @@ describe('BrowserSync', () => {
     jasmine.Clock.tick(1000);
 
     expect(done).toHaveBeenCalledWith(darwinObject.actions);
+  });
+
+  it('calls the done callback with the recorded actions on a Null poll result', () => {
+    var done = jasmine.createSpy('done');
+    var darwinObject = { actions: [ { a1: '1', a2: '2'} ] };
+
+    browserSync.start(driver, '', done);
+
+    setSpy(driver.then).toCallFake((handler) => { handler(darwinObject); });
+    jasmine.Clock.tick(1000);
+    setSpy(driver.then).toCallFake((handler) => { handler(null); });
+    jasmine.Clock.tick(1000);
+
+    expect(done).toHaveBeenCalledWith(darwinObject.actions);
+  });
+
+  it('doesn\'t throw an exception on a Null poll result', () => {
+    var done = jasmine.createSpy('done');
+
+    browserSync.start(driver, '', done);
+
+    setSpy(driver.then).toCallFake((handler) => { handler(null); });
+    jasmine.Clock.tick(1000);
+
+    // Need to figure out how to test this...
   });
 
   it('calls the done callback with the latest actions', () => {
