@@ -20,25 +20,25 @@ describe('KeyHandler', () => {
     keyboardEvent.charCode = 50;
 
     timer = jasmine.createSpyObj<Timer>('timer', ['getInterval']);
-    windowProxy = jasmine.createSpyObj<WindowProxy>('windowProxy', ['addAction']);
+    windowProxy = jasmine.createSpyObj<WindowProxy>('windowProxy', ['addAction', 'setPendingScreenshot']);
 
     keyHandler = new KeyHandler(windowProxy, timer);
   });
 
-  it('delegates to windowProxy with the created Action', () => {
+  it('delegates to WindowProxy with the created Action', () => {
     keyHandler.keypress(keyboardEvent);
 
     expect(windowProxy.addAction).toHaveBeenCalled();
   });
 
-  it('returns an object with a KEYPRESS type for keypress events', () => {
+  it('delegates to WindowProxy with a KEYPRESS type for keypress events', () => {
     keyHandler.keypress(keyboardEvent);
 
     var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
     expect(action.type).toEqual(ActionType.KEYPRESS);
   });
 
-  it('returns an object containing the details of a keypress', () => {
+  it('delegates to WindowProxy containing the details of a keypress', () => {
     keyHandler.keypress(keyboardEvent);
 
     var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
@@ -46,7 +46,7 @@ describe('KeyHandler', () => {
     expect(action.charCode).toEqual(50);
   });
 
-  it('returns an object with a SCREENSHOT type for "ctrl shift s"', () => {
+  it('delegates to WindowProxy with a SCREENSHOT type for "ctrl shift s"', () => {
     keyboardEvent.which = 19;
     keyboardEvent.shiftKey = true;
     keyboardEvent.ctrlKey = true;
@@ -55,6 +55,16 @@ describe('KeyHandler', () => {
 
     var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
     expect(action.type).toEqual(ActionType.SCREENSHOT);
+  });
+
+  it('delegates to WindowProxy to set a pending screenshot', () => {
+    keyboardEvent.which = 19;
+    keyboardEvent.shiftKey = true;
+    keyboardEvent.ctrlKey = true;
+
+    keyHandler.keypress(keyboardEvent);
+
+    expect(windowProxy.setPendingScreenshot).toHaveBeenCalled();
   });
 
   it('delegates to Timer.getInterval to get the delay', () => {

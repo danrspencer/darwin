@@ -38,7 +38,7 @@ describe('WindowProxy', () => {
   });
 
   it('sets the pendingScreenshot status', () => {
-    windowProxy.setPendingScreenshot(true);
+    windowProxy.setPendingScreenshot();
 
     expect(window.__darwin.pendingScreenshot).toEqual(true);
   });

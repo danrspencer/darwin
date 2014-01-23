@@ -9,16 +9,22 @@ import IMouseEvent = require('../../../../src/common/Action/IMouseEvent');
 import IKeypressEvent = require('../../../../src/common/Action/IKeypressEvent');
 
 import Perform = require('../../../../src/cli/Selenium/Playback/Perform');
+import Screenshot = require('../../../../src/cli/Selenium/Screenshot');
+
 
 describe('Perform', () => {
 
-  var driverSpy: webdriver.Driver;
+  var driver: webdriver.Driver;
+
+  var screenshot: Screenshot;
 
   var perform: Perform;
 
   beforeEach(() => {
-    driverSpy = jasmine.createSpyObj<webdriver.Driver>('driverSpy', ['executeScript', 'then']);
-    setSpy(driverSpy.executeScript).toReturn(driverSpy);
+    driver = jasmine.createSpyObj<webdriver.Driver>('driver', ['executeScript', 'then']);
+    setSpy(driver.executeScript).toReturn(driver);
+
+    screenshot = jasmine.createSpyObj<Screenshot>('screenshot', ['captureAndSave']);
 
     perform = new Perform();
   });
@@ -37,9 +43,9 @@ describe('Perform', () => {
       '}' +
       'return document.elementFromPoint(100,200);';
 
-    perform.performAction(driverSpy, action, () => {});
+    perform.performAction(driver, action, () => {});
 
-    expect(driverSpy.executeScript).toHaveBeenCalledWith(expectedScript);
+    expect(driver.executeScript).toHaveBeenCalledWith(expectedScript);
   });
 
   it('uses selenium to click on the element', () => {
@@ -50,11 +56,11 @@ describe('Perform', () => {
 
     var elementSpy = jasmine.createSpyObj<HTMLElement>('elementSpy', ['click']);
 
-    setSpy(driverSpy.then).toCallFake((callback) => {
+    setSpy(driver.then).toCallFake((callback) => {
       callback(elementSpy);
     });
 
-    perform.performAction(driverSpy, action, () => {});
+    perform.performAction(driver, action, () => {});
 
     expect(elementSpy.click).toHaveBeenCalled();
   });
@@ -65,11 +71,11 @@ describe('Perform', () => {
     var doneSpy = jasmine.createSpy('doneSpy');
     var elementSpy = jasmine.createSpyObj<HTMLElement>('elementSpy', ['click']);
 
-    setSpy(driverSpy.then).toCallFake((callback) => {
+    setSpy(driver.then).toCallFake((callback) => {
       callback(elementSpy);
     });
 
-    perform.performAction(driverSpy, action, doneSpy);
+    perform.performAction(driver, action, doneSpy);
 
     expect(doneSpy).toHaveBeenCalled();
   });
@@ -82,9 +88,9 @@ describe('Perform', () => {
 
     var expectedScript = 'return document.activeElement;';
 
-    perform.performAction(driverSpy, action, () => {});
+    perform.performAction(driver, action, () => {});
 
-    expect(driverSpy.executeScript).toHaveBeenCalledWith(expectedScript);
+    expect(driver.executeScript).toHaveBeenCalledWith(expectedScript);
   });
 
   it('uses selenium to send the keypress', () => {
@@ -95,11 +101,11 @@ describe('Perform', () => {
 
     var elementSpy = jasmine.createSpyObj<HTMLElement>('elementSpy', ['sendKeys']);
 
-    setSpy(driverSpy.then).toCallFake((callback) => {
+    setSpy(driver.then).toCallFake((callback) => {
       callback(elementSpy);
     });
 
-    perform.performAction(driverSpy, action, () => {});
+    perform.performAction(driver, action, () => {});
 
     expect(elementSpy['sendKeys']).toHaveBeenCalledWith('a');
   });
@@ -113,14 +119,21 @@ describe('Perform', () => {
     var doneSpy = jasmine.createSpy('doneSpy');
     var elementSpy = jasmine.createSpyObj<HTMLElement>('elementSpy', ['sendKeys']);
 
-    setSpy(driverSpy.then).toCallFake((callback) => {
+    setSpy(driver.then).toCallFake((callback) => {
       callback(elementSpy);
     });
 
-    perform.performAction(driverSpy, action, doneSpy);
+    perform.performAction(driver, action, doneSpy);
 
     expect(doneSpy).toHaveBeenCalled();
   });
 
-
+//  it('delegates to Screenshot for screenshot actions', () => {
+//    var action = <IAction>{ type: ActionType.SCREENSHOT };
+//    var done = jasmine.createSpy('done');
+//
+//    perform.performAction(driver, action, done);
+//
+//    expect(screenshot.captureAndSave).toHaveBeenCalledWith(driver, )
+//  });
 });

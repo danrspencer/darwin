@@ -27,6 +27,7 @@ class KeyHandler {
     };
 
     this._windowProxy.addAction(action);
+    this._windowProxy.setPendingScreenshot();
   }
 
   private _standardKeypress(event: KeyboardEvent) {

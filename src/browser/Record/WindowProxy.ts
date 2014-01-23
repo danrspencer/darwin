@@ -27,8 +27,8 @@ class WindowProxy {
     this._window.__darwin.actions.push(action);
   }
 
-  public setPendingScreenshot(value: boolean) {
-    this._window.__darwin.pendingScreenshot = value;
+  public setPendingScreenshot() {
+    this._window.__darwin.pendingScreenshot = true;
   }
 
 }
