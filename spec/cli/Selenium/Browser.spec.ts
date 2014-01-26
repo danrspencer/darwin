@@ -4,10 +4,10 @@ import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setS
 import fs = require('fs');
 import webdriver = require('selenium-webdriver');
 
-import Session = require('../../../src/cli/Selenium/Session');
+import Browser = require('../../../src/cli/Selenium/Browser');
 
 
-describe('Session', () => {
+describe('Browser', () => {
 
   var fsSpy: typeof fs;
 
@@ -19,7 +19,7 @@ describe('Session', () => {
 
   var capabilitiesDummy: any;
 
-  var session: Session;
+  var browser: Browser;
 
   beforeEach(() => {
     fsSpy = jasmine.createSpyObj<typeof fs>('fsSpy', ['writeFileSync']);
@@ -45,7 +45,7 @@ describe('Session', () => {
 
     capabilitiesDummy = { capabilities:"dummy" };
 
-    session = new Session(
+    browser = new Browser(
       builderSpy,
       'http://serverUrl',
       capabilitiesDummy
@@ -53,7 +53,7 @@ describe('Session', () => {
   });
 
   it('creates a webdriver', () => {
-    session.start('', 0, 0, () => {});
+    browser.start('', 0, 0, () => {});
 
     expect(builderSpy.usingServer).toHaveBeenCalledWith('http://serverUrl');
     expect(builderSpy.withCapabilities).toHaveBeenCalledWith(capabilitiesDummy);
@@ -61,13 +61,13 @@ describe('Session', () => {
   });
 
   it('sets the browser up with the given values', () => {
-    session.start('', 1280, 768, () => {});
+    browser.start('', 1280, 768, () => {});
 
     expect(windowSpy.setSize).toHaveBeenCalledWith(1280, 768);
   });
 
   it('launches the browser with the given URL', () => {
-    session.start('www.google.co.uk', 0, 0, () => {});
+    browser.start('www.google.co.uk', 0, 0, () => {});
 
     expect(driverSpy.get).toHaveBeenCalledWith('www.google.co.uk');
   });
@@ -75,7 +75,7 @@ describe('Session', () => {
   it('triggers the callback once the session has started', () => {
     var callbackSpy = jasmine.createSpy('callback');
 
-    session.start('', 0, 0, callbackSpy);
+    browser.start('', 0, 0, callbackSpy);
 
     expect(callbackSpy).toHaveBeenCalledWith(driverSpy);
   });

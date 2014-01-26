@@ -7,7 +7,7 @@ import ActionType = require('../../common/Action/ActionType');
 import IAction = require('../../common/Action/IAction');
 import ISuite = require('../Main/ISuite');
 
-import Session = require('./Session');
+import Session = require('./Browser');
 import BrowserSync = require('./Record/BrowserSync');
 
 class Record {

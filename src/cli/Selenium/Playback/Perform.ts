@@ -9,14 +9,13 @@ import IKeypressEvent = require('../../../common/Action/IKeypressEvent');
 
 class Perform {
 
-  public performAction(driver: webdriver.Driver, action: IAction, done: Function) {
+  public performAction(driver: webdriver.Driver, testName: string, action: IAction, done: Function) {
 
     if (action.type === ActionType.LEFTCLICK || action.type === ActionType.RIGHTCLICK) {
       this._handleMouseEvent(driver, <IMouseEvent>action, done);
     } else {
       this._handleKeypress(driver, <IKeypressEvent>action, done);
     }
-
   }
 
   private _handleKeypress(driver: webdriver.Driver, action: IKeypressEvent, done: Function) {

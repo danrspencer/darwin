@@ -5,14 +5,12 @@ import webdriver = require('selenium-webdriver');
 import IAction = require('../../common/Action/IAction');
 import ISuite = require('../Main/ISuite');
 
-import Robot = require('./Playback/Robot');
-import Session = require('./Session');
+import TestRunner = require('./Playback/TestRunner');
 
 class Playback {
 
   constructor(private _fs: typeof fs,
-              private _robot: Robot,
-              private _session: Session) {
+              private _testRunner: TestRunner) {
 
   }
 
@@ -37,20 +35,13 @@ class Playback {
   }
 
   private _startSession(suiteInfo: ISuite, actionsJson: string) {
-    this._session.start(
-      suiteInfo.url,
-      suiteInfo.browserSize.width,
-      suiteInfo.browserSize.height,
-      (driver: webdriver.Driver) => {
-        try {
-          var actions = JSON.parse(actionsJson);
-        } catch (error) {
+    try {
+      var actions = JSON.parse(actionsJson);
+    } catch (error) {
 
-        }
+    }
 
-        this._robot.performActions(driver, actions);
-      }
-    );
+    this._testRunner.run(suiteInfo, actions);
   }
 
 }

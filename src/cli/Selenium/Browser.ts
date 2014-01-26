@@ -3,7 +3,7 @@
 import fs = require('fs');
 import webdriver = require('selenium-webdriver');
 
-class Session {
+class Browser {
 
   constructor(private _webDriverBuilder: webdriver.Builder,
               private _seleniumServerUrl: string,
@@ -28,7 +28,7 @@ class Session {
   }
 }
 
-export = Session;
+export = Browser;
 
 
 

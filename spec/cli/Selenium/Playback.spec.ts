@@ -7,19 +7,17 @@ import webdriver = require('selenium-webdriver');
 import ISuite = require('../../../src/cli/Main/ISuite');
 
 import Playback = require('../../../src/cli/Selenium/Playback');
-import Robot = require('../../../src/cli/Selenium/Playback/Robot');
-import Session = require('../../../src/cli/Selenium/Session');
+import TestRunner = require('../../../src/cli/Selenium/Playback/TestRunner');
 
 describe('Playback', () => {
 
   var fsSpy: typeof fs;
 
-  var robotSpy: Robot;
-  var sessionSpy: Session;
-
   var driveFake: Object;
 
   var suiteStub: ISuite;
+
+  var testRunner: TestRunner;
 
   var playback: Playback;
 
@@ -36,15 +34,7 @@ describe('Playback', () => {
       callback();
     });
 
-    // Setup driver and session
-    driveFake = { driver: 'fake' };
-    sessionSpy = jasmine.createSpyObj<Session>('sessionSpy', ['start']);
-    setSpy(sessionSpy.start).toCallFake((url, height, width, callback) => {
-      callback(driveFake);
-    });
-
-    // Setup robot, fake suite, etc...
-    robotSpy = jasmine.createSpyObj<Robot>('robotSpy', ['performActions']);
+    testRunner = jasmine.createSpyObj<TestRunner>('testRunner', ['run']);
 
     suiteStub = {
       browserSize: {
@@ -54,7 +44,7 @@ describe('Playback', () => {
       url: 'www.google.co.uk'
     };
 
-    playback = new Playback(fsSpy, robotSpy, sessionSpy);
+    playback = new Playback(fsSpy, testRunner);
   });
 
   it('gets the contents of the current directory', () => {
@@ -84,14 +74,7 @@ describe('Playback', () => {
     expect(spyOf(fsSpy.readFile).callCount).toEqual(2);
   });
 
-  it('delegates to Session to start a selenium session for each test', () => {
-    playback.play(suiteStub);
-
-    expect(sessionSpy.start).toHaveBeenCalledWith('www.google.co.uk', 1280, 768, jasmine.any(Function));
-    expect(spyOf(sessionSpy.start).callCount).toEqual(2);
-  });
-
-  it('delegates to Robot to run the test actions', () => {
+  it('delegates to TestRunner to run the test actions', () => {
     var file1Data = { test1: 'data' };
     var file2Data = { test2: 'stuff' };
 
@@ -103,8 +86,8 @@ describe('Playback', () => {
 
     playback.play(suiteStub);
 
-    expect(robotSpy.performActions).toHaveBeenCalledWith(driveFake, file1Data);
-    expect(robotSpy.performActions).toHaveBeenCalledWith(driveFake, file2Data);
+    expect(testRunner.run).toHaveBeenCalledWith(suiteStub, file1Data);
+    expect(testRunner.run).toHaveBeenCalledWith(suiteStub, file2Data);
   });
 
 

@@ -14,7 +14,7 @@ import SchedulerBuilder = require('./Selenium/Playback/SchedulerBuilder');
 import Record = require('./Selenium/Record');
 import BrowserSync = require('./Selenium/Record/BrowserSync');
 import Screenshot = require('./Selenium/Screenshot');
-import Session = require('./Selenium/Session');
+import Session = require('./Selenium/Browser');
 
 
 function bootstrap(version: string, basePath: string, argv: string[]) {

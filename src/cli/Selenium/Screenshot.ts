@@ -11,6 +11,7 @@ class Screenshot {
   public captureAndSave(driver: webdriver.Driver,
                         saveAs: string,
                         callback: () => void) {
+
     driver
       .takeScreenshot()
       .then((result) => {

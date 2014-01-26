@@ -8,7 +8,7 @@ import ActionType = require('../../../src/common/Action/ActionType');
 import ISuite = require('../../../src/cli/Main/ISuite');
 
 import Record = require('../../../src/cli/Selenium/Record');
-import Session = require('../../../src/cli/Selenium/Session');
+import Session = require('../../../src/cli/Selenium/Browser');
 import BrowserSync = require('../../../src/cli/Selenium/Record/BrowserSync');
 
 describe('Record', () => {

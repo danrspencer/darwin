@@ -18,7 +18,7 @@ class BrowserSync {
 
   }
 
-  public start(driver: webdriver.Driver, testName: string,  done: (actions: IAction[]) => void) {
+  public start(driver: webdriver.Driver, testName: string, done: (actions: IAction[]) => void) {
     this._screenshotCounter = 1;
     this._driver = driver;
     this._testName = testName;
