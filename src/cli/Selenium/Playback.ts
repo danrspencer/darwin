@@ -26,22 +26,22 @@ class Playback {
     });
   }
 
-  private _runTest(suiteInfo: ISuite, filename: string) {
+  private _runTest(suiteInfo: ISuite, testName: string) {
     this._fs.readFile(
-      './' + filename + '/actions.json',
+      './' + testName + '/actions.json',
       { encoding: 'utf8' },
-      (error, content: string) => { this._startSession(suiteInfo, content) }
+      (error, content: string) => { this._startSession(suiteInfo, testName, content) }
     );
   }
 
-  private _startSession(suiteInfo: ISuite, actionsJson: string) {
+  private _startSession(suiteInfo: ISuite, testName: string, actionsJson: string) {
     try {
       var actions = JSON.parse(actionsJson);
     } catch (error) {
 
     }
 
-    this._testRunner.run(suiteInfo, actions);
+    this._testRunner.run(suiteInfo, testName, actions);
   }
 
 }

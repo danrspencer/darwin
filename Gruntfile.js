@@ -97,7 +97,7 @@ module.exports = function(grunt) {
   ]);
 
   // Dev tasks - won't fail on TypeScript type mismatches
-  grunt.registerTask('dev', 'Build without type checking', function(thing) {
+  grunt.registerTask('dev', 'Build without type checking', function() {
     tsTypeCheck = false;
 
     grunt.task.run('browser', 'cli', 'common');

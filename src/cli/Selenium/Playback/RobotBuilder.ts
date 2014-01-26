@@ -7,11 +7,7 @@ import Scheduler = require('./Scheduler');
 
 class RobotBuilder {
 
-  public getScheduler() {
-    return new Scheduler();
-  }
-
-  public getRobot(driver: webdriver.Driver) {
+  public getRobot(driver: webdriver.Driver, testName: string) {
 
 
     return new Robot();

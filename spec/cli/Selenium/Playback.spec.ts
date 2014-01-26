@@ -13,8 +13,6 @@ describe('Playback', () => {
 
   var fsSpy: typeof fs;
 
-  var driveFake: Object;
-
   var suiteStub: ISuite;
 
   var testRunner: TestRunner;
@@ -22,7 +20,6 @@ describe('Playback', () => {
   var playback: Playback;
 
   beforeEach(() => {
-    // Setup fsSpy
     fsSpy = jasmine.createSpyObj<typeof fs>('fsSpy', ['readFile', 'readdirSync', 'statSync']);
     setSpy(fsSpy.readdirSync).toReturn(['Test 1', 'Test 2', 'randomfile.html']);
     setSpy(fsSpy.statSync).toCallFake((filename: string) => {
@@ -36,13 +33,7 @@ describe('Playback', () => {
 
     testRunner = jasmine.createSpyObj<TestRunner>('testRunner', ['run']);
 
-    suiteStub = {
-      browserSize: {
-        width: 1280,
-        height: 768
-      },
-      url: 'www.google.co.uk'
-    };
+    suiteStub = <ISuite>{ fake: 'suite' };
 
     playback = new Playback(fsSpy, testRunner);
   });
@@ -65,7 +56,7 @@ describe('Playback', () => {
     playback.play(suiteStub);
 
     expect(fsSpy.readFile).toHaveBeenCalledWith('./Test 1/actions.json', { encoding: 'utf8' }, jasmine.any(Function));
-    expect(fsSpy.readFile).toHaveBeenCalledWith('./Test 1/actions.json', { encoding: 'utf8' }, jasmine.any(Function));
+    expect(fsSpy.readFile).toHaveBeenCalledWith('./Test 2/actions.json', { encoding: 'utf8' }, jasmine.any(Function));
   });
 
   it('only loads the actions.json for directories', () => {
@@ -86,8 +77,8 @@ describe('Playback', () => {
 
     playback.play(suiteStub);
 
-    expect(testRunner.run).toHaveBeenCalledWith(suiteStub, file1Data);
-    expect(testRunner.run).toHaveBeenCalledWith(suiteStub, file2Data);
+    expect(testRunner.run).toHaveBeenCalledWith(suiteStub, 'Test 1', file1Data);
+    expect(testRunner.run).toHaveBeenCalledWith(suiteStub, 'Test 2', file2Data);
   });
 
 
