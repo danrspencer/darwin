@@ -6,15 +6,19 @@ import promptly = require('promptly');
 
 import webdriver = require('selenium-webdriver');
 
+import Browser = require('./Selenium/Browser');
 import Darwin = require('./Main/Darwin');
-import Playback = require('./Selenium/Playback');
-import Perform = require('./Selenium/Playback/Perform');
-import Robot = require('./Selenium/Playback/Robot');
-import SchedulerBuilder = require('./Selenium/Playback/SchedulerBuilder');
+
+import Playback = require('./Playback/Playback');
+import Perform = require('./Playback/Perform');
+import Robot = require('./Playback/Robot');
+import RobotBuilder = require('./Playback/RobotBuilder');
+import TestRunner = require('./Playback/TestRunner');
+
 import Record = require('./Selenium/Record');
 import BrowserSync = require('./Selenium/Record/BrowserSync');
 import Screenshot = require('./Selenium/Screenshot');
-import Session = require('./Selenium/Browser');
+
 
 
 function bootstrap(version: string, basePath: string, argv: string[]) {
@@ -27,29 +31,27 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
     .parse(argv);
 
   var webDriverBuilder = new webdriver.Builder();
-  var session = new Session(
+  var browser = new Browser(
     webDriverBuilder,
     'http://localhost:9515',
     webdriver.Capabilities.chrome()
   );
 
   var screenshot = new Screenshot(fs);
-
   var browserSync = new BrowserSync(screenshot);
 
   var record = new Record(
     fs,
-    session,
+    browser,
     browserSync,
     basePath + '/../build/src/darwin-browser.js'
   );
 
-  var robot = new Robot(new SchedulerBuilder(), new Perform());
-
+  var robotBuilder = new RobotBuilder();
+  var testRunner = new TestRunner(robotBuilder, browser);
   var playback = new Playback(
     fs,
-    robot,
-    session
+    testRunner
   );
 
   var darwin = new Darwin(

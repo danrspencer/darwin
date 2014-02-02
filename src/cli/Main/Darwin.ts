@@ -7,7 +7,7 @@ import webdriver = require('selenium-webdriver');
 import IAction = require('../../common/Action/IAction');
 import ISuite = require('ISuite');
 
-import Playback = require('../Selenium/Playback');
+import Playback = require('../Playback/Playback');
 import Record = require('../Selenium/Record');
 
 class Darwin {

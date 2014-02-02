@@ -1,8 +1,6 @@
 
 module.exports = function(grunt) {
 
-  var tsTypeCheck = true;
-
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     browserify: {
@@ -33,17 +31,17 @@ module.exports = function(grunt) {
       browser: {
         src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
         dest: 'build',
-        options: { module: 'commonjs', ignoreTypeCheck: tsTypeCheck }
+        options: { module: 'commonjs', ignoreTypeCheck: false }
       },
       cli: {
         src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
         dest: 'build',
-        options: { module: 'commonjs', ignoreTypeCheck: tsTypeCheck }
+        options: { module: 'commonjs', ignoreTypeCheck: false }
       },
       common: {
         src: ['src/common/**/*.ts'],
         dest: 'build',
-        options: { module: 'commonjs', ignoreTypeCheck: tsTypeCheck }
+        options: { module: 'commonjs', ignoreTypeCheck: false }
       }
     },
     tslint: {
@@ -98,20 +96,14 @@ module.exports = function(grunt) {
 
   // Dev tasks - won't fail on TypeScript type mismatches
   grunt.registerTask('dev', 'Build without type checking', function() {
-    tsTypeCheck = false;
-
     grunt.task.run('browser', 'cli', 'common');
   });
 
   grunt.registerTask('browser_dev', 'Build browser without type checking', function() {
-    tsTypeCheck = false;
-
     grunt.task.run('browser');
   });
 
   grunt.registerTask('cli_dev', 'Build cli without type checking', function() {
-    tsTypeCheck = false;
-
     grunt.task.run('cli');
   });
 }

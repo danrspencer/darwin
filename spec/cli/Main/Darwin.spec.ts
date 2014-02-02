@@ -2,7 +2,7 @@
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
 import Darwin = require('../../../src/cli/Main/Darwin');
-import Playback = require('../../../src/cli/Selenium/Playback');
+import Playback = require('../../../src/cli/Playback/Playback');
 import Record = require('../../../src/cli/Selenium/Record');
 
 import ISuite = require('../../../src/cli/Main/ISuite');

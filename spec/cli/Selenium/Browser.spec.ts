@@ -79,4 +79,5 @@ describe('Browser', () => {
 
     expect(callbackSpy).toHaveBeenCalledWith(driverSpy);
   });
+
 });

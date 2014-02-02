@@ -1,0 +1,5 @@
+class Analyse {
+
+}
+
+export = Analyse;
