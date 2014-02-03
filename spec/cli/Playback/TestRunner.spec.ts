@@ -9,14 +9,14 @@ import ISuite = require('../../../src/cli/Main/ISuite');
 
 import Browser = require('../../../src/cli/Selenium/Browser');
 
-import Analyse = require('../../../src/cli/Playback/Analyse');
+import Analyser = require('../../../src/cli/Image/Analyser');
 import Robot = require('../../../src/cli/Playback/Robot');
 import RobotBuilder = require('../../../src/cli/Playback/RobotBuilder');
 import TestRunner = require('../../../src/cli/Playback/TestRunner');
 
 describe('TestRunner', () => {
 
-  var analyse: Analyse;
+  var analyser: Analyser;
   var robotBuilder: RobotBuilder;
   var robot: Robot;
   var browser: Browser;
@@ -37,7 +37,7 @@ describe('TestRunner', () => {
     robot = jasmine.createSpyObj<Robot>('robot', ['performActions']);
     setSpy(robotBuilder.getRobot).toReturn(robot);
 
-    analyse = jasmine.createSpyObj<Analyse>('analyse', ['analyseResults']);
+    analyser = jasmine.createSpyObj<Analyser>('analyse', ['analyseResults']);
 
     suite = {
       browserSize: {
@@ -47,7 +47,7 @@ describe('TestRunner', () => {
       url: 'www.google.co.uk'
     };
 
-    testRunner = new TestRunner(robotBuilder, browser);
+    testRunner = new TestRunner(robotBuilder, browser, analyser);
   });
 
   it('delegates to Browser to start a selenium session', () => {
@@ -85,6 +85,23 @@ describe('TestRunner', () => {
 
     robotFinished();
     expect(driver.quit).toHaveBeenCalled();
+  });
+
+  it('delegates to Analyse after the Robot is finished', () => {
+    var actions = [<IAction>{ type: ActionType.KEYPRESS }];
+
+    var robotFinished: Function;
+
+    setSpy(robot.performActions).toCallFake((actions, done) => {
+      robotFinished = done;
+    });
+
+    testRunner.run(suite, 'awesome test', actions);
+
+    expect(analyser.analyseResults).not.toHaveBeenCalled();
+
+    robotFinished();
+    expect(analyser.analyseResults).toHaveBeenCalledWith('awesome test', actions);
   });
 });
 

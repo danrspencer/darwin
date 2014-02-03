@@ -4,10 +4,13 @@ import commander = require('commander');
 import fs = require('fs');
 import promptly = require('promptly');
 
+import gm = require('gm');
 import webdriver = require('selenium-webdriver');
 
 import Browser = require('./Selenium/Browser');
 import Darwin = require('./Main/Darwin');
+
+import Analyser= require('./Image/Analyser');
 
 import Playback = require('./Playback/Playback');
 import Perform = require('./Playback/Perform');
@@ -48,7 +51,8 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
   );
 
   var robotBuilder = new RobotBuilder();
-  var testRunner = new TestRunner(robotBuilder, browser);
+  var analyser = new Analyser(gm);
+  var testRunner = new TestRunner(robotBuilder, browser, analyser);
   var playback = new Playback(
     fs,
     testRunner

@@ -21,6 +21,8 @@ class Darwin {
 
   // TODO - Create init that downloads selenium, etc..
   // Should auto start selenium server
+  // Create .gitignore
+  // Check for gm installed
 
   public init() {
     this._promptly.prompt('Enter the url under test: ', (error: Error, value: string) => {

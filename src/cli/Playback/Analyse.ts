@@ -1,5 +1,0 @@
-class Analyse {
-
-}
-
-export = Analyse;

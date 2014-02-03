@@ -1,6 +1,12 @@
 
 module.exports = function(grunt) {
 
+  // Run grunt with '--typeCheck no' to not enforce type checking
+  // when compiling TypeScript
+  var ignoreTypeCheck = typeof grunt.option('ignoreTypeCheck') !== 'undefined';
+
+  var cleaned = false;
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     browserify: {
@@ -31,17 +37,17 @@ module.exports = function(grunt) {
       browser: {
         src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
         dest: 'build',
-        options: { module: 'commonjs', ignoreTypeCheck: false }
+        options: { module: 'commonjs', ignoreTypeCheck: ignoreTypeCheck }
       },
       cli: {
         src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
         dest: 'build',
-        options: { module: 'commonjs', ignoreTypeCheck: false }
+        options: { module: 'commonjs', ignoreTypeCheck: ignoreTypeCheck }
       },
       common: {
         src: ['src/common/**/*.ts'],
         dest: 'build',
-        options: { module: 'commonjs', ignoreTypeCheck: false }
+        options: { module: 'commonjs', ignoreTypeCheck: ignoreTypeCheck }
       }
     },
     tslint: {
@@ -68,42 +74,42 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-typescript');
   grunt.loadNpmTasks('grunt-tslint');
 
-  grunt.registerTask('default', [
-    //'tslint',
-    'clean:full',
-    'common',
-    'browser',
-    'cli'
-  ]);
+  grunt.registerTask('default', function() {
 
-  grunt.registerTask('browser', [
-    'clean:browser',
-    'typescript:browser',
-    'browserify:browser',
-    'karma:browser'
-  ]);
+    cleaned = true;
 
-  grunt.registerTask('cli', [
-    'clean:cli',
-    'typescript:cli',
-    'jasmine_node'
-  ]);
-
-  grunt.registerTask('common', [
-    'clean:common',
-    'typescript:common'
-  ]);
-
-  // Dev tasks - won't fail on TypeScript type mismatches
-  grunt.registerTask('dev', 'Build without type checking', function() {
-    grunt.task.run('browser', 'cli', 'common');
+    grunt.task.run(
+      //'tslint',
+      'clean:full',
+      'typescript:common',
+      'browser',
+      'cli'
+    );
   });
 
-  grunt.registerTask('browser_dev', 'Build browser without type checking', function() {
-    grunt.task.run('browser');
+  grunt.registerTask('browser', function() {
+
+    if (cleaned === false) {
+      grunt.task.run('clean:browser')
+    }
+
+    grunt.task.run(
+      'typescript:browser',
+      'browserify:browser',
+      'karma:browser'
+    );
   });
 
-  grunt.registerTask('cli_dev', 'Build cli without type checking', function() {
-    grunt.task.run('cli');
+  grunt.registerTask('cli', function() {
+
+    if (cleaned === false) {
+      grunt.task.run('clean:cli')
+    }
+
+    grunt.task.run(
+      'typescript:cli',
+      'jasmine_node'
+    );
   });
+
 }
