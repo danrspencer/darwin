@@ -47,7 +47,7 @@ class Perform {
                 'var offset = range.offset;' +
                 'document.elementFromPoint(' + position + ').setSelectionRange(offset, offset);' +
                 '}' +
-                'return document.elementFromPoint(' + position + ');'
+                'return document.elementFromPoint(' + position + ');';
 
     this._driver
       .executeScript(script)

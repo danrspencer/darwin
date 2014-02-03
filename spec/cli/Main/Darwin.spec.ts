@@ -55,7 +55,7 @@ describe('Darwin', () => {
         height: 768
       },
       url: 'www.google.co.uk'
-    }
+    };
 
     expect(fsSpy.writeFileSync).toHaveBeenCalledWith('suite.json', JSON.stringify(expectedSuite, null, 2));
   });

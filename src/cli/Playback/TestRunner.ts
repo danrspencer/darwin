@@ -22,7 +22,7 @@ class TestRunner {
       suiteInfo.url,
       suiteInfo.browserSize.width,
       suiteInfo.browserSize.height,
-      (driver: webdriver.Driver) => { this.startRobot(driver, testName, actions) }
+      (driver: webdriver.Driver) => { this.startRobot(driver, testName, actions); }
     );
   }
 

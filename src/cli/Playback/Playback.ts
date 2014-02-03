@@ -18,7 +18,7 @@ class Playback {
     var filenames = this._fs.readdirSync('./');
 
     filenames.forEach((filename) => {
-      var fileStat = this._fs.statSync('./' + filename)
+      var fileStat = this._fs.statSync('./' + filename);
 
       if (fileStat.isDirectory()) {
         this._runTest(suiteInfo, filename);
@@ -30,7 +30,7 @@ class Playback {
     this._fs.readFile(
       './' + testName + '/actions.json',
       { encoding: 'utf8' },
-      (error, content: string) => { this._startSession(suiteInfo, testName, content) }
+      (error, content: string) => { this._startSession(suiteInfo, testName, content); }
     );
   }
 

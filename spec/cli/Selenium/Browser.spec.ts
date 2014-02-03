@@ -14,8 +14,7 @@ describe('Browser', () => {
   var builderSpy: webdriver.Builder;
   var driverSpy: webdriver.Driver;
   var manageSpy: webdriver.Manage;
-  var windowSpy: webdriver.Window
-  var timeoutsSpy: webdriver.Timeouts;
+  var windowSpy: webdriver.Window;
 
   var capabilitiesDummy: any;
 
@@ -43,7 +42,7 @@ describe('Browser', () => {
       callback();
     });
 
-    capabilitiesDummy = { capabilities:"dummy" };
+    capabilitiesDummy = { capabilities: 'dummy' };
 
     browser = new Browser(
       builderSpy,

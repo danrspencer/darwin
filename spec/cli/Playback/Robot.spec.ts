@@ -21,10 +21,10 @@ describe('Robot', () => {
 
 
     perform = jasmine.createSpyObj<Perform>('perform', ['performAction', 'finish']);
-    setSpy(perform.performAction).toCallFake((action, callback) => { triggerPerformCallback = callback });
+    setSpy(perform.performAction).toCallFake((action, callback) => { triggerPerformCallback = callback; });
 
     scheduler = jasmine.createSpyObj<Scheduler>('scheduler', ['start', 'callAfter']);
-    setSpy(scheduler.callAfter).toCallFake((delay, callback) => { triggerScheduler = callback });
+    setSpy(scheduler.callAfter).toCallFake((delay, callback) => { triggerScheduler = callback; });
 
     robot = new Robot(scheduler, perform);
   });

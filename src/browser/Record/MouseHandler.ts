@@ -33,4 +33,4 @@ class MouseHandler {
 
 }
 
-export = MouseHandler
+export = MouseHandler;

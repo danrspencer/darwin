@@ -99,7 +99,7 @@ describe('Record', () => {
       { type: ActionType.LEFTCLICK },
       { type: ActionType.KEYPRESS },
       { type: ActionType.RIGHTCLICK }
-    ]
+    ];
 
     setSpy(browserSync.start).toCallFake((driver, testName, done) => {
       done(expectedResult);

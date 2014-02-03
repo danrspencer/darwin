@@ -13,7 +13,7 @@ describe('Capture', () => {
   beforeEach(() => {
     screenshot = jasmine.createSpyObj<Screenshot>('screenshot', ['take']);
 
-    capture = new Capture(screenshot, "testName");
+    capture = new Capture(screenshot, 'testName');
   });
 
   it('delegates to screenshot with "testName/1_result.png"', () => {

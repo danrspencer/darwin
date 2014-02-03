@@ -25,7 +25,7 @@ describe('BrowserSync', () => {
     setSpy(driver.then).toCallFake((handler) => { handler(); });
 
     screenshot = jasmine.createSpyObj<Screenshot>('Screenshot', ['captureAndSave']);
-    setSpy(screenshot.captureAndSave).toCallFake((driver, testName, done) => { done() });
+    setSpy(screenshot.captureAndSave).toCallFake((driver, testName, done) => { done(); });
 
     setSpy(driver.executeScript).toReturn(driver);
 

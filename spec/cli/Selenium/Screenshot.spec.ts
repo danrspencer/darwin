@@ -15,7 +15,7 @@ describe('Screenshot', () => {
 
   beforeEach(() => {
     driverSpy = jasmine.createSpyObj<webdriver.Driver>('driverSpy', ['takeScreenshot', 'then']);
-    fsSpy = jasmine.createSpyObj<typeof fs>('fsSpy', ['writeFileSync'])
+    fsSpy = jasmine.createSpyObj<typeof fs>('fsSpy', ['writeFileSync']);
 
     setSpy(driverSpy.takeScreenshot).toReturn(driverSpy);
 

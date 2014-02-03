@@ -14,7 +14,7 @@ class Scheduler {
   public start() {
     this._startTime = Date.now();
 
-    setInterval(() => { this._tick() }, 50);
+    setInterval(() => { this._tick(); }, 50);
   }
 
   public callAfter(delayFromStart: number, callback: Function) {

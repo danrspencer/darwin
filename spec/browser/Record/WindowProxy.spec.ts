@@ -12,14 +12,14 @@ describe('WindowProxy', () => {
   var windowProxy: WindowProxy;
 
   beforeEach(() => {
-    window = <IDarwinWindow>{}
+    window = <IDarwinWindow>{};
 
     windowProxy = new WindowProxy(window);
   });
 
   it('initialises the window Darwin object', () => {
     expect(window.__darwin).not.toBeUndefined();
-    expect(window.__darwin.actions).toEqual([])
+    expect(window.__darwin.actions).toEqual([]);
     expect(window.__darwin.pendingScreenshot).toEqual(false);
   });
 

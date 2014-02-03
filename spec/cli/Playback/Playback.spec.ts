@@ -24,8 +24,8 @@ describe('Playback', () => {
     setSpy(fsSpy.readdirSync).toReturn(['Test 1', 'Test 2', 'randomfile.html']);
     setSpy(fsSpy.statSync).toCallFake((filename: string) => {
       return {
-        isDirectory: () => { return filename !== './randomfile.html' }
-      }
+        isDirectory: () => { return filename !== './randomfile.html'; }
+      };
     });
     setSpy(fsSpy.readFile).toCallFake((filename: string, options: Object, callback: Function) => {
       callback();

@@ -79,7 +79,7 @@ module.exports = function(grunt) {
     cleaned = true;
 
     grunt.task.run(
-      //'tslint',
+      'tslint',
       'clean:full',
       'typescript:common',
       'browser',

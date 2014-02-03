@@ -14,7 +14,7 @@ class WindowProxy {
           actions: this._window.__darwin.actions,
           pendingScreenshot: this._window.__darwin.pendingScreenshot,
           poll: null
-        }
+        };
 
         this._window.__darwin.pendingScreenshot = false;
 

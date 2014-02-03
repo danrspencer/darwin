@@ -33,7 +33,7 @@ class Darwin {
           height: 768
         },
         url: value
-      }
+      };
 
       this._fs.writeFileSync('suite.json', JSON.stringify(suite, null, 2));
     });
