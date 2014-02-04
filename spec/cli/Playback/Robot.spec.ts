@@ -1,7 +1,7 @@
 /// <reference path="../ref.d.ts" />
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
-import IAction = require('../../../src/common/Action/IAction');
+import IAction = require('../../../src/common/Test/IAction');
 
 import Perform = require('../../../src/cli/Playback/Perform');
 import Robot = require('../../../src/cli/Playback/Robot');

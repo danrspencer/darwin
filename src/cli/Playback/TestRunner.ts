@@ -1,10 +1,11 @@
 
 import webdriver = require('selenium-webdriver');
 
-import IAction = require('../../common/Action/IAction');
+import IAction = require('../../common/Test/IAction');
+import ITest = require('../../common/Test/ITest');
 import ISuite = require('../Main/ISuite');
 
-import Analyser = require('../Image/Analyser');
+import Processor = require('../Image/Processor');
 import Browser = require('../Selenium/Browser');
 import Robot = require('./Robot');
 import RobotBuilder = require('./RobotBuilder');
@@ -13,26 +14,26 @@ class TestRunner {
 
   constructor(private _robotBuilder: RobotBuilder,
               private _browser: Browser,
-              private _analyser: Analyser) {
+              private _processor: Processor) {
 
   }
 
-  public run(suiteInfo: ISuite, testName: string, actions: IAction[]) {
+  public run(suiteInfo: ISuite, testName: string, test: ITest) {
     this._browser.start(
       suiteInfo.url,
       suiteInfo.browserSize.width,
       suiteInfo.browserSize.height,
-      (driver: webdriver.Driver) => { this.startRobot(driver, testName, actions); }
+      (driver: webdriver.Driver) => { this.startRobot(driver, testName, test); }
     );
   }
 
-  private startRobot(driver: webdriver.Driver, testName: string, actions: IAction[]) {
+  private startRobot(driver: webdriver.Driver, testName: string, test: ITest) {
     var robot = this._robotBuilder.getRobot(driver, testName);
 
-    robot.performActions(actions, () => {
+    robot.performActions(test.actions, () => {
       driver.quit();
 
-      this._analyser.analyseResults(testName, actions);
+      this._processor.processResults(testName, test);
     });
   }
 

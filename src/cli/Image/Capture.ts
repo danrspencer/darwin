@@ -13,7 +13,7 @@ class Capture {
   }
 
   public resultImage(done: () => void) {
-    this._screenshot.take(this._testName + '/' + this._resultCounter + '_result.png', done);
+    this._screenshot.take(this._testName + '/' + this._resultCounter + '_actual.png', done);
 
     this._resultCounter++;
   }

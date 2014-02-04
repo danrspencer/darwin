@@ -3,10 +3,10 @@ import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setS
 
 import webdriver = require('selenium-webdriver');
 
-import ActionType = require('../../../src/common/Action/ActionType');
-import IAction = require('../../../src/common/Action/IAction');
-import IMouseEvent = require('../../../src/common/Action/IMouseEvent');
-import IKeypressEvent = require('../../../src/common/Action/IKeypressEvent');
+import ActionType = require('../../../src/common/Test/ActionType');
+import IAction = require('../../../src/common/Test/IAction');
+import IMouseAction = require('../../../src/common/Test/IMouseAction');
+import IKeypressAction = require('../../../src/common/Test/IKeypressAction');
 
 import Capture = require('../../../src/cli/Image/Capture');
 import Perform = require('../../../src/cli/Playback/Perform');
@@ -30,7 +30,7 @@ describe('Perform', () => {
   });
 
   it('inserts the script to find the element for click events', () => {
-    var action = <IMouseEvent>{
+    var action = <IMouseAction>{
       type: ActionType.LEFTCLICK,
       pos: { x: 100, y: 200 }
     };
@@ -49,7 +49,7 @@ describe('Perform', () => {
   });
 
   it('uses selenium to click on the element', () => {
-    var action = <IMouseEvent>{
+    var action = <IMouseAction>{
       type: ActionType.LEFTCLICK,
       pos: { x: 100, y: 200 }
     };
@@ -66,7 +66,7 @@ describe('Perform', () => {
   });
 
   it('triggers the done callback after sending the click', () => {
-    var action = <IMouseEvent>{ type: ActionType.LEFTCLICK, pos: { x: 100, y: 200 } };
+    var action = <IMouseAction>{ type: ActionType.LEFTCLICK, pos: { x: 100, y: 200 } };
 
     var doneSpy = jasmine.createSpy('doneSpy');
     var elementSpy = jasmine.createSpyObj<HTMLElement>('elementSpy', ['click']);
@@ -81,7 +81,7 @@ describe('Perform', () => {
   });
 
   it('inserts a script to get the current active element', () => {
-    var action = <IKeypressEvent>{
+    var action = <IKeypressAction>{
       type: ActionType.KEYPRESS,
       char: 'a'
     };
@@ -94,7 +94,7 @@ describe('Perform', () => {
   });
 
   it('uses selenium to send the keypress', () => {
-    var action = <IKeypressEvent>{
+    var action = <IKeypressAction>{
       type: ActionType.KEYPRESS,
       char: 'a'
     };
@@ -111,7 +111,7 @@ describe('Perform', () => {
   });
 
   it('triggers the done callback after sending the keypress', () => {
-    var action = <IKeypressEvent>{
+    var action = <IKeypressAction>{
       type: ActionType.KEYPRESS,
       char: 'a'
     };
@@ -129,7 +129,7 @@ describe('Perform', () => {
   });
 
   it('delegates to Capture for Screenshot events', () => {
-    var action = <IKeypressEvent>{
+    var action = <IKeypressAction>{
       type: ActionType.SCREENSHOT,
       char: 'a'
     };

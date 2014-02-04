@@ -1,5 +1,5 @@
 
-import IAction = require('Action/IAction');
+import IAction = require('Test/IAction');
 
 interface IDarwinObject {
   actions: IAction[];

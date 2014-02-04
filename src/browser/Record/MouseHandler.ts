@@ -2,8 +2,8 @@
 import Timer = require('./Timer');
 import WindowProxy = require('./WindowProxy');
 
-import ActionType = require('../../common/Action/ActionType');
-import IMouseEvent = require('../../common/Action/IMouseEvent');
+import ActionType = require('../../common/Test/ActionType');
+import IMouseAction = require('../../common/Test/IMouseAction');
 
 class MouseHandler {
 
@@ -16,7 +16,7 @@ class MouseHandler {
 
     var element = <HTMLElement>event.target;
 
-    var action: IMouseEvent = {
+    var action: IMouseAction = {
       type: event.button === 0 ? ActionType.LEFTCLICK : ActionType.RIGHTCLICK,
       pos: {
         x: event.clientX,

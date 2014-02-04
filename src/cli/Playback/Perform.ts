@@ -2,10 +2,10 @@
 
 import webdriver = require('selenium-webdriver');
 
-import ActionType = require('../../common/Action/ActionType');
-import IAction = require('../../common/Action/IAction');
-import IMouseEvent = require('../../common/Action/IMouseEvent');
-import IKeypressEvent = require('../../common/Action/IKeypressEvent');
+import ActionType = require('../../common/Test/ActionType');
+import IAction = require('../../common/Test/IAction');
+import IMouseAction = require('../../common/Test/IMouseAction');
+import IKeypressAction = require('../../common/Test/IKeypressAction');
 
 import Capture = require('../Image/Capture');
 
@@ -19,15 +19,15 @@ class Perform {
   public performAction(action: IAction, done: () => void) {
 
     if (action.type === ActionType.LEFTCLICK || action.type === ActionType.RIGHTCLICK) {
-      this._handleMouseEvent(<IMouseEvent>action, done);
+      this._handleMouseEvent(<IMouseAction>action, done);
     } else if (action.type === ActionType.SCREENSHOT) {
       this._capture.resultImage(done);
     } else {
-      this._handleKeypress(<IKeypressEvent>action, done);
+      this._handleKeypress(<IKeypressAction>action, done);
     }
   }
 
-  private _handleKeypress(action: IKeypressEvent, done: Function) {
+  private _handleKeypress(action: IKeypressAction, done: Function) {
     var script = 'return document.activeElement;';
 
     this._driver
@@ -38,7 +38,7 @@ class Perform {
       });
   }
 
-  private _handleMouseEvent(action: IMouseEvent, done: Function) {
+  private _handleMouseEvent(action: IMouseAction, done: Function) {
     var position = action.pos.x + ',' + action.pos.y;
 
     var script = 'var el = document.elementFromPoint(' + position + ');' +

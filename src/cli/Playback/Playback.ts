@@ -2,7 +2,7 @@
 import fs = require('fs');
 import webdriver = require('selenium-webdriver');
 
-import IAction = require('../../common/Action/IAction');
+import ITest = require('../../common/Test/ITest');
 import ISuite = require('../Main/ISuite');
 
 import TestRunner = require('./TestRunner');
@@ -28,20 +28,20 @@ class Playback {
 
   private _runTest(suiteInfo: ISuite, testName: string) {
     this._fs.readFile(
-      './' + testName + '/actions.json',
+      './' + testName + '/test.json',
       { encoding: 'utf8' },
       (error, content: string) => { this._startSession(suiteInfo, testName, content); }
     );
   }
 
-  private _startSession(suiteInfo: ISuite, testName: string, actionsJson: string) {
+  private _startSession(suiteInfo: ISuite, testName: string, json: string) {
     try {
-      var actions = JSON.parse(actionsJson);
+      var test: ITest = JSON.parse(json);
     } catch (error) {
 
     }
 
-    this._testRunner.run(suiteInfo, testName, actions);
+    this._testRunner.run(suiteInfo, testName, test);
   }
 
 }

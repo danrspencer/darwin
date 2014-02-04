@@ -1,10 +1,10 @@
 
 import webdriver = require('selenium-webdriver');
 
-import Screenshot = require('../Screenshot');
+import Screenshot = require('../Selenium/Screenshot');
 
-import IAction = require('../../../common/Action/IAction');
-import IDarwinObject = require('../../../common/IDarwinObject');
+import IAction = require('../../common/Test/IAction');
+import IDarwinObject = require('../../common/IDarwinObject');
 
 class BrowserSync {
 
@@ -55,7 +55,7 @@ class BrowserSync {
     this._actions = darwinObj.actions;
 
     if (darwinObj.pendingScreenshot === true) {
-      var screenshotPath = this._testName + '/' + this._screenshotCounter++ + '.png';
+      var screenshotPath = this._testName + '/' + this._screenshotCounter++ + '_expected.png';
 
       this._screenshot.captureAndSave(this._driver, screenshotPath, () => {
         this._pollBrowser();

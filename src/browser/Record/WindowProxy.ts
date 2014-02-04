@@ -1,5 +1,5 @@
 
-import IAction = require('../../common/Action/IAction');
+import IAction = require('../../common/Test/IAction');
 import IDarwinWindow = require('../../common/IDarwinWindow');
 import IDarwinObject = require('../../common/IDarwinObject');
 

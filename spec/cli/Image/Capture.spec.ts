@@ -16,13 +16,13 @@ describe('Capture', () => {
     capture = new Capture(screenshot, 'testName');
   });
 
-  it('delegates to screenshot with "testName/1_result.png"', () => {
+  it('delegates to screenshot with "testName/1_actual.png"', () => {
 
     var done = jasmine.createSpy('done');
 
     capture.resultImage(done);
 
-    expect(screenshot.take).toHaveBeenCalledWith('testName/1_result.png', done);
+    expect(screenshot.take).toHaveBeenCalledWith('testName/1_actual.png', done);
   });
 
   it('increased filename integer by 1 after each call', () => {
@@ -30,16 +30,16 @@ describe('Capture', () => {
     var done = jasmine.createSpy('done');
 
     capture.resultImage(done);
-    expect(screenshot.take).toHaveBeenCalledWith('testName/1_result.png', done);
+    expect(screenshot.take).toHaveBeenCalledWith('testName/1_actual.png', done);
 
     capture.resultImage(done);
-    expect(screenshot.take).toHaveBeenCalledWith('testName/2_result.png', done);
+    expect(screenshot.take).toHaveBeenCalledWith('testName/2_actual.png', done);
 
     capture.resultImage(done);
-    expect(screenshot.take).toHaveBeenCalledWith('testName/3_result.png', done);
+    expect(screenshot.take).toHaveBeenCalledWith('testName/3_actual.png', done);
 
     capture.resultImage(done);
-    expect(screenshot.take).toHaveBeenCalledWith('testName/4_result.png', done);
+    expect(screenshot.take).toHaveBeenCalledWith('testName/4_actual.png', done);
   });
 
 });

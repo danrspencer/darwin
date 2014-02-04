@@ -5,7 +5,7 @@ import KeyHandler = require('../../../src/browser/Record/KeyHandler');
 import MouseHandler = require('../../../src/browser/Record/MouseHandler');
 
 
-import ActionType = require('../../../src/common/Action/ActionType');
+import ActionType = require('../../../src/common/Test/ActionType');
 
 describe('Binder', () => {
 

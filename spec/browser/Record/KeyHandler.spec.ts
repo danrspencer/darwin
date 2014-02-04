@@ -4,8 +4,8 @@ import KeyHandler = require('../../../src/browser/Record/KeyHandler');
 import Timer = require('../../../src/browser/Record/Timer');
 import WindowProxy = require('../../../src/browser/Record/WindowProxy');
 
-import ActionType = require('../../../src/common/Action/ActionType');
-import IKeypressEvent = require('../../../src/common/Action/IKeypressEvent');
+import ActionType = require('../../../src/common/Test/ActionType');
+import IKeypressAction = require('../../../src/common/Test/IKeypressAction');
 
 describe('KeyHandler', () => {
 
@@ -34,14 +34,14 @@ describe('KeyHandler', () => {
   it('delegates to WindowProxy with a KEYPRESS type for keypress events', () => {
     keyHandler.keypress(keyboardEvent);
 
-    var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
+    var action = <IKeypressAction>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
     expect(action.type).toEqual(ActionType.KEYPRESS);
   });
 
   it('delegates to WindowProxy containing the details of a keypress', () => {
     keyHandler.keypress(keyboardEvent);
 
-    var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
+    var action = <IKeypressAction>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
     expect(action.char).toEqual(String.fromCharCode(50));
     expect(action.charCode).toEqual(50);
   });
@@ -53,7 +53,7 @@ describe('KeyHandler', () => {
 
     keyHandler.keypress(keyboardEvent);
 
-    var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
+    var action = <IKeypressAction>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
     expect(action.type).toEqual(ActionType.SCREENSHOT);
   });
 
@@ -78,7 +78,7 @@ describe('KeyHandler', () => {
 
     keyHandler.keypress(keyboardEvent);
 
-    var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
+    var action = <IKeypressAction>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
     expect(action.delay).toEqual(100);
   });
 
@@ -91,7 +91,7 @@ describe('KeyHandler', () => {
 
     keyHandler.keypress(keyboardEvent);
 
-    var action = <IKeypressEvent>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
+    var action = <IKeypressAction>spyOf(windowProxy.addAction).mostRecentCall['args'][0];
     expect(action.delay).toEqual(300);
   });
 

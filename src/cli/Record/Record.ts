@@ -3,18 +3,20 @@
 import fs = require('fs');
 import webdriver = require('selenium-webdriver');
 
-import ActionType = require('../../common/Action/ActionType');
-import IAction = require('../../common/Action/IAction');
+import ActionType = require('../../common/Test/ActionType');
+import IAction = require('../../common/Test/IAction');
 import ISuite = require('../Main/ISuite');
 
-import Session = require('./Browser');
-import BrowserSync = require('./Record/BrowserSync');
+import Browser = require('../Selenium/Browser');
+import BrowserSync = require('./BrowserSync');
+import TestWriter = require('./TestWriter');
 
 class Record {
 
   constructor(private _fs: typeof fs,
-              private _session: Session,
+              private _browser: Browser,
               private _browserSync: BrowserSync,
+              private _testWriter: TestWriter,
               private _browserScriptPath: string) {
 
   }
@@ -26,14 +28,14 @@ class Record {
       { encoding: 'utf8' }
     );
 
-    this._session.start(
+    this._browser.start(
       suiteInfo.url,
       suiteInfo.browserSize.width,
       suiteInfo.browserSize.height,
       (driver: webdriver.Driver) => {
         this._insertRecordScript(driver, browserScript);
         this._browserSync.start(driver, testName, (actions: IAction[]) => {
-          this._fs.writeFileSync(testName + '/actions.json', JSON.stringify(actions, null, 2));
+          this._testWriter.save(testName, actions);
         });
       }
     );

@@ -52,14 +52,14 @@ describe('Playback', () => {
     expect(fsSpy.statSync).toHaveBeenCalledWith('./randomfile.html');
   });
 
-  it('loads the actions.json from each sub directory', () => {
+  it('loads the test.json from each sub directory', () => {
     playback.play(suiteStub);
 
-    expect(fsSpy.readFile).toHaveBeenCalledWith('./Test 1/actions.json', { encoding: 'utf8' }, jasmine.any(Function));
-    expect(fsSpy.readFile).toHaveBeenCalledWith('./Test 2/actions.json', { encoding: 'utf8' }, jasmine.any(Function));
+    expect(fsSpy.readFile).toHaveBeenCalledWith('./Test 1/test.json', { encoding: 'utf8' }, jasmine.any(Function));
+    expect(fsSpy.readFile).toHaveBeenCalledWith('./Test 2/test.json', { encoding: 'utf8' }, jasmine.any(Function));
   });
 
-  it('only loads the actions.json for directories', () => {
+  it('only loads the test.json for directories', () => {
     playback.play(suiteStub);
 
     expect(spyOf(fsSpy.readFile).callCount).toEqual(2);
@@ -70,7 +70,7 @@ describe('Playback', () => {
     var file2Data = { test2: 'stuff' };
 
     setSpy(fsSpy.readFile).toCallFake((filename: string, options: Object, callback: Function) => {
-      var fakeResult = JSON.stringify(filename === './Test 1/actions.json' ? file1Data : file2Data);
+      var fakeResult = JSON.stringify(filename === './Test 1/test.json' ? file1Data : file2Data);
 
       callback({}, fakeResult);
     });

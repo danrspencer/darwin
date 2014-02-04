@@ -10,7 +10,7 @@ import webdriver = require('selenium-webdriver');
 import Browser = require('./Selenium/Browser');
 import Darwin = require('./Main/Darwin');
 
-import Analyser= require('./Image/Analyser');
+import Processor = require('./Image/Processor');
 
 import Playback = require('./Playback/Playback');
 import Perform = require('./Playback/Perform');
@@ -18,8 +18,9 @@ import Robot = require('./Playback/Robot');
 import RobotBuilder = require('./Playback/RobotBuilder');
 import TestRunner = require('./Playback/TestRunner');
 
-import Record = require('./Selenium/Record');
-import BrowserSync = require('./Selenium/Record/BrowserSync');
+import Record = require('./Record/Record');
+import BrowserSync = require('./Record/BrowserSync');
+import TestWriter = require('./Record/TestWriter');
 import Screenshot = require('./Selenium/Screenshot');
 
 
@@ -42,17 +43,19 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
 
   var screenshot = new Screenshot(fs);
   var browserSync = new BrowserSync(screenshot);
+  var testWriter = new TestWriter(fs);
 
   var record = new Record(
     fs,
     browser,
     browserSync,
+    testWriter,
     basePath + '/../build/src/darwin-browser.js'
   );
 
   var robotBuilder = new RobotBuilder();
-  var analyser = new Analyser(gm);
-  var testRunner = new TestRunner(robotBuilder, browser, analyser);
+  var processor = new Processor(gm);
+  var testRunner = new TestRunner(robotBuilder, browser, processor);
   var playback = new Playback(
     fs,
     testRunner

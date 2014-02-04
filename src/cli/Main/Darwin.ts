@@ -4,11 +4,11 @@ import fs = require('fs');
 import promptly = require('promptly');
 import webdriver = require('selenium-webdriver');
 
-import IAction = require('../../common/Action/IAction');
+import IAction = require('../../common/Test/IAction');
 import ISuite = require('ISuite');
 
 import Playback = require('../Playback/Playback');
-import Record = require('../Selenium/Record');
+import Record = require('../Record/Record');
 
 class Darwin {
 

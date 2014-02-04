@@ -2,7 +2,7 @@ import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setS
 
 import WindowProxy = require('../../../src/browser/Record/WindowProxy');
 
-import IAction = require('../../../src/common/Action/IAction');
+import IAction = require('../../../src/common/Test/IAction');
 import IDarwinWindow = require('../../../src/common/IDarwinWindow');
 
 describe('WindowProxy', () => {

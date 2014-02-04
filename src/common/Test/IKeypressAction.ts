@@ -1,9 +1,9 @@
 
 import IAction = require('./IAction');
 
-interface IKeypressEvent extends IAction {
+interface IKeypressAction extends IAction {
   charCode: number;
   char: string;
 }
 
-export = IKeypressEvent;
+export = IKeypressAction;

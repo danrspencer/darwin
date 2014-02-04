@@ -1,9 +1,9 @@
 import Timer = require('./Timer');
 import WindowProxy = require('./WindowProxy');
 
-import ActionType = require('../../common/Action/ActionType');
-import IAction = require('../../common/Action/IAction');
-import IKeypressEvent = require('../../common/Action/IKeypressEvent');
+import ActionType = require('../../common/Test/ActionType');
+import IAction = require('../../common/Test/IAction');
+import IKeypressAction = require('../../common/Test/IKeypressAction');
 
 class KeyHandler {
 
@@ -31,7 +31,7 @@ class KeyHandler {
   }
 
   private _standardKeypress(event: KeyboardEvent) {
-    var action: IKeypressEvent = {
+    var action: IKeypressAction = {
       type: ActionType.KEYPRESS,
       delay: this._timer.getInterval(),
       char: String.fromCharCode(event.charCode),

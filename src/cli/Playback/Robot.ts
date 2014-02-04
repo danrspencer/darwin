@@ -1,7 +1,7 @@
 
 import webdriver = require('selenium-webdriver');
 
-import IAction = require('../../common/Action/IAction');
+import IAction = require('../../common/Test/IAction');
 
 import Perform = require('./Perform');
 import Scheduler = require('./Scheduler');

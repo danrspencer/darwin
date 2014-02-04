@@ -4,8 +4,8 @@ import MouseHandler = require('../../../src/browser/Record/MouseHandler');
 import Timer = require('../../../src/browser/Record/Timer');
 import WindowProxy = require('../../../src/browser/Record/WindowProxy');
 
-import ActionType = require('../../../src/common/Action/ActionType');
-import IMouseEvent = require('../../../src/common/Action/IMouseEvent');
+import ActionType = require('../../../src/common/Test/ActionType');
+import IMouseEvent = require('../../../src/common/Test/IMouseAction');
 
 describe('MouseHandler', () => {
 

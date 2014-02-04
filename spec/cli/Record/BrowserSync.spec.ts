@@ -1,15 +1,15 @@
-/// <reference path="../../ref.d.ts" />
-import jasmine_tss = require('../../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
+/// <reference path="../ref.d.ts" />
+import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
 import fs = require('fs');
 import webdriver = require('selenium-webdriver');
 
-import ActionType = require('../../../../src/common/Action/ActionType');
-import ISuite = require('../../../../src/cli/Main/ISuite');
+import ActionType = require('../../../src/common/Test/ActionType');
+import ISuite = require('../../../src/cli/Main/ISuite');
 
-import BrowserSync = require('../../../../src/cli/Selenium/Record/BrowserSync');
-import Session = require('../../../../src/cli/Selenium/Browser');
-import Screenshot = require('../../../../src/cli/Selenium/Screenshot');
+import BrowserSync = require('../../../src/cli/Record/BrowserSync');
+import Session = require('../../../src/cli/Selenium/Browser');
+import Screenshot = require('../../../src/cli/Selenium/Screenshot');
 
 describe('BrowserSync', () => {
 
@@ -112,7 +112,7 @@ describe('BrowserSync', () => {
     setSpy(driver.then).toCallFake((handler) => { handler({ pendingScreenshot: true }); });
     jasmine.Clock.tick(200);
 
-    expect(screenshot.captureAndSave).toHaveBeenCalledWith(driver, 'testing something/1.png', jasmine.any(Function));
+    expect(screenshot.captureAndSave).toHaveBeenCalledWith(driver, 'testing something/1_expected.png', jasmine.any(Function));
   });
 
   it('uses ascending numeric count as image name for screenshot',  () => {
@@ -121,9 +121,9 @@ describe('BrowserSync', () => {
     setSpy(driver.then).toCallFake((handler) => { handler({ pendingScreenshot: true }); });
     jasmine.Clock.tick(600);
 
-    expect(screenshot.captureAndSave).toHaveBeenCalledWith(driver, 'testing something/1.png', jasmine.any(Function));
-    expect(screenshot.captureAndSave).toHaveBeenCalledWith(driver, 'testing something/2.png', jasmine.any(Function));
-    expect(screenshot.captureAndSave).toHaveBeenCalledWith(driver, 'testing something/3.png', jasmine.any(Function));
+    expect(screenshot.captureAndSave).toHaveBeenCalledWith(driver, 'testing something/1_expected.png', jasmine.any(Function));
+    expect(screenshot.captureAndSave).toHaveBeenCalledWith(driver, 'testing something/2_expected.png', jasmine.any(Function));
+    expect(screenshot.captureAndSave).toHaveBeenCalledWith(driver, 'testing something/3_expected.png', jasmine.any(Function));
   });
 
   it('doesn\'t rebind the browser callback until the screenshot has been taken', () => {

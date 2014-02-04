@@ -4,19 +4,21 @@ import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setS
 import fs = require('fs');
 import webdriver = require('selenium-webdriver');
 
-import ActionType = require('../../../src/common/Action/ActionType');
+import ActionType = require('../../../src/common/Test/ActionType');
 import ISuite = require('../../../src/cli/Main/ISuite');
 
-import Record = require('../../../src/cli/Selenium/Record');
-import Session = require('../../../src/cli/Selenium/Browser');
-import BrowserSync = require('../../../src/cli/Selenium/Record/BrowserSync');
+import Record = require('../../../src/cli/Record/Record');
+import BrowserSync = require('../../../src/cli/Record/BrowserSync');
+import TestWriter = require('../../../src/cli/Record/TestWriter');
+import Browser = require('../../../src/cli/Selenium/Browser');
 
 describe('Record', () => {
 
-  var filesystem: typeof fs;
+  var _fs: typeof fs;
 
-  var session: Session;
-  var browserSync: BrowserSync;
+  var _browser: Browser;
+  var _browserSync: BrowserSync;
+  var _testWriter: TestWriter;
 
   var driver: webdriver.Driver;
   var manage: webdriver.Manage;
@@ -27,14 +29,16 @@ describe('Record', () => {
   var record: Record;
 
   beforeEach(() => {
-    filesystem = jasmine.createSpyObj<typeof fs>('fs', ['readFileSync', 'writeFileSync']);
+    _fs = jasmine.createSpyObj<typeof fs>('fs', ['readFileSync', 'writeFileSync']);
 
-    session = jasmine.createSpyObj<Session>('session', ['start']);
-    setSpy(session.start).toCallFake((url, height, width, callback) => {
+    _browser = jasmine.createSpyObj<Browser>('browser', ['start']);
+    setSpy(_browser.start).toCallFake((url, height, width, callback) => {
       callback(driver);
     });
 
-    browserSync = jasmine.createSpyObj<BrowserSync>('browserSync', ['start']);
+    _browserSync = jasmine.createSpyObj<BrowserSync>('browserSync', ['start']);
+
+    _testWriter = jasmine.createSpyObj<TestWriter>('testWritter', ['save']);
 
     driver = jasmine.createSpyObj<webdriver.Driver>('driver', ['manage', 'get', 'executeScript', 'executeAsyncScript', 'then', 'takeScreenshot']);
     manage = jasmine.createSpyObj<webdriver.Manage>('manage', ['window', 'timeouts']);
@@ -55,9 +59,10 @@ describe('Record', () => {
     };
 
     record = new Record(
-      filesystem,
-      session,
-      browserSync,
+      _fs,
+      _browser,
+      _browserSync,
+      _testWriter,
       'browserScript.js'
     );
   });
@@ -65,17 +70,17 @@ describe('Record', () => {
   it('delegates to session to start a selenium session', () => {
     record.start('', suiteStub);
 
-    expect(session.start).toHaveBeenCalledWith('www.google.co.uk', 1280, 768, jasmine.any(Function));
+    expect(_browser.start).toHaveBeenCalledWith('www.google.co.uk', 1280, 768, jasmine.any(Function));
   });
 
   it('delegates to fs to load the browser script', () => {
     record.start('', suiteStub);
 
-    expect(filesystem.readFileSync).toHaveBeenCalledWith('browserScript.js', { encoding: 'utf8' });
+    expect(_fs.readFileSync).toHaveBeenCalledWith('browserScript.js', { encoding: 'utf8' });
   });
 
   it('injects the browser script', () => {
-    setSpy(filesystem.readFileSync).toReturn('function bootstrap() {}');
+    setSpy(_fs.readFileSync).toReturn('function bootstrap() {}');
 
     record.start('', suiteStub);
 
@@ -91,22 +96,22 @@ describe('Record', () => {
   it('delegates to BrowserSync once the session has started', () => {
     record.start('test name', suiteStub);
 
-    expect(browserSync.start).toHaveBeenCalledWith(driver, 'test name', jasmine.any(Function));
+    expect(_browserSync.start).toHaveBeenCalledWith(driver, 'test name', jasmine.any(Function));
   });
 
-  it('save\'s the actions to a file when the result of the callback is null', () => {
-    var expectedResult = [
+  it('delegates to TestWritter to save the test', () => {
+    var actions = [
       { type: ActionType.LEFTCLICK },
       { type: ActionType.KEYPRESS },
       { type: ActionType.RIGHTCLICK }
     ];
 
-    setSpy(browserSync.start).toCallFake((driver, testName, done) => {
-      done(expectedResult);
+    setSpy(_browserSync.start).toCallFake((driver, testName, done) => {
+      done(actions);
     });
 
     record.start('testing something', suiteStub);
 
-    expect(filesystem.writeFileSync).toHaveBeenCalledWith('testing something/actions.json', JSON.stringify(expectedResult, null, 2));
+    expect(_testWriter.save).toHaveBeenCalledWith('testing something', actions);
   });
 });
