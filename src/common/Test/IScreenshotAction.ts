@@ -1,11 +1,9 @@
 
 import IAction = require('./IAction');
+import ISegment = require('./Screenshot/ISegment');
 
 interface IScreenshotAction extends IAction {
-  segments: {
-    topLeft: { x: number; y: number };
-    bottomRight: { x: number; y: number };
-  };
+  segments: ISegment[];
 }
 
 export = IScreenshotAction;

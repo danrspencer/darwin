@@ -12,17 +12,18 @@ import ResultWriter = require('./ResultWriter');
 
 class Processor {
 
+  private _counter: number;
+  private _diffs: IDiff[];
+
   constructor(private _analyser: Analyser,
               private _resultWriter: ResultWriter) {
 
   }
 
-  public processResults(testName: string, test: ITest) {
+  public processResults(test: ITest) {
 
-    var counter = 0;
-    var doneCounter = 0;
-
-    var diffs: IDiff[] = [];
+    this._counter = 0;
+    this._diffs = [];
 
     test.actions.forEach((action: IAction) => {
 
@@ -30,34 +31,22 @@ class Processor {
         return;
       }
 
-      counter++;
+      this._counter++;
 
-      this._analyser.process(testName, action, counter, (diff: IDiff) => {
-
-        doneCounter++;
-        diffs.push(diff);
-
-        if (doneCounter === counter) {
-          this._resultWriter.save(testName, diffs);
-        }
-      });
+      this._processAction(action);
     });
   }
 
-//  private _processImages(testName: string, imageCounter: number) {
-//
-//    var imageNameBase = testName + '/' + imageCounter;
-//    var baseImage = imageNameBase + '_expected.png';
-//    var resultImage = imageNameBase + '_actual.png';
-//    var diffImage = imageNameBase + '_diff.png';
-//
-//    var options = { file: diffImage };
-//
-//    this._gm.compare(baseImage, resultImage, options, (err, equal, equality, rawOutput) => {
-//      // Todo - Handle error
-//    });
-//  }
+  private _processAction(action: IAction) {
+    this._analyser.process(action, this._counter, (diff: IDiff) => {
 
+      this._diffs.push(diff);
+
+      if (this._diffs.length === this._counter) {
+        this._resultWriter.save(this._diffs);
+      }
+    });
+  }
 }
 
 export = Processor;

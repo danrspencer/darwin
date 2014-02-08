@@ -10,7 +10,7 @@ import Analyser = require('../../../src/cli/Image/Analyser');
 import Processor = require('../../../src/cli/Result/Processor');
 import ResultWriter = require('../../../src/cli/Result/ResultWriter');
 
-describe('Analyser', () => {
+describe('Processor', () => {
 
   var _analyser: Analyser;
   var _resultWriter: ResultWriter;
@@ -19,7 +19,7 @@ describe('Analyser', () => {
 
   beforeEach(() => {
     _analyser = jasmine.createSpyObj<Analyser>('analyser', ['process']);
-    _resultWriter = jasmine.createSpyObj<ResultWriter>('resultWriter', ['save']);
+    _resultWriter = jasmine.createSpyObj<ResultWriter>('resultWriter', ['save', 'addDiff']);
 
     processor = new Processor(_analyser, _resultWriter);
   });
@@ -33,11 +33,11 @@ describe('Analyser', () => {
       ]
     };
 
-    processor.processResults('testName', test);
+    processor.processResults(test);
 
-    expect(_analyser.process).toHaveBeenCalledWith('testName', test.actions[0], 1, jasmine.any(Function));
-    expect(_analyser.process).toHaveBeenCalledWith('testName', test.actions[1], 2, jasmine.any(Function));
-    expect(_analyser.process).toHaveBeenCalledWith('testName', test.actions[2], 3, jasmine.any(Function));
+    expect(_analyser.process).toHaveBeenCalledWith(test.actions[0], 1, jasmine.any(Function));
+    expect(_analyser.process).toHaveBeenCalledWith(test.actions[1], 2, jasmine.any(Function));
+    expect(_analyser.process).toHaveBeenCalledWith(test.actions[2], 3, jasmine.any(Function));
   });
 
   it('delegates to Analyser only for screenshot actions', () => {
@@ -52,7 +52,7 @@ describe('Analyser', () => {
       ]
     };
 
-    processor.processResults('testName', test);
+    processor.processResults(test);
 
     expect(spyOf(_analyser.process).callCount).toEqual(3);
   });
@@ -70,25 +70,24 @@ describe('Analyser', () => {
     };
 
     var analyserCallbacks = [];
-    setSpy(_analyser.process).toCallFake((testName, action, counter, callback) => {
+    setSpy(_analyser.process).toCallFake((action, counter, callback) => {
       analyserCallbacks.push(callback);
     });
 
-    processor.processResults('testName', test);
+    processor.processResults(test);
 
     var diffs = [
       <IDiff>{ image: '1' },
       <IDiff>{ image: '2' },
-      <IDiff>{ image: '3' },
-    ]
+      <IDiff>{ image: '3' }
+    ];
 
     analyserCallbacks[0](diffs[0]);
     analyserCallbacks[1](diffs[1]);
     expect(_resultWriter.save).not.toHaveBeenCalled();
 
     analyserCallbacks[2](diffs[2]);
-    expect(_resultWriter.save).toHaveBeenCalledWith('testName', diffs);
+    expect(_resultWriter.save).toHaveBeenCalledWith(diffs);
   });
-
 
 });

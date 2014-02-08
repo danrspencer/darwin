@@ -1,9 +1,11 @@
 
 interface IDiff {
   image: string;
-  segments: {
-    segment: string;
+  comparisons: {
+    expected: string;
+    actual: string;
     diff: string;
+    diffValue: string;
     pass: boolean;
   }[];
 }

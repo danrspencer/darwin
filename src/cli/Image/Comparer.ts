@@ -1,0 +1,6 @@
+
+class Comparer {
+
+}
+
+export = Comparer;
