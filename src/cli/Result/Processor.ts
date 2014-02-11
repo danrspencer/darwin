@@ -1,10 +1,11 @@
 
 import gm = require('gm');
 
-import IDiff = require('../../common/Result/IDiff');
+import IResultImage = require('../../common/Result/IResultImage');
 import ActionType = require('../../common/Test/ActionType');
 import IAction = require('../../common/Test/IAction');
 import ITest = require('../../common/Test/ITest');
+import IScreenshotAction = require('../../common/Test/IScreenshotAction');
 
 import Analyser = require('../Image/Analyser');
 import ResultWriter = require('./ResultWriter');
@@ -13,14 +14,14 @@ import ResultWriter = require('./ResultWriter');
 class Processor {
 
   private _counter: number;
-  private _diffs: IDiff[];
+  private _diffs: IResultImage[];
 
   constructor(private _analyser: Analyser,
               private _resultWriter: ResultWriter) {
 
   }
 
-  public processResults(test: ITest) {
+  public processResults(testName: string, test: ITest) {
 
     this._counter = 0;
     this._diffs = [];
@@ -33,12 +34,12 @@ class Processor {
 
       this._counter++;
 
-      this._processAction(action);
+      this._processAction(testName, <IScreenshotAction>action);
     });
   }
 
-  private _processAction(action: IAction) {
-    this._analyser.process(action, this._counter, (diff: IDiff) => {
+  private _processAction(testName: string, action: IScreenshotAction) {
+    this._analyser.process(testName, this._counter, action.segments, (diff: IDiff) => {
 
       this._diffs.push(diff);
 

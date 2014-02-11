@@ -1,7 +1,7 @@
 /// <reference path="../ref.d.ts" />
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
-import IDiff = require('../../../src/common/Result/IDiff');
+import IResultImage = require('../../../src/common/Result/IResultImage');
 import ActionType = require('../../../src/common/Test/ActionType');
 import IAction = require('../../../src/common/Test/IAction');
 import ITest = require('../../../src/common/Test/ITest');
@@ -27,17 +27,17 @@ describe('Processor', () => {
   it('delegates to Analyser for each action', () => {
     var test = <ITest>{
       actions: [
-        { type: ActionType.SCREENSHOT, delay: 10 },
-        { type: ActionType.SCREENSHOT, delay: 50 },
-        { type: ActionType.SCREENSHOT, delay: 100 }
+        { type: ActionType.SCREENSHOT, delay: 10, segments: [ { topLeft: 0 } ] },
+        { type: ActionType.SCREENSHOT, delay: 50, segments: [ { topLeft: 5 } ] },
+        { type: ActionType.SCREENSHOT, delay: 100, segments: [ { topLeft: 10 } ] }
       ]
     };
 
-    processor.processResults(test);
+    processor.processResults('testName', test);
 
-    expect(_analyser.process).toHaveBeenCalledWith(test.actions[0], 1, jasmine.any(Function));
-    expect(_analyser.process).toHaveBeenCalledWith(test.actions[1], 2, jasmine.any(Function));
-    expect(_analyser.process).toHaveBeenCalledWith(test.actions[2], 3, jasmine.any(Function));
+    expect(_analyser.process).toHaveBeenCalledWith('testName', 1, [ { topLeft: 0 } ], jasmine.any(Function));
+    expect(_analyser.process).toHaveBeenCalledWith('testName', 2, [ { topLeft: 5 } ], jasmine.any(Function));
+    expect(_analyser.process).toHaveBeenCalledWith('testName', 3, [ { topLeft: 10 } ], jasmine.any(Function));
   });
 
   it('delegates to Analyser only for screenshot actions', () => {
@@ -52,7 +52,7 @@ describe('Processor', () => {
       ]
     };
 
-    processor.processResults(test);
+    processor.processResults('', test);
 
     expect(spyOf(_analyser.process).callCount).toEqual(3);
   });
@@ -70,24 +70,24 @@ describe('Processor', () => {
     };
 
     var analyserCallbacks = [];
-    setSpy(_analyser.process).toCallFake((action, counter, callback) => {
+    setSpy(_analyser.process).toCallFake((testName, counter, segments, callback) => {
       analyserCallbacks.push(callback);
     });
 
-    processor.processResults(test);
+    processor.processResults('testName', test);
 
-    var diffs = [
-      <IDiff>{ image: '1' },
-      <IDiff>{ image: '2' },
-      <IDiff>{ image: '3' }
+    var resultImages = [
+      <IResultImage>{ image: '1' },
+      <IResultImage>{ image: '2' },
+      <IResultImage>{ image: '3' }
     ];
 
-    analyserCallbacks[0](diffs[0]);
-    analyserCallbacks[1](diffs[1]);
+    analyserCallbacks[0](resultImages[0]);
+    analyserCallbacks[1](resultImages[1]);
     expect(_resultWriter.save).not.toHaveBeenCalled();
 
-    analyserCallbacks[2](diffs[2]);
-    expect(_resultWriter.save).toHaveBeenCalledWith(diffs);
+    analyserCallbacks[2](resultImages[2]);
+    expect(_resultWriter.save).toHaveBeenCalledWith(resultImages);
   });
 
 });

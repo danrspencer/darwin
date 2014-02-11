@@ -1,5 +1,5 @@
 
-interface IDiff {
+interface IResultImage {
   image: string;
   comparisons: {
     expected: string;
@@ -10,4 +10,4 @@ interface IDiff {
   }[];
 }
 
-export = IDiff;
+export = IResultImage;

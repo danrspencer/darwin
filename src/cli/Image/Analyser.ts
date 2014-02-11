@@ -1,11 +1,11 @@
 
+import IResultImage = require('../../common/Result/IResultImage');
 import ISegment = require('../../common/Test/Screenshot/ISegment');
 
 import Postfixes = require('./Postfixes');
 
 import Comparer = require('./Comparer');
 import Cropper = require('./Cropper');
-import IImageOutput = require('./IImageOutput');
 
 class Analyser {
 
@@ -14,22 +14,22 @@ class Analyser {
 
   }
 
-  public process(testName: string, imageIndex: number, segments: ISegment[], done: (diffs: Number[]) => void) {
+  public process(testName: string, imageIndex: number, segments: ISegment[], done: (resultImage: IResultImage) => void) {
 
     this._cropper.crop(
       'testName/' + imageIndex,
       segments,
-      (croppedImages: IImageOutput[]) => {
-        this._processCropped(croppedImages, done);
+      (resultImage: IResultImage) => {
+        this._processCropped(resultImage, done);
       }
     );
   }
 
-  private _processCropped(croppedImages: IImageOutput[], done: (diffs: Number[]) => void) {
+  private _processCropped(resultImage: IResultImage, done: (resultImage: IResultImage) => void) {
     this._comparer.compare(
-      croppedImages,
-      (diffs: number[]) => {
-        done(diffs);
+      resultImage,
+      (resultImage: IResultImage) => {
+        done(resultImage);
       }
     );
   }

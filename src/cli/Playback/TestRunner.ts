@@ -5,7 +5,7 @@ import IAction = require('../../common/Test/IAction');
 import ITest = require('../../common/Test/ITest');
 import ISuite = require('../Main/ISuite');
 
-import Processor = require('../Image/Processor');
+import Processor = require('../Result/Processor');
 import Browser = require('../Selenium/Browser');
 import Robot = require('./Robot');
 import RobotBuilder = require('./RobotBuilder');
