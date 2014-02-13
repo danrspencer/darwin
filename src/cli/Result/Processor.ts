@@ -14,7 +14,7 @@ import ResultWriter = require('./ResultWriter');
 class Processor {
 
   private _counter: number;
-  private _diffs: IResultImage[];
+  private _resultImages: IResultImage[];
 
   constructor(private _analyser: Analyser,
               private _resultWriter: ResultWriter) {
@@ -24,7 +24,7 @@ class Processor {
   public processResults(testName: string, test: ITest) {
 
     this._counter = 0;
-    this._diffs = [];
+    this._resultImages = [];
 
     test.actions.forEach((action: IAction) => {
 
@@ -39,12 +39,12 @@ class Processor {
   }
 
   private _processAction(testName: string, action: IScreenshotAction) {
-    this._analyser.process(testName, this._counter, action.segments, (diff: IDiff) => {
+    this._analyser.process(testName, this._counter, action.segments, (resultImage: IResultImage) => {
 
-      this._diffs.push(diff);
+      this._resultImages.push(resultImage);
 
-      if (this._diffs.length === this._counter) {
-        this._resultWriter.save(this._diffs);
+      if (this._resultImages.length === this._counter) {
+        this._resultWriter.save(this._resultImages);
       }
     });
   }

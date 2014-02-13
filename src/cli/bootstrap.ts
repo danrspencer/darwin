@@ -10,7 +10,7 @@ import webdriver = require('selenium-webdriver');
 import Browser = require('./Selenium/Browser');
 import Darwin = require('./Main/Darwin');
 
-import Processor = require('./Image/Processor');
+import Processor = require('./Result/Processor');
 
 import Playback = require('./Playback/Playback');
 import Perform = require('./Playback/Perform');
