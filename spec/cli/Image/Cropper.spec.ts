@@ -2,11 +2,11 @@
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
 import Cropper = require('../../../src/cli/Image/Cropper');
-import IImageOutput = require('../../../src/cli/Image/IImageOutput');
+import IResultImage = require('../../../src/common/Result/IResultImage');
 
 describe('Cropper', () => {
 
-  var done: (images: IImageOutput[]) => void;
+  var done: (images: IResultImage[]) => void;
 
   var cropper: Cropper;
 

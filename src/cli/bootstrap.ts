@@ -7,23 +7,27 @@ import promptly = require('promptly');
 import gm = require('gm');
 import webdriver = require('selenium-webdriver');
 
-import Browser = require('./Selenium/Browser');
 import Darwin = require('./Main/Darwin');
 
-import Processor = require('./Result/Processor');
+import Analyser = require('./Image/Analyser');
+import Comparer = require('./Image/Comparer');
+import Cropper = require('./Image/Cropper');
 
 import Playback = require('./Playback/Playback');
 import Perform = require('./Playback/Perform');
 import Robot = require('./Playback/Robot');
 import RobotBuilder = require('./Playback/RobotBuilder');
 import TestRunner = require('./Playback/TestRunner');
+import BrowserSync = require('./Record/BrowserSync');
 
 import Record = require('./Record/Record');
-import BrowserSync = require('./Record/BrowserSync');
 import TestWriter = require('./Record/TestWriter');
+
+import Processor = require('./Result/Processor');
+import ResultWriter = require('./Result/ResultWriter');
+
+import Browser = require('./Selenium/Browser');
 import Screenshot = require('./Selenium/Screenshot');
-
-
 
 function bootstrap(version: string, basePath: string, argv: string[]) {
 
@@ -53,8 +57,13 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
     basePath + '/../build/src/darwin-browser.js'
   );
 
+  var cropper = new Cropper();
+  var comparer = new Comparer();
+
+  var analyser = new Analyser(cropper, comparer);
+  var resultWriter = new ResultWriter();
   var robotBuilder = new RobotBuilder();
-  var processor = new Processor(gm);
+  var processor = new Processor(analyser, resultWriter);
   var testRunner = new TestRunner(robotBuilder, browser, processor);
   var playback = new Playback(
     fs,

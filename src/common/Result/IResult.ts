@@ -1,9 +1,9 @@
 
-import IDiff = require('./IDiff');
+import IResultImage = require('./IResultImage');
 
 interface IResult {
   from: string;
-  diffs: IDiff[];
+  diffs: IResultImage[];
 }
 
 export = IResult;

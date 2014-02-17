@@ -1,7 +1,7 @@
 /// <reference path="../ref.d.ts" />
 import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setSpy, spyOf = jasmine_tss.spyOf;
 
-import IDiff = require('../../../src/common/Result/IDiff');
+import IResultImage = require('../../../src/common/Result/IResultImage');
 import ActionType = require('../../../src/common/Test/ActionType');
 import ISegment = require('../../../src/common/Test/Screenshot/ISegment');
 

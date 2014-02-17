@@ -10,7 +10,6 @@ import IScreenshotAction = require('../../common/Test/IScreenshotAction');
 import Analyser = require('../Image/Analyser');
 import ResultWriter = require('./ResultWriter');
 
-
 class Processor {
 
   private _counter: number;
