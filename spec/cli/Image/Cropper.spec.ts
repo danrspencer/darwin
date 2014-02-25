@@ -6,7 +6,7 @@ import IResultImage = require('../../../src/common/Result/IResultImage');
 
 describe('Cropper', () => {
 
-  var done: (images: IResultImage[]) => void;
+  var done: (images: IResultImage) => void;
 
   var cropper: Cropper;
 

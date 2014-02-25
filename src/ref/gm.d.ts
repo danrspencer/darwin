@@ -21,6 +21,4 @@ declare module 'gm' {
     callback: (err: Error, equal: boolean, equality: number, rawOutput) => void
   );
 
-
-
 }

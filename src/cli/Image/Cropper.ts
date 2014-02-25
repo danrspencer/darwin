@@ -6,16 +6,19 @@ import Postfixes = require('./Postfixes');
 
 class Cropper {
 
-  public crop(baseName: string, segments: ISegment[], done: (resultImage: IResultImage) => void) {
+  public crop(resultImage: IResultImage, segments: ISegment[], done: (resultImage: IResultImage) => void) {
 
-//    var results: IImageOutput[] = [];
-//
-//    results.push({
-//      expected: baseName + Postfixes.EXPECTED,
-//      actual: baseName + Postfixes.ACTUAL
-//    });
-//
-//    done(results);
+   resultImage.comparisons = [];
+
+   resultImage.comparisons.push({
+     expected: resultImage.image + Postfixes.EXPECTED,
+     actual: resultImage.image + Postfixes.ACTUAL,
+     diff: '',
+     diffValue: '',
+     pass: false
+   });
+
+   done(resultImage);
   }
 
 }
