@@ -21,6 +21,11 @@ declare module 'gm' {
     callback: (err: Error, equal: boolean, equality: number, rawOutput) => void
   );
 
-
+  export function crop(
+    width: number,
+    height: number,
+    x: number,
+    y: number
+  );
 
 }

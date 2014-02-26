@@ -36,7 +36,6 @@ class TestRunner {
       this._processor.processResults(testName, test);
     });
   }
-
 }
 
 export = TestRunner;

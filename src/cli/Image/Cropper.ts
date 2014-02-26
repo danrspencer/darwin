@@ -1,23 +1,43 @@
 
-import IResultImage = require('../../common/Result/IResultImage');
+import gm = require('gm');
+
+import IResultSegment = require('../../common/Result/IResultSegment');
 import ISegment = require('../../common/Test/Screenshot/ISegment');
 
 import Postfixes = require('./Postfixes');
 
 class Cropper {
 
-  public crop(baseName: string, segments: ISegment[], done: (resultImage: IResultImage) => void) {
+  public constructor(private _gm: typeof gm) {
 
-//    var results: IImageOutput[] = [];
-//
-//    results.push({
-//      expected: baseName + Postfixes.EXPECTED,
-//      actual: baseName + Postfixes.ACTUAL
-//    });
-//
-//    done(results);
   }
 
+  public crop(baseName: string, segments: ISegment[], done: (resultSegments: IResultSegment[]) => void) {
+
+    console.log('cropping...');
+
+    this._gm(baseName + Postfixes.ACTUAL)
+        .crop(100, 100, 0, 0)
+        .write(baseName + 'a' + Postfixes.ACTUAL, () => {
+        console.log('cropped');
+      });
+
+    var results: IResultSegment[] = [];
+
+    results.push({
+     expected: baseName + Postfixes.EXPECTED,
+     actual: baseName + Postfixes.ACTUAL,
+     diff: '',
+     diffValue: '',
+     pass: false
+    });
+
+
+    done(results);
+  }
+//  private _nextChar(char: string) {
+//    return String.fromCharCode(char.charCodeAt(0) + 1);
+//  }
 }
 
 export = Cropper;

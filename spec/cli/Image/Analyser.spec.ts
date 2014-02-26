@@ -42,29 +42,27 @@ describe('Analyser', () => {
       callback(croppedImages);
     });
 
-    analyser.process('testName', 1, [], () => {});
+    analyser.process('anotherTest', 1, [], () => {});
 
     expect(_comparer.compare).toHaveBeenCalledWith(
-      croppedImages, jasmine.any(Function)
+      'anotherTest', croppedImages, jasmine.any(Function)
     );
   });
 
-  it('calls the done callback with the results from Comparer', () => {
+  it('calls the done callback with an IResultImage object containing the results', () => {
     setSpy(_cropper.crop).toCallFake((baseImageName, segments, callback) => {
       callback();
     });
 
     var diffs = [1,2,3,4];
-
-    setSpy(_comparer.compare).toCallFake((images, callback) => {
+    setSpy(_comparer.compare).toCallFake((testName, images, callback) => {
       callback(diffs);
     });
 
     var done = jasmine.createSpy('done');
-
     analyser.process('test', 1, [], done);
 
-    expect(done).toHaveBeenCalledWith(diffs);
+    expect(done).toHaveBeenCalledWith({ image: '1', comparisons: diffs });
   });
 
 });

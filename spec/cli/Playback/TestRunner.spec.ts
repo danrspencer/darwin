@@ -10,7 +10,7 @@ import ISuite = require('../../../src/cli/Main/ISuite');
 
 import Browser = require('../../../src/cli/Selenium/Browser');
 
-import Processor = require('../../../src/cli/Image/Processor');
+import Processor = require('../../../src/cli/Result/Processor');
 import Robot = require('../../../src/cli/Playback/Robot');
 import RobotBuilder = require('../../../src/cli/Playback/RobotBuilder');
 import TestRunner = require('../../../src/cli/Playback/TestRunner');
@@ -88,7 +88,7 @@ describe('TestRunner', () => {
     expect(driver.quit).toHaveBeenCalled();
   });
 
-  it('delegates to Analyse after the Robot is finished', () => {
+  it('delegates to Processor after the Robot is finished', () => {
     var test = <ITest>{ actions: [{ type: ActionType.KEYPRESS }] };
 
     var robotFinished: Function;

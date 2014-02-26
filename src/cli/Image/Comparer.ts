@@ -1,9 +1,9 @@
 
-import IResultImage = require('../../common/Result/IResultImage');
+import IResultSegment = require('../../common/Result/IResultSegment');
 
 class Comparer {
 
-  public compare(resultImage: IResultImage, done: (resultImage: IResultImage) => void) {
+  public compare(basePath: string, resultSegments: IResultSegment[], done: (resultSegments: IResultSegment[]) => void) {
 
   }
 

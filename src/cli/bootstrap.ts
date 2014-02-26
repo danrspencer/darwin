@@ -57,7 +57,7 @@ function bootstrap(version: string, basePath: string, argv: string[]) {
     basePath + '/../build/src/darwin-browser.js'
   );
 
-  var cropper = new Cropper();
+  var cropper = new Cropper(gm);
   var comparer = new Comparer();
 
   var analyser = new Analyser(cropper, comparer);
