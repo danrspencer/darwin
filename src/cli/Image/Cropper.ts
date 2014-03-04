@@ -18,8 +18,8 @@ class Cropper {
 
     this._gm(baseName + Postfixes.ACTUAL)
         .crop(100, 100, 0, 0)
-        .write(baseName + 'a' + Postfixes.ACTUAL, () => {
-        console.log('cropped');
+        .write(baseName + 'a' + Postfixes.ACTUAL, (err) => {
+        console.log(err);
       });
 
     var results: IResultSegment[] = [];
@@ -31,7 +31,6 @@ class Cropper {
      diffValue: '',
      pass: false
     });
-
 
     done(results);
   }

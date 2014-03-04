@@ -30,7 +30,7 @@ class Analyser {
     };
 
     this._cropper.crop(
-      'testName/' + imageIndex,
+      testName + '/' + imageIndex,
       segments,
       (resultSegments: IResultSegment[]) => {
         this._processCropped(state, resultSegments);

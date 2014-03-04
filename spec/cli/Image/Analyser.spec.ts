@@ -35,6 +35,12 @@ describe('Analyser', () => {
     );
   });
 
+  it('can handle different test names and image numbers', () => {
+    analyser.process('differentTestName', 2, [], () => {});
+
+    expect(_cropper.crop).toHaveBeenCalledWith('differentTestName/2', 2, [], () => {});
+  });
+
   it('delegates to Comparer with the results of Cropper', () => {
     var croppedImages = ['img1', 'img2'];
 
