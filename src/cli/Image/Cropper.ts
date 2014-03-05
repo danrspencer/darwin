@@ -14,13 +14,13 @@ class Cropper {
 
   public crop(baseName: string, segments: ISegment[], done: (resultSegments: IResultSegment[]) => void) {
 
-    console.log('cropping...');
-
-    this._gm(baseName + Postfixes.ACTUAL)
-        .crop(100, 100, 0, 0)
-        .write(baseName + 'a' + Postfixes.ACTUAL, (err) => {
-        console.log(err);
-      });
+//    console.log('cropping...');
+//
+    this._gm(baseName + Postfixes.ACTUAL);
+//        .crop(100, 100, 0, 0)
+//        .write(baseName + 'a' + Postfixes.ACTUAL, (err) => {
+//        console.log(err);
+//      });
 
     var results: IResultSegment[] = [];
 
@@ -34,6 +34,7 @@ class Cropper {
 
     done(results);
   }
+
 //  private _nextChar(char: string) {
 //    return String.fromCharCode(char.charCodeAt(0) + 1);
 //  }

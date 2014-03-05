@@ -4,7 +4,10 @@ import jasmine_tss = require('../../jasmine_tss'); var setSpy = jasmine_tss.setS
 import gm = require('gm');
 
 import Cropper = require('../../../src/cli/Image/Cropper');
+import Postfixes = require('../../../src/cli/Image/Postfixes');
+
 import IResultSegment = require('../../../src/common/Result/IResultSegment');
+import ISegment = require('../../../src/common/Test/Screenshot/ISegment');
 
 describe('Cropper', () => {
 
@@ -14,7 +17,7 @@ describe('Cropper', () => {
   var cropper: Cropper;
 
   beforeEach(() => {
-    _gm = jasmine.createSpyObj<typeof gm>('gm', ['crop']);
+    _gm = <typeof gm><any>jasmine.createSpy('gm');
 
     done = jasmine.createSpy('done');
 
@@ -34,7 +37,13 @@ describe('Cropper', () => {
   });
 
   it('delegates to gm to crop a segment', () => {
+    var segments: ISegment[] = [
+      { topLeft: { x: 50, y: 10 }, bottomRight: { x: 100, y: 150 }  }
+    ];
 
+    cropper.crop('testName/1', segments, done);
+
+    expect(_gm).toHaveBeenCalledWith('testName/1' + Postfixes.ACTUAL);
   });
 
 });

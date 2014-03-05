@@ -38,7 +38,7 @@ describe('Analyser', () => {
   it('can handle different test names and image numbers', () => {
     analyser.process('differentTestName', 2, [], () => {});
 
-    expect(_cropper.crop).toHaveBeenCalledWith('differentTestName/2', 2, [], () => {});
+    expect(_cropper.crop).toHaveBeenCalledWith('differentTestName/2', [], jasmine.any(Function));
   });
 
   it('delegates to Comparer with the results of Cropper', () => {

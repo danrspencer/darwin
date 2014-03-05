@@ -2,16 +2,17 @@
  * Incomplete and probably inaccurate gm definition
  */
 
-declare module 'gm' {
+interface GmStatic {
+  (image: string): Gm;
 
-  export function compare(
+  compare(
     path1: string,
     path2: string,
     tolerance: number,
     callback: (err: Error, equal: boolean, equality: Number, rawOutput) => void
-  );
+    );
 
-  export function compare(
+  compare(
     path1: string,
     path2: string,
     options: {
@@ -20,12 +21,20 @@ declare module 'gm' {
     },
     callback: (err: Error, equal: boolean, equality: number, rawOutput) => void
   );
+}
 
-  export function crop(
+interface Gm {
+
+  crop(
     width: number,
     height: number,
     x: number,
     y: number
   );
+}
 
+declare var gm: GmStatic;
+
+declare module "gm" {
+  export = gm;
 }
