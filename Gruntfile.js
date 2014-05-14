@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 
   // Run grunt with '--typeCheck no' to not enforce type checking
   // when compiling TypeScript
-  var ignoreTypeCheck = typeof grunt.option('ignoreTypeCheck') !== 'undefined';
+  var ignoreError = typeof grunt.option('ignoreError') !== 'undefined';
 
   var cleaned = false;
 
@@ -37,17 +37,17 @@ module.exports = function(grunt) {
       browser: {
         src: ['src/browser/**/*.ts', 'spec/browser/**/*.ts'],
         dest: 'build',
-        options: { module: 'commonjs', ignoreTypeCheck: ignoreTypeCheck }
+        options: { module: 'commonjs', ignoreError: ignoreError }
       },
       cli: {
         src: ['src/cli/**/*.ts', 'spec/cli/**/*.ts'],
         dest: 'build',
-        options: { module: 'commonjs', ignoreTypeCheck: ignoreTypeCheck }
+        options: { module: 'commonjs', ignoreError: ignoreError }
       },
       common: {
         src: ['src/common/**/*.ts'],
         dest: 'build',
-        options: { module: 'commonjs', ignoreTypeCheck: ignoreTypeCheck }
+        options: { module: 'commonjs', ignoreError: ignoreError }
       }
     },
     tslint: {

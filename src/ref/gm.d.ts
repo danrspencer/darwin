@@ -35,6 +35,6 @@ interface Gm {
 
 declare var gm: GmStatic;
 
-declare module "gm" {
+declare module 'gm' {
   export = gm;
 }
