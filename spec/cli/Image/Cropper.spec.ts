@@ -49,11 +49,15 @@ describe('Cropper', () => {
       { topLeft: { x: 50, y: 10 }, bottomRight: { x: 70, y: 150 }  }
     ];
 
-    cropper.crop('testName/1', segments, done);
+    cropper.crop('testName/1', segments, done).then(() => {
+      expect(_gm).toHaveBeenCalledWith('testName/1' + Postfixes.ACTUAL);
+      expect(_gmObj.crop).toHaveBeenCalledWith(20, 140, 50, 10);
+      expect(_gmObj.write).toHaveBeenCalled();
+    }, (err) => {
+      throw err;
+    });
 
-    expect(_gm).toHaveBeenCalledWith('testName/1' + Postfixes.ACTUAL);
-    expect(_gmObj.crop).toHaveBeenCalledWith(20, 140, 50, 10);
-    expect(_gmObj.write).toHaveBeenCalled();
+
   });
 
   it('delegates to gm to crop multiple segments', () => {
@@ -85,11 +89,14 @@ describe('Cropper', () => {
       { topLeft: { x: 1000, y: 100 }, bottomRight: { x: 1500, y: 500 }  }
     ];
 
-    cropper.crop('differentTest/3', segments, done);
-
-    expect(_gmObj.write).toHaveBeenCalledWith('differentTest/3a' + Postfixes.ACTUAL, jasmine.any(Function));
-    expect(_gmObj.write).toHaveBeenCalledWith('differentTest/3b' + Postfixes.ACTUAL, jasmine.any(Function));
-    expect(_gmObj.write).toHaveBeenCalledWith('differentTest/3c' + Postfixes.ACTUAL, jasmine.any(Function));
+    cropper.crop('differentTest/3', segments, done)
+           .then(() => {
+      expect(_gmObj.write).toHaveBeenCalledWith('differentTest/3a' + Postfixes.ACTUAL, jasmine.any(Function));
+      expect(_gmObj.write).toHaveBeenCalledWith('differentTest/3b' + Postfixes.ACTUAL, jasmine.any(Function));
+      expect(_gmObj.write).toHaveBeenCalledWith('differentTest/3c' + Postfixes.ACTUAL, jasmine.any(Function));
+    }, (err) => {
+        throw err;
+      });
   });
 
   it('calls done with correct result segments after processing multiple segments', () => {

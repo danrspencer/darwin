@@ -1,5 +1,6 @@
 
 import gm = require('gm');
+import Q = require('q');
 
 import IResultSegment = require('../../common/Result/IResultSegment');
 import ISegment = require('../../common/Test/Screenshot/ISegment');
@@ -28,11 +29,23 @@ class Cropper {
       done: done
     };
 
+    var promises;
+
     if (segments.length > 0) {
-      this._processSegments(state);
+      promises = this._processSegments(state);
     } else {
-      this._processNoCrops(state);
+      promises = this._processNoCrops(state);
     }
+
+    var promise = Q.all(promises);
+
+    promise.then(
+      (results) => {
+        done(results);
+      }
+    );
+
+    return promise;
   }
 
   private finish(state: IState) {
@@ -51,10 +64,12 @@ class Cropper {
   private _processSegments(state: IState) {
     var charPostfix = 'a';
 
-    state.segments.forEach((segment) => {
-        this._processSegment(segment, charPostfix, state);
+    return state.segments.map((segment) => {
+      charPostfix = this._incrementChar(charPostfix);
 
-        charPostfix = this._incrementChar(charPostfix);
+      return this._processSegment(segment, charPostfix, state);
+
+        /*charPostfix = this._incrementChar(charPostfix);*/
     });
   }
 
@@ -66,12 +81,16 @@ class Cropper {
 
     var outputImage = state.baseName + charPostfix;
 
-    this._gm(state.baseName + Postfixes.ACTUAL)
-         .crop(width, height, x, y)
-         .write(outputImage + Postfixes.ACTUAL, (err) => {
+    var returned = this._gm(state.baseName + Postfixes.ACTUAL)
+                       .crop(width, height, x, y);
+
+    return Q.ninvoke(returned, "write", outputImage + Postfixes.ACTUAL);
+
+
+         /*.write(outputImage + Postfixes.ACTUAL, (err) => {
             state.results.push(this._createResultSegment(outputImage));
             this.finish(state);
-          });
+          });*/
   }
 
   private _createResultSegment(partialImageName: string) {

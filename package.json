@@ -20,7 +20,8 @@
     "commander": "~2.1.0",
     "promptly": "~0.2.0",
     "selenium-webdriver": "~2.38.1",
-    "gm": "~1.14.2"
+    "gm": "~1.14.2",
+    "q": "1.0.1"
   },
   "devDependencies": {
     "browserify": "~2.36.1",

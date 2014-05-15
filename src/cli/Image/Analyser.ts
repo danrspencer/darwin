@@ -33,6 +33,9 @@ class Analyser {
       testName + '/' + imageIndex,
       segments,
       (resultSegments: IResultSegment[]) => {
+
+        console.log('Starting compare...');
+
         this._processCropped(state, resultSegments);
       }
     );
