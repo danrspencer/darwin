@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-'use strict';
-
 var bootstrap = require('../build/src/cli/bootstrap');
 var version = require('../package.json').version;
 

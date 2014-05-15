@@ -2,7 +2,6 @@
 module.exports = function(grunt) {
 
   // Run grunt with '--typeCheck no' to not enforce type checking
-  // when compiling TypeScript
   var ignoreError = typeof grunt.option('ignoreError') !== 'undefined';
 
   var cleaned = false;
@@ -17,14 +16,16 @@ module.exports = function(grunt) {
       }
     },
     clean: {
-      full: ["build"],
-      cli: ["build/src/cli", "build/spec/cli"],
-      browser: ["build/src/browser", "build/spec/browser"],
-      common: ["build/src/common"]
+      full: ['build'],
+      cli: ['build/src/cli', 'build/spec/cli'],
+      browser: ['build/src/browser', 'build/spec/browser'],
+      common: ['build/src/common']
     },
     jasmine_node: {
-      projectRoot: "build/spec/cli",
-      forceExit: true
+      cli: ['build/spec/cli/'],
+      options: {
+        forceExit: true
+      }
     },
     karma: {
       browser: {
@@ -54,25 +55,15 @@ module.exports = function(grunt) {
       options: {
         configuration: grunt.file.readJSON('tslint.json')
       },
-      files: {
-        src: ['src/**/*.ts', 'spec/**/*.ts']
-      }
-    },
-    "tpm-install": {
-      options: { dev: true },
-      all: { src: 'package.json', dest: 'd.ts/' }
-    },
-    "tpm-index": {
-      all: { src: ['d.ts/**/*.d.ts'], dest: 'd.ts/all.d.ts' }
+      all: ['src/**/*.ts', 'spec/**/*.ts']
     }
   });
 
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-jasmine-node');
-  grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-typescript');
-  grunt.loadNpmTasks('grunt-tslint');
+  // measures the time each task takes
+  require('time-grunt')(grunt);
+
+  // autoload grunt tasks
+  require('load-grunt-tasks')(grunt);
 
   grunt.registerTask('default', function() {
 
